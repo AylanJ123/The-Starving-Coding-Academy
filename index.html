@@ -1,13 +1,22 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark light">
     <meta
       name="description"
       content="The Starving Coding Academy is a beginner-friendly place to learn how programming works."
     >
     <title>The Starving Coding Academy</title>
+    <script>
+      try {
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme === "light" || savedTheme === "dark") {
+          document.documentElement.dataset.theme = savedTheme;
+        }
+      } catch {}
+    </script>
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
@@ -39,7 +48,7 @@
             <a class="button primary start-button" href="pages/raw-programming.html">Start here</a>
 
             <div class="path-strip" aria-label="What lessons can turn into later">
-              <strong>41 lessons · 6 languages in view · one transferable foundation</strong>
+              <strong>42 lessons · 6 languages in view · one transferable foundation</strong>
               <span>Predict</span>
               <span>Build</span>
               <span>Break</span>
@@ -82,7 +91,7 @@
           </div>
 
           <div class="lesson-link-grid">
-            <a href="pages/raw-programming.html"><span>01 · Raw Programming</span><small>Concepts, syntax, errors, debugging, and where programs begin.</small></a>
+            <a href="pages/raw-programming.html"><span>01 · Raw Programming</span><small>Concepts, syntax, debugging, recovery, and where programs begin.</small></a>
             <a href="pages/syntax-elements.html"><span>02 · Syntax Elements</span><small>Variables, values, types, data structures, comments, and booleans.</small></a>
             <a href="pages/operators.html"><span>03 · Operators</span><small>Text, mathematics, comparisons, logic, and state updates.</small></a>
             <a href="pages/input-output.html"><span>04 · Input And Output</span><small>Validate the outside world and communicate useful results.</small></a>

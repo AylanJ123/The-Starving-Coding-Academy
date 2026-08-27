@@ -2,11 +2,7 @@ const themeToggle = document.querySelector(".theme-toggle");
 const themeIcon = document.querySelector(".theme-icon");
 const themeLabel = document.querySelector(".theme-label");
 
-// If someone already picked a theme, we keep using that choice next time.
-const savedTheme = localStorage.getItem("theme");
-
-// If they have not picked yet, we follow their computer's light or dark setting.
-const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+const initialTheme = document.documentElement.dataset.theme === "light" ? "light" : "dark";
 
 function setTheme(theme) {
   // The CSS looks at this attribute and swaps all the color variables.
@@ -17,10 +13,12 @@ function setTheme(theme) {
   themeLabel.textContent = theme === "dark" ? "Dark" : "Light";
 
   // Save the choice so the page does not forget after a refresh.
-  localStorage.setItem("theme", theme);
+  try {
+    localStorage.setItem("theme", theme);
+  } catch {}
 }
 
-setTheme(savedTheme || (prefersDark ? "dark" : "light"));
+setTheme(initialTheme);
 
 themeToggle.addEventListener("click", () => {
   const currentTheme = document.documentElement.dataset.theme;

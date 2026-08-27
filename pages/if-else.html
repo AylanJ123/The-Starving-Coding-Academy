@@ -1,10 +1,19 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark light">
     <meta name="description" content="An if-chain checks conditions in order and takes the first matching branch. Correct conditions can still produce the wrong behavior when their order makes a specific case unreachable.">
     <title>Order your decisions by meaning | The Starving Coding Academy</title>
+    <script>
+      try {
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme === "light" || savedTheme === "dark") {
+          document.documentElement.dataset.theme = savedTheme;
+        }
+      } catch {}
+    </script>
     <link rel="stylesheet" href="../styles.css">
   </head>
   <body>

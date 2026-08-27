@@ -1,10 +1,19 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark light">
     <meta name="description" content="Logical operators join or invert boolean conditions. The difficult part comes from translating a real requirement into the correct grouping of AND, OR and NOT.">
     <title>Combine rules without tangling them | The Starving Coding Academy</title>
+    <script>
+      try {
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme === "light" || savedTheme === "dark") {
+          document.documentElement.dataset.theme = savedTheme;
+        }
+      } catch {}
+    </script>
     <link rel="stylesheet" href="../styles.css">
   </head>
   <body>

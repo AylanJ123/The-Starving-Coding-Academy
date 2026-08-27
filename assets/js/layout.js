@@ -76,10 +76,14 @@ function setMobileSidebar(open) {
 }
 
 function revealCurrentLesson() {
+  if (!mobileNavQuery.matches) return;
   const currentLink = sidebar?.querySelector("a.is-current");
   if (!sidebar || !currentLink) return;
 
-  const targetTop = currentLink.offsetTop - sidebar.clientHeight / 2 + currentLink.offsetHeight / 2;
+  const sidebarRect = sidebar.getBoundingClientRect();
+  const currentRect = currentLink.getBoundingClientRect();
+  const currentTop = currentRect.top - sidebarRect.top + sidebar.scrollTop;
+  const targetTop = currentTop - sidebar.clientHeight / 2 + currentRect.height / 2;
   sidebar.scrollTop = Math.max(0, targetTop);
 }
 
@@ -92,6 +96,11 @@ sidebarToggle?.addEventListener("click", () => {
 });
 
 sidebarClose?.addEventListener("click", () => setMobileSidebar(false));
+sidebar?.addEventListener("transitionend", (event) => {
+  if (event.propertyName === "height" && document.body.classList.contains("mobile-sidebar-open")) {
+    revealCurrentLesson();
+  }
+});
 sidebar?.addEventListener("click", (event) => {
   if (mobileNavQuery.matches && event.target.closest("a")) setMobileSidebar(false);
 });

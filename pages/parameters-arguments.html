@@ -1,10 +1,19 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark light">
     <meta name="description" content="A parameter belongs to a function definition. An argument is the actual expression supplied for a particular call. Designing that boundary is designing how other code uses your function.">
     <title>Parameters define the slots that arguments fill | The Starving Coding Academy</title>
+    <script>
+      try {
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme === "light" || savedTheme === "dark") {
+          document.documentElement.dataset.theme = savedTheme;
+        }
+      } catch {}
+    </script>
     <link rel="stylesheet" href="../styles.css">
   </head>
   <body>

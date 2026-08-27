@@ -6,7 +6,7 @@ from Python, JavaScript, Java, C#, C++, and Lua.
 
 ## What Is Included
 
-- 41 curriculum pages across seven course units
+- 42 curriculum pages across seven course units
 - Nested, searchable lesson navigation
 - Previous/next lesson controls
 - Learning goals, comparisons, code examples, and short challenges
@@ -34,7 +34,7 @@ private_files/                    Private curriculum planning sources
 ```
 
 The lesson content lives in JavaScript data modules instead of being copied into
-41 separate HTML files. This keeps every page consistent and makes shared lesson
+42 separate HTML files. This keeps every page consistent and makes shared lesson
 features easy to improve. The HTML files in `pages/` are generated route shells.
 
 ## Editing Curriculum Content

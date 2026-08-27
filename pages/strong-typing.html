@@ -1,10 +1,19 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="“Strong” and “weak” typing are informal labels, not one precise ranking. The useful questions are when types are checked, what converts automatically, and which invalid operations are rejected.">
-    <title>Type rules decide which combinations make sense | The Starving Coding Academy</title>
+    <meta name="color-scheme" content="dark light">
+    <meta name="description" content="Memory holds patterns of bits. A type helps the language read those bits as a number, text, a yes or no value, or a route to an object. Type rules keep those meanings from being mixed by accident.">
+    <title>Types give stored data meaning | The Starving Coding Academy</title>
+    <script>
+      try {
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme === "light" || savedTheme === "dark") {
+          document.documentElement.dataset.theme = savedTheme;
+        }
+      } catch {}
+    </script>
     <link rel="stylesheet" href="../styles.css">
   </head>
   <body>

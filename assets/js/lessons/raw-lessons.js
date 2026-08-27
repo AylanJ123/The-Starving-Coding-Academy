@@ -6,6 +6,15 @@ const languageReferences = [
   { title: "Lua 5.4 reference manual", href: "https://www.lua.org/manual/5.4/manual.html" },
 ];
 
+const exceptionReferences = [
+  { title: "Python errors and exceptions", href: "https://docs.python.org/3/tutorial/errors.html" },
+  { title: "JavaScript try catch", href: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/try...catch" },
+  { title: "Java exceptions", href: "https://dev.java/learn/exceptions/" },
+  { title: "C# exceptions and exception handling", href: "https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/exceptions/" },
+  { title: "C++ exceptions", href: "https://en.cppreference.com/w/cpp/language/exceptions.html" },
+  { title: "Lua error handling", href: "https://www.lua.org/manual/5.4/manual.html#2.3" },
+];
+
 export const rawLessons = {
   "raw-programming": {
     kicker: "Course 01 · Raw Programming",
@@ -162,6 +171,13 @@ export const rawLessons = {
         steps: ["Read the whole message once.", "Find the first location in your own code, not the deepest library internals.", "Inspect that line and the few lines before it.", "Say what you expected and what actually happened.", "Change one relevant thing, then run again."],
         note: { title: "Keep the original clue", body: "Randomly changing five lines can erase the symptom without explaining the cause. Small experiments teach you more." },
       },
+      {
+        title: "Choose the next tool",
+        links: [
+          { title: "Errors And Debugging", body: "Investigate unexpected behavior with evidence and small tests.", href: "errors-debugging.html" },
+          { title: "Exceptions And Recovery", body: "Design a safe response for failures a program can anticipate.", href: "exceptions-recovery.html" },
+        ],
+      },
     ],
     challenge: { title: "Ask a better debugging question", prompt: "Replace “Why doesn't my code work?” with a useful report for this situation: clicking Buy does nothing, the console says price is not defined, and the error points to shop.js line 18.", solution: "Example: “When I click Buy, I expect the coin total to decrease. Nothing visible happens. The console reports ‘price is not defined’ at shop.js:18. I checked that the variable is named itemPrice where it is created.”" },
     check: { question: "What is the best first response to an unfamiliar error?", options: ["Rewrite the entire feature.", "Read the message and inspect the first relevant location in your code.", "Change unrelated lines until it disappears."], answer: 1, explanation: "The error message and location are imperfect but valuable evidence. Start there and test one hypothesis at a time." },
@@ -206,6 +222,104 @@ export const rawLessons = {
     challenge: { title: "Repair the damage rule", prompt: "The trace reveals damage is -5 and the code subtracts damage. Choose whether the bug belongs in the stored value or the calculation, then make the convention consistent.", solution: "Either store damage as positive 5 and use health = health - damage, or store a signed change of -5 and use health = health + health_change. The important part is one clear convention." },
     check: { question: "Which observation narrows the bug most?", options: ["The game feels weird.", "Health changes from 20 to 25 after damage, and the logged damage value is -5.", "Something somewhere is probably negative."], answer: 1, explanation: "It gives a reproducible transition and the relevant state, which supports a testable hypothesis." },
     sources: languageReferences,
+  },
+
+  "exceptions-recovery": {
+    kicker: "Raw Programming · Recovery Guide",
+    title: "Exceptions need a recovery plan",
+    lead: "An exception is a structured alarm raised while a program is running. It interrupts the normal route and carries failure information toward code that may know how to respond safely.",
+    goals: ["trace an exception through active function calls", "choose between recovery and propagation", "keep cleanup dependable while preserving useful error context"],
+    sections: [
+      {
+        title: "An exception changes the route",
+        paragraphs: [
+          "A function normally returns a result to its caller. When an operation raises or throws an exception, the remaining instructions in that route are skipped. The runtime searches outward through active function calls for a compatible handler.",
+          "Each abandoned call is removed from the call stack during <strong>stack unwinding</strong>. A matching handler receives control. Without one, the exception eventually reaches the environment running the program, which usually stops that task or process and reports the failure.",
+        ],
+        code: { label: "pseudocode · a new route", content: "TRY\n    profile = LOAD save_file\n    START game WITH profile\nCATCH missing_save\n    profile = CREATE default_profile\n    START game WITH profile" },
+        cards: [
+          { title: "Signal", body: "The failing operation creates an exception with a type and useful context." },
+          { title: "Search", body: "Control travels outward through active calls until a matching handler is found." },
+          { title: "Respond", body: "The handler recovers safely or allows the failure to keep travelling." },
+        ],
+      },
+      {
+        title: "A handler needs a recovery plan",
+        paragraphs: ["Catching an exception only gives your code control. Recovery means choosing a trustworthy state and a sensible next action."],
+        table: {
+          headers: ["Situation", "Possible response", "Safe destination"],
+          rows: [
+            ["Missing optional settings", "Load documented defaults", "The program continues with a complete configuration"],
+            ["Temporary network timeout", "Retry a limited number of times", "The request succeeds or reports a clear failure"],
+            ["Corrupted save data", "Preserve the file and offer repair or backup options", "The player reaches a safe menu"],
+            ["Broken internal state", "Record the evidence and stop the affected operation", "Further damage is prevented"],
+          ],
+        },
+        note: { title: "Recovery has a standard", body: "Continue only when the program can establish a known valid state. A cheerful message cannot repair damaged data by itself." },
+      },
+      {
+        title: "Catch narrowly and preserve context",
+        paragraphs: [
+          "Catch the specific failures your current layer understands. A profile loader may know how to replace a missing save. It may have no safe answer for exhausted memory or a broken engine invariant.",
+          "When a layer can add useful context without recovering, record or wrap the exception and let it continue. Keep the original cause available so the eventual report explains where the chain began.",
+        ],
+        code: { label: "pseudocode · specific responses", content: "TRY\n    profile = LOAD profile_for player_id\nCATCH missing_save\n    profile = CREATE default_profile\nCATCH corrupt_save AS problem\n    RECORD problem WITH player_id\n    PROPAGATE problem WITH player_id" },
+        steps: [
+          "Name the operation that may fail.",
+          "List the failures this layer genuinely understands.",
+          "Choose the valid state produced by each recovery path.",
+          "Preserve the original evidence when recovery belongs elsewhere.",
+        ],
+      },
+      {
+        title: "Languages share the route",
+        paragraphs: ["The shared model is a protected operation, a failure signal, a handler and a cleanup strategy. The spelling and guarantees vary by language."],
+        table: {
+          headers: ["Language", "Signal and handler", "Cleanup pattern"],
+          rows: [
+            ["Python", "<code>raise</code> with <code>try</code> and <code>except</code>", "<code>finally</code> or a context manager used with <code>with</code>"],
+            ["JavaScript", "<code>throw</code> with <code>try</code> and <code>catch</code>", "<code>finally</code> or a documented resource API"],
+            ["Java", "<code>throw</code> with <code>try</code> and <code>catch</code>", "<code>finally</code> or try with resources"],
+            ["C#", "<code>throw</code> with <code>try</code> and <code>catch</code>", "<code>finally</code> or a <code>using</code> statement"],
+            ["C++", "<code>throw</code> with <code>try</code> and <code>catch</code>", "Destructors and RAII manage resources because C++ has no <code>finally</code>"],
+            ["Lua", "<code>error</code> with protected calls such as <code>pcall</code>", "Cleanup depends on the resource and host environment"],
+          ],
+        },
+        note: { title: "Java adds checked exceptions", body: "Some Java exception types must be caught or declared by a method. Other languages in this comparison use different rules, so the concept transfers more reliably than the exact type system." },
+      },
+      {
+        title: "Cleanup must survive every route",
+        paragraphs: [
+          "Files, network connections, locks and temporary state may need cleanup after success or failure. Put that responsibility in the language mechanism designed to run as control leaves the protected region.",
+          "Cleanup code should stay focused and dependable. A second failure during cleanup can hide the original problem or leave the program in a more confusing state.",
+        ],
+        code: { label: "pseudocode · release the resource", content: "connection = OPEN score_server\nTRY\n    SEND score THROUGH connection\nFINALLY\n    CLOSE connection" },
+        note: { title: "Cleanup has limits", body: "Language cleanup mechanisms cover ordinary control flow and exception unwinding. Power loss, forced process termination and hardware failure require broader durability strategies." },
+      },
+      {
+        title: "Silent catches create invisible bugs",
+        bullets: [
+          "Empty handlers erase the clue while the underlying failure remains.",
+          "Broad handlers can mistake programming defects for expected user problems.",
+          "Unlimited retries can trap the program in a failing loop.",
+          "Half repaired objects can spread invalid state into distant systems.",
+          "Generic messages without logs leave developers unable to reproduce the failure.",
+        ],
+        note: { title: "A useful handler earns its place", body: "Every handler should recover to a known state, add meaningful context or perform cleanup. Otherwise the exception should keep travelling." },
+      },
+    ],
+    challenge: {
+      title: "Design the save gate",
+      prompt: "A game loads a profile before entering the world. A missing file should create a default profile. A locked file should retry once. A corrupted file should remain untouched while the player receives a repair option. Write the protected flow and name the safe destination for every path.",
+      solutionCode: { label: "pseudocode · one possible design", content: "TRY\n    profile = LOAD save_file\n    ENTER world WITH profile\nCATCH missing_save\n    profile = CREATE default_profile\n    ENTER world WITH profile\nCATCH locked_save\n    WAIT briefly\n    TRY ONCE MORE\n    IF still_locked\n        SHOW retry_menu\nCATCH corrupt_save AS problem\n    RECORD problem\n    PRESERVE save_file\n    SHOW repair_menu\nFINALLY\n    RELEASE save_file_lock" },
+    },
+    check: {
+      question: "A loader catches every exception and continues with a half filled player profile. What is the central danger?",
+      options: ["The handler may hide the cause and spread invalid state.", "The exception message becomes too specific.", "The program performs too much cleanup."],
+      answer: 0,
+      explanation: "Recovery needs a known valid state. Continuing with damaged state hides the original evidence and creates new failures elsewhere.",
+    },
+    sources: exceptionReferences,
   },
 
   "starting-project": {

@@ -11,6 +11,7 @@ export const navigation = [
         href: "pages/when-code-breaks.html",
         children: [
           { title: "Errors And Debugging", href: "pages/errors-debugging.html" },
+          { title: "Exceptions And Recovery", href: "pages/exceptions-recovery.html" },
         ],
       },
       { title: "Starting A Project", href: "pages/starting-project.html" },

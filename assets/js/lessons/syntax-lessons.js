@@ -6,6 +6,18 @@ const sources = [
   { title: "Lua 5.4: values and types", href: "https://www.lua.org/manual/5.4/manual.html#2.1" },
 ];
 
+const strongTypingSources = [
+  { title: "Python data model", href: "https://docs.python.org/3/reference/datamodel.html" },
+  { title: "Python errors and exceptions", href: "https://docs.python.org/3/tutorial/errors.html" },
+  { title: "JavaScript data types and structures", href: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Data_structures" },
+  { title: "JavaScript addition rules", href: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Addition" },
+  { title: "Java primitive data types", href: "https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html" },
+  { title: "C# type system", href: "https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/types/" },
+  { title: "C# compiler error CS0029", href: "https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-messages/cs0029" },
+  { title: "C++ objects", href: "https://en.cppreference.com/w/cpp/language/object.html" },
+  { title: "Lua values and types", href: "https://www.lua.org/manual/5.4/manual.html#2.1" },
+];
+
 export const syntaxLessons = {
   "syntax-elements": {
     kicker: "Course 02 · Syntax Elements",
@@ -168,36 +180,92 @@ export const syntaxLessons = {
 
   "strong-typing": {
     kicker: "Syntax Elements · Lesson 03",
-    title: "Type rules decide which combinations make sense",
-    lead: "“Strong” and “weak” typing are informal labels, not one precise ranking. The useful questions are when types are checked, what converts automatically, and which invalid operations are rejected.",
-    goals: ["separate static typing from dynamic typing", "avoid treating strong and static as synonyms", "explain what a type error protects"],
+    title: "Types give stored data meaning",
+    lead: "Memory holds patterns of bits. A type helps the language read those bits as a number, text, a yes or no value, or a route to an object. Type rules keep those meanings from being mixed by accident.",
+    goals: ["picture how a type gives stored data meaning", "explain why stricter type rules can prevent bugs", "predict whether a mixed-type mistake fails early or while running"],
     sections: [
       {
-        title: "Two different axes",
+        title: "Bits need a reading rule",
+        paragraphs: [
+          "A bit is a tiny stored zero or one. Memory holds many bits together. The pattern alone does not tell your program what job the data has. The type supplies that reading rule.",
+          "In this simplified one-byte example, the same pattern can be read as the whole number <code>49</code> or as the text character <code>\"1\"</code>. The chosen representation and text encoding decide the meaning.",
+        ],
+        code: { label: "memory sketch · one byte", content: "STORED BITS    READING RULE    MEANING\n00110001       integer         49\n00110001       character       \"1\"" },
+        cards: [
+          { title: "Meaning", body: "The type says whether a value represents a number, text, a boolean, an object, or something else." },
+          { title: "Space", body: "Some types have a fixed size. Others use a reference to data stored elsewhere or let the runtime manage their shape." },
+          { title: "Operations", body: "The type helps decide whether code may add, compare, index, call, or otherwise use the value." },
+          { title: "Conversions", body: "The type rules decide which values can change form automatically and which changes need an explicit request." },
+        ],
+        note: { title: "A careful memory picture", body: "Real storage depends on the language, runtime and compiler. A value may live in memory, in a processor register or inside an object with extra bookkeeping. The sketch explains the purpose without promising one exact layout." },
+      },
+      {
+        title: "Variables reach values in different ways",
+        paragraphs: ["The familiar labeled box is still useful. The contents of that box vary. These three pictures cover many everyday cases."],
         table: {
-          headers: ["Question", "Common terms", "Meaning"],
+          headers: ["Picture", "What the variable carries", "Common examples"],
           rows: [
-            ["When are types checked?", "Static vs. dynamic", "Primarily before execution versus while the program runs"],
-            ["How freely are unlike types mixed?", "Often called strong vs. weak", "How much implicit conversion or coercion the language permits"],
-            ["Must the programmer spell types?", "Explicit vs. inferred", "Whether annotations are written or derived by tooling/compiler"],
+            ["Direct value", "The bits for the value can live directly in the variable's storage", "A Java <code>int</code>, a C# <code>int</code>, or many C++ number types"],
+            ["Reference", "The variable carries a route to an object stored elsewhere", "Java and C# class objects or a C++ pointer"],
+            ["Runtime value", "The name connects to a value whose type is tracked while the program runs", "Python, JavaScript, and Lua values"],
           ],
         },
-        note: { title: "Vocabulary trap", body: "A language can infer types and still check them statically. A dynamically typed language still has types. The values carry them at runtime." },
+        code: { label: "pseudocode · three useful pictures", content: "lives      -> integer value 3\nplayer     -> reference -> Player object\nnickname   -> runtime string value \"Mina\"" },
+        note: { title: "Types exist in dynamic languages", body: "Python, JavaScript, and Lua still know whether a current value is a number, string, function, or object. They usually check that information while the operation runs." },
       },
       {
-        title: "Compare the moment of failure",
-        code: { label: "conceptual examples", content: "# Python: allowed to start; fails at this operation at runtime\ncoins = 10\ncoins = coins + \"5\"\n\n// C#: rejected before a normal run\nint coins = 10;\ncoins = coins + \"5\";" },
-        paragraphs: ["Early rejection can prevent an invalid program from shipping. Runtime flexibility can make exploratory code concise. Neither removes the need to design clear data and test behavior."],
+        title: "Stricter rules protect the meaning",
+        paragraphs: [
+          "Imagine a shop receives the bonus <code>\"5\"</code> from a text field while the player has <code>10</code> numeric coins. The symbols look compatible to a person. The values describe different kinds of data to the program.",
+          "A stricter type rule pauses here and asks you to choose. Should the program validate the text and turn it into a number, or should it join the values as text? Making that choice visible prevents a quiet shop bug such as changing 10 coins into the text <code>\"105\"</code>.",
+        ],
+        cards: [
+          { title: "Protect calculations", body: "Numeric work receives numeric values instead of text that merely looks numeric." },
+          { title: "Protect storage", body: "A destination receives a value whose representation and allowed range make sense there." },
+          { title: "Protect contracts", body: "Function inputs and returned values follow expectations that callers and tools can inspect." },
+          { title: "Catch mistakes sooner", body: "Static checking can reject some bad combinations before a normal run begins." },
+        ],
       },
       {
-        title: "Conversion should communicate intention",
-        code: { label: "Python · explicit conversion", content: "raw_age = input(\"Age: \")\ntry:\n    age = int(raw_age)\nexcept ValueError:\n    print(\"Please enter a whole number.\")" },
-        paragraphs: ["Explicit conversion creates a visible boundary where invalid data can be handled. Silent coercion may be convenient, but it can also conceal mistakes such as joining text when you intended addition."],
+        title: "The same mistake has three outcomes",
+        paragraphs: ["These programs express the same mistaken intention. Each language chooses a different moment or behavior."],
+        code: { label: "Python JavaScript and C#", content: "# Python\ncoins = 10\ncoins = coins + \"5\"\n# Runtime exception:\n# TypeError: unsupported operand type(s) for +: 'int' and 'str'\n\n// JavaScript\nlet coins = 10;\ncoins = coins + \"5\";\nconsole.log(coins);\n// \"105\" because + chooses string joining\n\n// C#\nint coins = 10;\ncoins = coins + \"5\";\n// Compiler error CS0029:\n// Cannot implicitly convert type 'string' to 'int'" },
+        paragraphs: [
+          "Python throws a <code>TypeError</code> when the failing line runs. C# reports a compiler error before a normal run, so that example throws no runtime exception. JavaScript converts the number to text and continues with <code>\"105\"</code>.",
+          "Early and late checks both protect meaning when they reject an operation. Automatic conversion can be useful too. Its rules need to match your intention.",
+        ],
+        note: { title: "Compiler errors and exceptions", body: "A compiler error prevents a normal executable from being produced. An exception is raised during execution. Showing the exact stage tells you where to look." },
+      },
+      {
+        title: "Conversion is a checkpoint",
+        paragraphs: ["Input from forms, files, command lines, and networks often begins as text. Convert it once at the edge of your program, check the result, then let the rest of the code work with a trustworthy type."],
+        code: { label: "pseudocode · validate at the edge", content: "raw_bonus = READ text_input\nIF CONVERT raw_bonus TO INTEGER succeeds\n    coins = coins + converted_bonus\nELSE\n    SHOW \"Enter a whole number\"" },
+        table: {
+          headers: ["Language", "Invalid whole-number conversion", "Failure signal"],
+          rows: [
+            ["Python", "<code>int(\"five\")</code>", "Throws <code>ValueError</code>"],
+            ["JavaScript", "<code>Number(\"five\")</code>", "Returns <code>NaN</code> instead of throwing"],
+            ["Java", "<code>Integer.parseInt(\"five\")</code>", "Throws <code>NumberFormatException</code>"],
+            ["C#", "<code>int.Parse(\"five\")</code>", "Throws <code>FormatException</code>. <code>TryParse</code> can report failure without one"],
+            ["C++", "<code>std::stoi(\"five\")</code>", "Throws <code>std::invalid_argument</code>"],
+            ["Lua", "<code>tonumber(\"five\")</code>", "Returns <code>nil</code> instead of throwing"],
+          ],
+        },
+        note: { title: "Read the failure type first", body: "Full error messages can vary by version and environment. The exception type or failure value usually gives the steadier clue." },
+      },
+      {
+        title: "Three questions explain the rules",
+        cards: [
+          { title: "When is it checked", body: "Static checking happens mainly before a normal run. Dynamic checking happens as operations execute." },
+          { title: "What changes automatically", body: "Languages allow different implicit conversions. Check the exact operation instead of relying on a strong or weak ranking." },
+          { title: "Who writes the type", body: "A programmer may write a type explicitly or let the compiler infer it. Inference can still produce a statically checked type." },
+        ],
+        paragraphs: ["People use <strong>strong typing</strong> as an informal description for rules that resist mixing unrelated types. There is no universal strength score. The three questions above predict real behavior more clearly."],
       },
     ],
-    challenge: { title: "Ask better type questions", prompt: "Instead of asking “Is JavaScript weakly typed?”, write two specific questions that would help you predict a behavior.", solution: "Examples: “Does JavaScript implicitly convert an operand when a string is used with +?” and “When does an invalid property access fail?” Specific behavior is more useful than arguing over an informal label." },
-    check: { question: "Which statement is accurate?", options: ["Dynamically typed languages have no types.", "Static typing always requires every type to be written explicitly.", "Static and dynamic describe when checking occurs. Explicit and inferred describe how type information is supplied."], answer: 2, explanation: "These terms describe separate design choices that can appear in different combinations." },
-    sources,
+    challenge: { title: "Repair the shop boundary", prompt: "A shop receives the bonus text <code>\"5\"</code> and has the numeric coin count <code>10</code>. Explain why JavaScript can produce <code>\"105\"</code>, then design a safe input boundary in pseudocode.", solutionCode: { label: "pseudocode · one possible boundary", content: "raw_bonus = READ text_input\nIF raw_bonus CAN CONVERT TO INTEGER\n    bonus = CONVERT raw_bonus TO INTEGER\n    coins = coins + bonus\nELSE\n    SHOW \"Bonus must be a whole number\"" } },
+    check: { question: "Why can a stricter type rule help when code combines 10 and the text \"5\"?", options: ["It forces the program to choose a clear conversion or operation.", "It guarantees that every program has fewer lines.", "It stores all values in exactly the same memory layout."], answer: 0, explanation: "The rule makes the intended meaning explicit before numeric addition and text joining are confused." },
+    sources: strongTypingSources,
   },
 
   "complex-types": {
