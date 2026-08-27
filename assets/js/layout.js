@@ -5,6 +5,7 @@ const appShell = document.querySelector(".app-shell");
 const sidebar = document.querySelector(".sidebar-index");
 const mainScript = document.querySelector('script[src$="script.js"]');
 const siteRoot = new URL(".", mainScript.src);
+const mobileNavQuery = window.matchMedia("(max-width: 850px)");
 
 function normalizePath(path) {
   const cleanPath = path.replace(/\/$/, "");
@@ -37,7 +38,10 @@ function renderNavItem(item) {
 
 if (sidebar) {
   sidebar.innerHTML = `
-    <p class="sidebar-label">Explore</p>
+    <div class="sidebar-top">
+      <p class="sidebar-label">Explore</p>
+      <button class="sidebar-close" type="button">Close</button>
+    </div>
     <nav aria-label="Lesson index">
       <ul>${navigation.map(renderNavItem).join("")}</ul>
     </nav>
@@ -45,5 +49,29 @@ if (sidebar) {
 }
 
 if (appShell) {
+  appShell.insertAdjacentHTML(
+    "afterbegin",
+    '<button class="sidebar-toggle" type="button" aria-expanded="false">Lesson index</button>'
+  );
   appShell.classList.add("is-ready");
 }
+
+const sidebarToggle = document.querySelector(".sidebar-toggle");
+const sidebarClose = document.querySelector(".sidebar-close");
+
+function setMobileSidebar(open) {
+  document.body.classList.toggle("mobile-sidebar-open", open);
+  sidebarToggle?.setAttribute("aria-expanded", String(open));
+}
+
+function syncSidebarMode() {
+  setMobileSidebar(false);
+}
+
+sidebarToggle?.addEventListener("click", () => {
+  setMobileSidebar(!document.body.classList.contains("mobile-sidebar-open"));
+});
+
+sidebarClose?.addEventListener("click", () => setMobileSidebar(false));
+mobileNavQuery.addEventListener("change", syncSidebarMode);
+syncSidebarMode();
