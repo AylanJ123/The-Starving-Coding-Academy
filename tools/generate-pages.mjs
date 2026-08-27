@@ -7,6 +7,7 @@ import { lessons } from "../assets/js/lessons/lesson-data.js";
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const pagesDirectory = path.join(projectRoot, "pages");
 const pageItems = flattenNavigation().filter((item) => item.href.startsWith("pages/"));
+const siteUrl = "https://aylanj123.github.io/The-Starving-Coding-Academy/";
 
 function stripMarkup(value) {
   return value.replace(/<[^>]+>/g, "").replaceAll('"', "&quot;");
@@ -22,6 +23,19 @@ function pageTemplate(slug, lesson) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="dark light">
     <meta name="description" content="${description}">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="The Starving Coding Academy">
+    <meta property="og:title" content="${stripMarkup(lesson.title)}">
+    <meta property="og:description" content="${description}">
+    <meta property="og:url" content="${siteUrl}pages/${slug}.html">
+    <meta property="og:image" content="${siteUrl}assets/images/social/${slug}.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="${stripMarkup(lesson.title)} lesson card">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="${stripMarkup(lesson.title)}">
+    <meta name="twitter:description" content="${description}">
+    <meta name="twitter:image" content="${siteUrl}assets/images/social/${slug}.png">
     <title>${stripMarkup(lesson.title)} | The Starving Coding Academy</title>
     <script>
       try {
@@ -31,12 +45,13 @@ function pageTemplate(slug, lesson) {
         }
       } catch {}
     </script>
+    <link rel="icon" href="../assets/images/academy-icon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="../styles.css">
   </head>
   <body>
     <header class="site-header">
       <a class="brand" href="../index.html" aria-label="The Starving Coding Academy home">
-        <span class="brand-mark">SCA</span>
+        <img class="brand-mark" src="../assets/images/academy-icon.svg" alt="">
         <span>The Starving Coding Academy</span>
       </a>
 
