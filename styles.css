@@ -133,6 +133,7 @@ a {
 .hero {
   display: flex;
   align-items: center;
+  justify-content: center;
   width: 100%;
   min-height: calc(100vh - 72px);
   padding: clamp(52px, 8vw, 96px) clamp(18px, 5vw, 64px);
@@ -142,6 +143,7 @@ a {
   min-width: 0;
   width: 100%;
   max-width: 900px;
+  margin-inline: auto;
 }
 
 .eyebrow {
@@ -489,6 +491,11 @@ h1 {
   background: color-mix(in srgb, var(--surface) 74%, transparent);
 }
 
+.concept-grid > article:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
 .concept-grid h3 {
   margin-bottom: 8px;
   font-size: 1.08rem;
@@ -597,6 +604,12 @@ h1 {
 .lesson-link-grid small {
   color: var(--muted);
   font-size: 0.9rem;
+}
+
+.home-course-map .lesson-link-grid a:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: calc(50% - 6px);
 }
 
 .challenge-card,
@@ -865,6 +878,11 @@ h1 {
   color: var(--code-number);
 }
 
+.code-operator {
+  color: var(--code-keyword);
+  font-weight: 800;
+}
+
 .code-comment {
   color: var(--code-comment);
 }
@@ -880,6 +898,26 @@ h1 {
 .section-heading {
   max-width: 760px;
   margin-bottom: 24px;
+}
+
+main#top.page-content > .section > .section-heading,
+main#top.page-content > .section > .info-grid,
+main#top.page-content > .section > .lesson-link-grid {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+main#top.page-content > .section > .section-heading {
+  text-align: center;
+}
+
+main#top.page-content > .section > .section-heading p {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+main#top.page-content > .section > .section-heading h2 + p {
+  margin-top: 12px;
 }
 
 h2,
@@ -1070,6 +1108,17 @@ h2 {
   .lesson-link-grid,
   .lesson-pager {
     grid-template-columns: 1fr;
+  }
+
+  .concept-grid > article:last-child:nth-child(odd) {
+    grid-column: auto;
+    width: 100%;
+  }
+
+  .home-course-map .lesson-link-grid a:last-child:nth-child(odd) {
+    grid-column: auto;
+    justify-self: stretch;
+    width: auto;
   }
 
   .lesson-pager .next {

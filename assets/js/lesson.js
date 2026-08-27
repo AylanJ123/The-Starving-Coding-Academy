@@ -1,5 +1,5 @@
-import { flattenNavigation } from "./navigation.js";
-import { lessons } from "./lessons/lesson-data.js";
+import { flattenNavigation } from "./navigation.js?v=2";
+import { lessons } from "./lessons/lesson-data.js?v=2";
 
 const lessonRoot = document.querySelector("[data-lesson]");
 const STORAGE_KEY = "tsca-completed-lessons";
@@ -32,14 +32,39 @@ function highlightCode(value) {
     .join("");
 }
 
+function highlightMultilanguageCode(value) {
+  const tokenPattern = /(^[ \t]*\/#\/[^\n]*|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|<=|>=|==|!=|&&|\|\||[(){}[\];:,.+\-*/%=<>])/gm;
+
+  return String(value)
+    .split(tokenPattern)
+    .map((token) => {
+      if (!token) return "";
+      const escaped = escapeHtml(token);
+      if (/^[ \t]*\/#\//.test(token)) {
+        return `<span class="code-comment">${escapeHtml(token.replace("/#/", "").trimStart())}</span>`;
+      }
+      if (/^["']/.test(token)) return `<span class="code-string">${escaped}</span>`;
+      if (/^(?:<=|>=|==|!=|&&|\|\||[(){}[\];:,.+\-*/%=<>])$/.test(token)) {
+        return `<span class="code-operator">${escaped}</span>`;
+      }
+      return escaped;
+    })
+    .join("");
+}
+
 function codeWindow(code) {
+  const content =
+    code.highlighter === "multilanguage"
+      ? highlightMultilanguageCode(code.content)
+      : highlightCode(code.content);
+
   return `
     <div class="code-window">
       <div class="code-window-header">
         <span>${escapeHtml(code.label || code.language || "example")}</span>
         <div class="window-dots" aria-hidden="true"><span></span><span></span><span></span></div>
       </div>
-      <pre><code>${highlightCode(code.content)}</code></pre>
+      <pre><code>${content}</code></pre>
     </div>
   `;
 }
