@@ -1,2 +1,2 @@
-# the-starving-coding-academy
+# The Starving Coding Academy
 Tiny website for friends
