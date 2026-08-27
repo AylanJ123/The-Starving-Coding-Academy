@@ -9,11 +9,14 @@ easy to read, easy to edit, and easy to publish without needing a framework.
 
 GitHub Pages looks for `index.html` and uses it as the homepage.
 
-This project has three main files:
+This project has a few main files:
 
 - `index.html` has the page content.
 - `styles.css` controls the colors, spacing, layout, light mode, and dark mode.
-- `script.js` controls the theme button.
+- `script.js` loads the shared JavaScript.
+- `assets/js/navigation.js` is the shared page index.
+- `assets/js/layout.js` renders the left sidebar and highlights the current page.
+- `assets/js/theme.js` controls the theme button.
 
 There is also a `.nojekyll` file. It tells GitHub Pages to publish the files as
 they are, without trying to treat the site like a Jekyll project.
@@ -56,7 +59,7 @@ The JavaScript changes `data-theme`, and the CSS does the rest.
 
 ## Adding Pages Later
 
-Extra pages can go inside a `pages` folder:
+Extra pages go inside the `pages` folder:
 
 ```text
 pages/
@@ -78,6 +81,44 @@ From a file inside `pages`, link back to the shared CSS like this:
 ```
 
 The `../` means "go up one folder."
+
+## Updating The Left Index
+
+The left index is shared by every page. Edit it in:
+
+```text
+assets/js/navigation.js
+```
+
+Each item looks like this:
+
+```js
+{
+  title: "Syntax rules",
+  href: "pages/syntax-rules.html",
+}
+```
+
+Nested pages go inside `children`:
+
+```js
+{
+  title: "Raw Programming",
+  href: "/pages/raw-programming.html",
+  children: [
+    {
+      title: "What coding is for",
+      href: "pages/what-is-coding.html",
+    },
+  ],
+}
+```
+
+Keep these paths relative to the site root. Do not start them with `/`, because
+GitHub Pages project sites live inside the repo name in the URL.
+
+The current page highlight is automatic. If the browser URL matches the `href`,
+that link gets the current-page style.
 
 ## Running It Locally
 

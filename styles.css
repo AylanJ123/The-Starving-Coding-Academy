@@ -149,6 +149,65 @@ h1 {
   color: #ffffff;
 }
 
+.app-shell {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  min-height: calc(100vh - 71px);
+}
+
+.sidebar-index {
+  position: sticky;
+  top: 71px;
+  align-self: start;
+  height: calc(100vh - 71px);
+  padding: 28px 18px;
+  overflow-y: auto;
+  border-right: 1px solid var(--line);
+  background: color-mix(in srgb, var(--surface) 54%, var(--bg));
+}
+
+.sidebar-label {
+  margin-bottom: 12px;
+  color: var(--accent-strong);
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.sidebar-index ul {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sidebar-index ul ul {
+  margin: 4px 0 10px 12px;
+  padding-left: 12px;
+  border-left: 1px solid var(--line);
+}
+
+.sidebar-index a {
+  display: block;
+  padding: 9px 10px;
+  border-radius: 8px;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.sidebar-index a:hover,
+.sidebar-index a.is-current {
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+.page-content {
+  min-width: 0;
+}
+
 .start-button {
   min-height: 58px;
   padding: 0 30px;
@@ -184,6 +243,39 @@ h1 {
 
 .section {
   padding: clamp(54px, 8vw, 96px) clamp(18px, 5vw, 64px);
+}
+
+.lesson-page {
+  max-width: 940px;
+  padding: clamp(48px, 7vw, 84px) clamp(22px, 6vw, 76px);
+}
+
+.lesson-page h1 {
+  max-width: 760px;
+  font-size: clamp(2.3rem, 5vw, 4.8rem);
+}
+
+.lead {
+  max-width: 720px;
+  color: var(--muted);
+  font-size: clamp(1.15rem, 2vw, 1.35rem);
+}
+
+.lesson-section {
+  margin-top: 38px;
+  padding-top: 26px;
+  border-top: 1px solid var(--line);
+}
+
+.lesson-section h2 {
+  margin-bottom: 10px;
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+}
+
+.lesson-section p {
+  max-width: 720px;
+  color: var(--muted);
+  font-size: 1.05rem;
 }
 
 .intro {
@@ -280,6 +372,17 @@ h2 {
 }
 
 @media (max-width: 850px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar-index {
+    position: static;
+    height: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
   .hero {
     grid-template-columns: 1fr;
     min-height: auto;
