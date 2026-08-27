@@ -26,7 +26,7 @@ export const flowLessons = {
       {
         title: "Trace the exact route",
         code: { label: "pseudocode · trace health", content: "health = 12\nif health <= 0:\n    show \"defeated\"\nelse if health < 20:\n    show \"critical\"\nelse:\n    show \"stable\"\nshow \"turn complete\"" },
-        paragraphs: ["Exactly one branch in this chain runs: <code>critical</code>. Execution then continues after the chain and shows <code>turn complete</code>. Pencil tracing is a real engineering tool, not beginner training wheels."],
+        paragraphs: ["Exactly one branch in this chain runs and produces <code>critical</code>. Execution then continues after the chain and shows <code>turn complete</code>. Pencil tracing is a real engineering tool, not beginner training wheels."],
       },
       {
         title: "Pick the control structure by the question",
@@ -73,7 +73,7 @@ export const flowLessons = {
         note: { title: "Else can be optional", body: "If a branch returns, throws, breaks, or otherwise exits, the remaining code is already the alternative path." },
       },
     ],
-    challenge: { title: "Fix an unreachable rank", prompt: "Why does checking score >= 50 before score >= 90 prevent the 90+ rank, and how do you fix it?", solution: "A score of 95 satisfies >= 50, so the chain stops before reaching >= 90. Check narrower/higher thresholds first or redesign the ranges to be mutually exclusive." },
+    challenge: { title: "Fix an unreachable rank", prompt: "Why does checking <code>score >= 50</code> before <code>score >= 90</code> prevent the <code>90+</code> rank, and how do you fix it?", solution: "A score of <code>95</code> satisfies <code>>= 50</code>, so the chain stops before reaching <code>>= 90</code>. Check narrower or higher thresholds first, or redesign the ranges to be mutually exclusive." },
     check: { question: "When should two conditions usually be separate if statements?", options: ["When both effects may need to happen", "When only one category may win", "Never"], answer: 0, explanation: "Independent if statements allow multiple true conditions to run." },
     sources,
   },
@@ -81,7 +81,7 @@ export const flowLessons = {
   loops: {
     kicker: "Control Flow · Lesson 02",
     title: "Loops repeat a rule",
-    lead: "A loop executes a block multiple times. A safe loop makes three things visible: what changes, what keeps it running, and what eventually stops it.",
+    lead: "A loop executes a block multiple times. A safe loop makes its changing state, continuation rule, and stopping condition visible.",
     goals: ["identify initialization, condition, update, and body", "choose a condition-driven or collection-driven loop", "prevent common infinite loops"],
     sections: [
       {
@@ -135,7 +135,7 @@ export const flowLessons = {
         note: { title: "Ask before running", body: "Which variable can make the condition false? Does every path through the body move it toward that state? What external event could fail to arrive?" },
       },
     ],
-    challenge: { title: "Repair the frozen loop", prompt: "The loop <code>while health > 0: print(health)</code> never stops. Add a meaningful progress rule for poison damage.", solution: "Inside the loop, subtract poison damage: <code>health -= poison_damage</code>. Also ensure poison_damage is positive, or add an explicit safety condition." },
+    challenge: { title: "Repair the frozen loop", prompt: "The loop <code>while health > 0 then show health</code> never stops. Add a meaningful progress rule for poison damage.", solution: "Subtract poison damage inside the loop with <code>health = health - poison_damage</code>. Also ensure <code>poison_damage</code> is positive or add an explicit safety condition." },
     check: { question: "How many times can a while body run when its condition starts false?", options: ["Exactly once", "Zero times", "Forever"], answer: 1, explanation: "A while loop checks before entering the body." },
     sources,
   },
@@ -163,7 +163,7 @@ export const flowLessons = {
         note: { title: "User cancellation counts", body: "Interactive loops should often support cancel/quit and handle input systems returning no value." },
       },
     ],
-    challenge: { title: "Translate the condition", prompt: "A repeat-until loop stops when passwordIsValid is true. What condition would a do-while use to repeat for the same behavior?", solution: "<code>while (!passwordIsValid)</code> or the language's equivalent NOT syntax. It repeats while the password is invalid." },
+    challenge: { title: "Translate the condition", prompt: "A repeat-until loop stops when <code>passwordIsValid</code> is <code>true</code>. What condition would a do-while use to repeat for the same behavior?", solution: "Use <code>while (!passwordIsValid)</code> or the language's equivalent <code>NOT</code> syntax. It repeats while the password is invalid." },
     check: { question: "What defines a post-test loop?", options: ["It checks after running the body.", "It can never run.", "It always uses Python syntax."], answer: 0, explanation: "Because the condition comes afterward, the body executes at least once." },
     sources,
   },
@@ -171,7 +171,7 @@ export const flowLessons = {
   "for-loops": {
     kicker: "Loops · Lesson 03",
     title: "For loops make progression visible",
-    lead: "A for loop is useful when repetition follows a range, counter, iterator, or other deliberate progression. Syntax varies sharply: some languages use a three-part header, while Python iterates over values.",
+    lead: "A for loop is useful when repetition follows a range, counter, iterator, or other deliberate progression. Syntax varies sharply because some languages use a three-part header while Python iterates over values.",
     goals: ["trace start, condition, and update", "avoid off-by-one errors", "choose a range that matches the requirement"],
     sections: [
       {
@@ -260,7 +260,7 @@ export const flowLessons = {
         note: { title: "Make unknown states visible", body: "A default branch can report invalid input. For deliberately exhaustive enums, compiler checks or explicit failure may better reveal a newly added case." },
       },
     ],
-    challenge: { title: "Dispatch item rarity", prompt: "Choose a switch-like construct or map to translate common, rare, and legendary into UI colors. Explain your choice.", solution: "A map from rarity to color is compact if this is pure data. A switch/match is useful if each rarity triggers different behavior. Include a policy for unknown rarity." },
+    challenge: { title: "Dispatch item rarity", prompt: "Choose a switch-like construct or map to translate <code>common</code>, <code>rare</code>, and <code>legendary</code> into UI colors. Explain your choice.", solution: "A map from rarity to color is compact if this is pure data. A switch or match construct is useful if each rarity triggers different behavior. Include a policy for unknown rarity." },
     check: { question: "What is a classic switch fall-through bug?", options: ["A case continues into the next case unintentionally.", "The subject becomes a loop.", "Every case is automatically skipped."], answer: 0, explanation: "In languages/forms that permit fall-through, an omitted exit can execute following case code." },
     sources,
   },

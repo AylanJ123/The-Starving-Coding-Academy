@@ -61,12 +61,33 @@ function codeWindow(code) {
   return `
     <div class="code-window">
       <div class="code-window-header">
-        <span>${escapeHtml(code.label || code.language || "example")}</span>
+        <span>${escapeHtml(codeLanguageLabel(code))}</span>
         <div class="window-dots" aria-hidden="true"><span></span><span></span><span></span></div>
       </div>
       <pre><code>${content}</code></pre>
     </div>
   `;
+}
+
+function codeLanguageLabel(code) {
+  const supplied = code.language || code.label || "";
+  const content = code.content || "";
+  const evidence = `${supplied}\n${content}`;
+  const languages = [
+    ["JavaScript", /\bJavaScript\b/i],
+    ["Python", /\bPython\b/i],
+    ["C#", /\bC#\b/i],
+    ["C++", /\bC\+\+\b/i],
+    ["Java", /\bJava\b/i],
+    ["Lua", /\bLua\b/i],
+  ].filter(([, pattern]) => pattern.test(evidence));
+
+  if (/multilanguage/i.test(supplied) || languages.length > 1) return "Multilanguage";
+  if (languages.length === 1) return languages[0][0];
+  if (/\b(?:const|let)\b|console\.log|addEventListener|createMatch\s*\(/.test(content)) return "JavaScript";
+  if (/\b(?:def|lambda|print|range)\b/.test(content) || /^\s*#/.test(content)) return "Python";
+  if (/\b(?:local|repeat)\b/.test(content) && /\b(?:until|then|end)\b/.test(content)) return "Lua";
+  return "Pseudocode";
 }
 
 function renderTable(table) {

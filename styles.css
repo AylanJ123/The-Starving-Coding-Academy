@@ -13,6 +13,8 @@
   --success-soft: #e0f3e8;
   --warning: #9c5d00;
   --warning-soft: #fff0cc;
+  --practice: #4d91c2;
+  --practice-soft: #e4f1fa;
   --danger: #a74335;
   --danger-soft: #fbe5df;
   --sidebar-width: clamp(300px, 20vw, 360px);
@@ -42,6 +44,8 @@
   --success-soft: #173629;
   --warning: #f0c36a;
   --warning-soft: #3c3016;
+  --practice: #4d91c2;
+  --practice-soft: #172c3d;
   --danger: #f28f7a;
   --danger-soft: #40231f;
   --code-bg: #0c1013;
@@ -621,8 +625,8 @@ h1 {
 }
 
 .challenge-card {
-  border: 1px solid color-mix(in srgb, var(--warning) 48%, var(--line));
-  background: var(--warning-soft);
+  border: 1px solid color-mix(in srgb, var(--practice) 68%, var(--line));
+  background: var(--practice-soft);
 }
 
 .quick-check {

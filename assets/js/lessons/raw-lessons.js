@@ -215,11 +215,11 @@ export const rawLessons = {
       },
       {
         title: "Follow the data",
-        paragraphs: ["When the output is wrong, move backward: which value produced it, where did that value come from, and where did it first stop matching your expectation? This is often faster than staring at the final line."],
+        paragraphs: ["When the output is wrong, move backward. Ask which value produced it, where that value came from, and where it first stopped matching your expectation. This is often faster than staring at the final line."],
         steps: ["Reproduce the bug consistently.", "Choose one suspicious value.", "Observe it before and after each transformation.", "Find the earliest incorrect state.", "Fix the cause, then test nearby cases."],
       },
     ],
-    challenge: { title: "Repair the damage rule", prompt: "The trace reveals damage is -5 and the code subtracts damage. Choose whether the bug belongs in the stored value or the calculation, then make the convention consistent.", solution: "Either store damage as positive 5 and use health = health - damage, or store a signed change of -5 and use health = health + health_change. The important part is one clear convention." },
+    challenge: { title: "Repair the damage rule", prompt: "The trace reveals <code>damage = -5</code> and the code subtracts <code>damage</code>. Choose whether the bug belongs in the stored value or the calculation, then make the convention consistent.", solution: "Either store damage as positive <code>5</code> and use <code>health = health - damage</code>, or store a signed change of <code>-5</code> and use <code>health = health + health_change</code>. The important part is one clear convention." },
     check: { question: "Which observation narrows the bug most?", options: ["The game feels weird.", "Health changes from 20 to 25 after damage, and the logged damage value is -5.", "Something somewhere is probably negative."], answer: 1, explanation: "It gives a reproducible transition and the relevant state, which supports a testable hypothesis." },
     sources: languageReferences,
   },
@@ -331,7 +331,7 @@ export const rawLessons = {
       {
         title: "Source tools and runtime",
         cards: [
-          { title: "Source code", body: "The files humans edit: instructions, names, and structure." },
+          { title: "Source code", body: "The files humans edit contain instructions, names, and structure." },
           { title: "Translator / loader", body: "A compiler, interpreter, engine, browser, or build tool prepares the code." },
           { title: "Runtime", body: "The environment executing the program and providing services such as memory, files, or graphics." },
         ],
@@ -357,7 +357,7 @@ export const rawLessons = {
         note: { title: "Templates are scaffolding", body: "Generated files are not a test of intelligence. Learn which pieces matter now. Investigate the rest when the project needs them." },
       },
     ],
-    challenge: { title: "Trace the boot", prompt: "For a game or app you want to build, write four arrows describing who loads what. Example: operating system → engine → scene → player script.", solution: "Any accurate chain is useful. For a web page: browser → HTML document → script element → JavaScript module → event handler." },
+    challenge: { title: "Trace the boot", prompt: "For a game or app you want to build, write four arrows describing who loads what. One example is <code>operating system → engine → scene → player script</code>.", solution: "Any accurate chain is useful. A web example could be <code>browser → HTML document → script element → JavaScript module → event handler</code>." },
     check: { question: "What is an entry point?", options: ["The first character typed in a file.", "The defined place or lifecycle event where an environment begins executing your program.", "The folder where screenshots are stored."], answer: 1, explanation: "Some languages expose a named function. Other environments begin at top level or call lifecycle methods." },
     sources: languageReferences,
   },

@@ -6,6 +6,7 @@ import { flattenNavigation } from "../assets/js/navigation.js";
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const failures = [];
+const colonExemptLessons = new Set(["raw-programming", "what-is-coding", "syntax-rules", "when-code-breaks"]);
 
 function plainText(value) {
   return value
@@ -24,6 +25,8 @@ function inspectVisibleText(value, location) {
   const text = plainText(value);
   if (text.includes("—")) failures.push(`${location}: contains an em dash`);
   if (text.includes(";")) failures.push(`${location}: contains a semicolon outside code`);
+  const lessonSlug = location.split(".")[0];
+  if (text.includes(":") && !colonExemptLessons.has(lessonSlug)) failures.push(`${location}: contains a colon outside code`);
   if (/\b(?:it is|it's) not\b[^.!?]{0,100}\b(?:it is|it's)\b/i.test(text)) {
     failures.push(`${location}: contains an avoided contrast phrase`);
   }

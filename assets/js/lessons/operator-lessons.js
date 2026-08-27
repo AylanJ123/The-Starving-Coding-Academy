@@ -124,7 +124,7 @@ export const operatorLessons = {
     sections: [
       {
         title: "Translate one clause at a time",
-        paragraphs: ["Requirement: “A player can enter if they have a pass and the event has started, or if they are an administrator.” Group the ordinary route before adding the override."],
+        paragraphs: ["Consider the requirement “A player can enter if they have a pass and the event has started, or if they are an administrator.” Group the ordinary route before adding the override."],
         code: { label: "pseudocode · explicit grouping", content: "ordinary_access = has_pass AND event_started\ncan_enter = ordinary_access OR is_admin" },
         note: { title: "Words can be ambiguous", body: "Ask whether “or” is inclusive, whether an override bypasses every rule, and which conditions belong together. Code cannot resolve an unclear policy." },
       },
@@ -216,7 +216,7 @@ export const operatorLessons = {
         bullets: ["Say what succeeded, not merely “Done.”", "On failure, explain what the user can change next.", "Logs should include useful context but exclude passwords, tokens, and sensitive personal data.", "Accessible output needs more than color alone and should work with relevant assistive technology."],
       },
     ],
-    challenge: { title: "Design a safe username boundary", prompt: "List validation rules and feedback for a username field. Avoid inventing restrictions you cannot justify.", solution: "Example: Trim accidental outer whitespace. Require a documented length range. Allow the character set the product actually supports. Reject control characters. Report the specific failing rule. Check uniqueness on the server. Treat server validation as the security boundary." },
+    challenge: { title: "Design a safe username boundary", prompt: "List validation rules and feedback for a username field. Avoid inventing restrictions you cannot justify.", solution: "A useful answer trims accidental outer whitespace, requires a documented length range, allows the character set the product supports, rejects control characters, reports the specific failing rule, checks uniqueness on the server, and treats server validation as the security boundary." },
     check: { question: "Why separate calculate_damage from keyboard input?", options: ["Pure calculation logic becomes easier to test and reuse.", "Functions cannot read keyboards.", "Input is always dangerous and should be deleted."], answer: 0, explanation: "A clean boundary lets the same rule serve a console, game, test, or network request." },
     sources,
   },
