@@ -1,4 +1,4 @@
-import { copyFile, mkdir } from "node:fs/promises";
+import { mkdir } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
@@ -63,8 +63,24 @@ function textOverlay(lesson, lessonNumber) {
   `);
 }
 
+function homeOverlay() {
+  return Buffer.from(`
+    <svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+      <style>
+        .home-copy { fill: #484848; font: 400 42px "Comic Sans MS", "Segoe Print", cursive; }
+      </style>
+      <text x="58" y="355" class="home-copy">42 lessons. 6 languages.</text>
+      <text x="58" y="407" class="home-copy">Completely free.</text>
+    </svg>
+  `);
+}
+
 await mkdir(outputDirectory, { recursive: true });
-await copyFile(backgroundPath, path.join(outputDirectory, "home.png"));
+await sharp(backgroundPath)
+  .resize(1200, 630, { fit: "fill" })
+  .composite([{ input: homeOverlay(), top: 0, left: 0 }])
+  .png({ compressionLevel: 9 })
+  .toFile(path.join(outputDirectory, "home.png"));
 
 for (const [[slug, lesson], index] of Object.entries(lessons).map((entry, index) => [entry, index])) {
   await sharp(backgroundPath)
