@@ -27,7 +27,7 @@ export const syntaxLessons = {
     sections: [
       {
         title: "Zoom in and zoom out",
-        code: { label: "pseudocode · anatomy", content: "total = price * quantity\n  ┬      ┬   ┬    ┬\n name    │ operator name\n      assignment" },
+        code: { label: "pseudocode · anatomy", content: "total = price * quantity\n  ┬   ┬       ┬\n name │    operator\n   assignment" },
         cards: [
           { title: "Identifiers", body: "Names chosen for variables, functions, classes, and other program elements." },
           { title: "Literals", body: "Values written directly, such as <code>42</code>, <code>\"mage\"</code>, or <code>true</code>." },
@@ -38,18 +38,18 @@ export const syntaxLessons = {
       {
         title: "Expressions produce values",
         paragraphs: ["An <strong>expression</strong> can be evaluated to a value. Examples include <code>2 + 3</code>, <code>health &lt;= 0</code>, and <code>player.name</code>. A <strong>statement</strong> performs an action in the program, such as assigning, returning, importing, or controlling a branch. Exact categories differ by language."],
-        code: { label: "conceptual breakdown", content: "2 + 3                 -> 5\nhealth <= 0           -> true or false\nformat_name(\"Ari\")  -> a returned value\nscore = 2 + 3         -> assignment statement using an expression" },
+        code: { label: "conceptual breakdown", content: "2 + 3                 -> 5\nhealth <= 0           -> true or false\nformat_name(\"Ari\")    -> a returned value\nscore = 2 + 3         -> assignment of an addition" },
       },
       {
         title: "Punctuation has jobs",
         table: {
           headers: ["Mark", "Common jobs with different rules"],
           rows: [
-            ["<code>()</code>", "Call a function, group an expression, or describe parameters"],
-            ["<code>{}</code>", "Mark a block or construct an object/map, depending on context"],
-            ["<code>[]</code>", "Index a collection or create one in some languages"],
+            ["<code>()</code>", "Declare parameters of a function and evaluate or group an expression"],
+            ["<code>{}</code>", "Define a code block or the body of an object or class"],
+            ["<code>[]</code>", "Access a collection value by index or create one"],
             ["<code>.</code>", "Access a member such as a field or method"],
-            ["<code>:</code>", "Begin a Python suite, separate keys and values, annotate types, and more"],
+            ["<code>:</code>", "Jack of all trades: Begin a suite, separate keys and values, annotate types, and more"],
             ["<code>;</code>", "Terminate or separate statements in many languages"],
           ],
         },
@@ -66,7 +66,7 @@ export const syntaxLessons = {
         ],
       },
     ],
-    check: { question: "In the expression price * quantity, what is the asterisk doing?", options: ["Naming a variable", "Acting as an operator", "Starting a comment"], answer: 1, explanation: "Here the asterisk is the multiplication operator combining two values." },
+    check: { question: "In the expression <code>price * quantity</code>, what is the asterisk doing?", options: ["Naming a variable", "Acting as an operator", "Starting a comment"], answer: 1, explanation: "Here the asterisk is the multiplication operator combining two values." },
     sources,
   },
 

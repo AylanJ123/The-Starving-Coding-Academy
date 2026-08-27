@@ -264,6 +264,8 @@ function renderPage(slug, lesson) {
   document.querySelector('meta[name="description"]')?.setAttribute("content", lesson.description || lesson.lead.replace(/<[^>]+>/g, ""));
 }
 
+document.querySelector(".sidebar-top")?.insertAdjacentHTML("afterend", '<div class="course-progress"></div>');
+
 if (lessonRoot) {
   const slug = lessonRoot.dataset.lesson;
   const lesson = lessons[slug];
@@ -273,7 +275,6 @@ if (lessonRoot) {
     console.error(`No lesson data found for: ${slug}`);
   } else {
     renderPage(slug, lesson);
-    document.querySelector(".sidebar-top")?.insertAdjacentHTML("afterend", '<div class="course-progress"></div>');
     updateProgress(slug);
 
     document.querySelector(".complete-button")?.addEventListener("click", () => {
@@ -301,4 +302,6 @@ if (lessonRoot) {
       feedback.innerHTML = `<strong>${correct ? "Correct." : "Not quite."}</strong> ${explanation}`;
     });
   }
+} else {
+  updateProgress("");
 }
