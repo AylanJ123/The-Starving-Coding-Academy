@@ -76,6 +76,16 @@ No application framework or dependency installation is required. Serve the
 folder through any static HTTP server. ES modules do not work reliably by
 opening `index.html` directly from the filesystem.
 
+On Windows, you can use the helper scripts:
+
+```powershell
+.\RUN_SITE.bat
+.\STOP_SITE.bat
+```
+
+`RUN_SITE.bat` starts the site at `http://localhost:8000/`.
+`STOP_SITE.bat` stops the server started by the runner.
+
 For example:
 
 ```powershell

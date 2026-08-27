@@ -19,3 +19,6 @@ Gemfile.lock
 
 # For devs to have their own private files that they don't want to check in
 private_files/
+
+# Local static server files
+.site-server.pid
