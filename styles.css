@@ -548,6 +548,18 @@ h1 {
   color: var(--muted);
 }
 
+.boolean-value {
+  font-weight: 850;
+}
+
+.boolean-value.is-true {
+  color: var(--success);
+}
+
+.boolean-value.is-false {
+  color: var(--danger);
+}
+
 .table-wrap tr:last-child td {
   border-bottom: 0;
 }

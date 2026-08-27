@@ -73,7 +73,7 @@ for (const [slug, lesson] of Object.entries(lessons)) {
   for (const [sectionIndex, section] of (lesson.sections || []).entries()) {
     for (const [rowIndex, row] of (section.table?.rows || []).entries()) {
       const firstCell = row[0];
-      if (typeof firstCell !== "string" || /^\s*<code[\s>]/i.test(firstCell)) continue;
+      if (typeof firstCell !== "string" || /^\s*<code[\s>]/i.test(firstCell) || /class=["']boolean-value\b/i.test(firstCell)) continue;
       if (!startsWithCapital(firstCell)) {
         failures.push(`${slug}.sections[${sectionIndex}].table.rows[${rowIndex}][0]: first column does not start with a capital`);
       }

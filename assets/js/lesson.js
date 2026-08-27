@@ -4,7 +4,7 @@ import { lessons } from "./lessons/lesson-data.js?v=2";
 const lessonRoot = document.querySelector("[data-lesson]");
 const STORAGE_KEY = "tsca-completed-lessons";
 const keywordPattern =
-  "ask|show|read|try|catch|except|finally|throw|raise|propagate|convert|exists|add|to|as|play|open|close|load|create|start|enter|record|preserve|release|wait|through|with|using|activate|report|maximum|otherwise|when|if|else|elseif|elif|while|until|repeat|for|each|in|function|method|return|break|continue|class|field|private|property|constructor|new|local|let|const|var|def|true|false|null|nil|none|and|or|not";
+  "ask|show|read|try|catch|except|finally|throw|raise|propagate|convert|exists|add|to|as|play|open|close|load|create|start|enter|record|preserve|release|wait|through|with|using|activate|report|maximum|otherwise|when|if|else|elseif|elif|while|until|repeat|for|each|in|function|method|return|break|continue|class|field|private|property|constructor|new|local|let|const|var|def|string|true|false|null|nil|none|and|or|not";
 const keywordRegex = new RegExp(`^(?:${keywordPattern})$`, "i");
 
 function escapeHtml(value) {
