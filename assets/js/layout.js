@@ -20,14 +20,19 @@ function linkIsCurrent(href) {
   return currentPath === linkPath || (currentPath === "" && linkPath === "");
 }
 
+function branchIsCurrent(item) {
+  return linkIsCurrent(item.href) || (item.children || []).some(branchIsCurrent);
+}
+
 function renderNavItem(item) {
   const isCurrent = linkIsCurrent(item.href);
   const children = item.children || [];
   const childLinks = children.map(renderNavItem).join("");
   const href = new URL(item.href, siteRoot).pathname;
+  const containsCurrent = !isCurrent && children.some(branchIsCurrent);
 
   return `
-    <li>
+    <li class="${containsCurrent ? "contains-current" : ""}" data-nav-title="${item.title.toLowerCase()}">
       <a class="${isCurrent ? "is-current" : ""}" href="${href}" ${isCurrent ? 'aria-current="page"' : ""}>
         ${item.title}
       </a>
@@ -42,6 +47,10 @@ if (sidebar) {
       <p class="sidebar-label">Explore</p>
       <button class="sidebar-close" type="button">Close</button>
     </div>
+    <label class="lesson-search">
+      <span class="visually-hidden">Filter lessons</span>
+      <input type="search" placeholder="Find a lesson…" autocomplete="off">
+    </label>
     <nav aria-label="Lesson index">
       <ul>${navigation.map(renderNavItem).join("")}</ul>
     </nav>
@@ -58,10 +67,20 @@ if (appShell) {
 
 const sidebarToggle = document.querySelector(".sidebar-toggle");
 const sidebarClose = document.querySelector(".sidebar-close");
+const lessonSearch = document.querySelector(".lesson-search input");
 
 function setMobileSidebar(open) {
   document.body.classList.toggle("mobile-sidebar-open", open);
   sidebarToggle?.setAttribute("aria-expanded", String(open));
+  if (open) requestAnimationFrame(revealCurrentLesson);
+}
+
+function revealCurrentLesson() {
+  const currentLink = sidebar?.querySelector("a.is-current");
+  if (!sidebar || !currentLink) return;
+
+  const targetTop = currentLink.offsetTop - sidebar.clientHeight / 2 + currentLink.offsetHeight / 2;
+  sidebar.scrollTop = Math.max(0, targetTop);
 }
 
 function syncSidebarMode() {
@@ -73,5 +92,30 @@ sidebarToggle?.addEventListener("click", () => {
 });
 
 sidebarClose?.addEventListener("click", () => setMobileSidebar(false));
+sidebar?.addEventListener("click", (event) => {
+  if (mobileNavQuery.matches && event.target.closest("a")) setMobileSidebar(false);
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && document.body.classList.contains("mobile-sidebar-open")) {
+    setMobileSidebar(false);
+    sidebarToggle?.focus();
+  }
+});
+lessonSearch?.addEventListener("input", () => {
+  const query = lessonSearch.value.trim().toLowerCase();
+  const rootItems = [...sidebar.querySelectorAll("nav > ul > li")];
+
+  function filterItem(item) {
+    const directMatch = item.dataset.navTitle.includes(query);
+    const children = [...item.querySelectorAll(":scope > ul > li")];
+    const childMatch = children.map(filterItem).some(Boolean);
+    const visible = !query || directMatch || childMatch;
+    item.hidden = !visible;
+    return visible;
+  }
+
+  rootItems.forEach(filterItem);
+});
 mobileNavQuery.addEventListener("change", syncSidebarMode);
 syncSidebarMode();
+requestAnimationFrame(revealCurrentLesson);

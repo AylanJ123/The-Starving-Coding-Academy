@@ -1,147 +1,91 @@
 # The Starving Coding Academy
 
-A small GitHub Pages website for beginner-friendly programming lessons.
+A beginner-friendly programming curriculum built as a static GitHub Pages site.
+It teaches transferable concepts before language specialization, with examples
+from Python, JavaScript, Java, C#, C++, and Lua.
 
-The first version is plain HTML, CSS, and JavaScript on purpose. That keeps it
-easy to read, easy to edit, and easy to publish without needing a framework.
+## What Is Included
 
-## How The Site Works
+- 41 curriculum pages across seven course units
+- Nested, searchable lesson navigation
+- Previous/next lesson controls
+- Learning goals, comparisons, code examples, and short challenges
+- Interactive quick checks with explanations
+- Local lesson-completion tracking
+- Light and dark themes
+- Responsive desktop and mobile layouts
+- Reference links to official language documentation
 
-GitHub Pages looks for `index.html` and uses it as the homepage.
-
-This project has a few main files:
-
-- `index.html` has the page content.
-- `styles.css` controls the colors, spacing, layout, light mode, and dark mode.
-- `script.js` loads the shared JavaScript.
-- `assets/js/navigation.js` is the shared page index.
-- `assets/js/layout.js` renders the left sidebar and highlights the current page.
-- `assets/js/theme.js` controls the theme button.
-
-There is also a `.nojekyll` file. It tells GitHub Pages to publish the files as
-they are, without trying to treat the site like a Jekyll project.
-
-## Editing The Homepage
-
-Most text lives in `index.html`.
-
-For example, this is the main title:
-
-```html
-<h1>Raw programming for beginners.</h1>
-```
-
-Change the words, save the file, then refresh the local page.
-
-## Editing The Style
-
-Most of the site colors are at the top of `styles.css`:
-
-```css
-:root {
-  --bg: #f7f3ed;
-  --text: #1d2329;
-  --accent: #177e89;
-}
-```
-
-The dark theme has its own color values:
-
-```css
-[data-theme="dark"] {
-  --bg: #151719;
-  --text: #f4f1ea;
-  --accent: #62c4b8;
-}
-```
-
-The JavaScript changes `data-theme`, and the CSS does the rest.
-
-## Adding Pages Later
-
-Extra pages go inside the `pages` folder:
+## Project Structure
 
 ```text
-pages/
-  lessons.html
-  raw-programming.html
-  paths.html
+index.html                         Homepage
+styles.css                        Shared visual system
+script.js                         Shared JavaScript entry point
+assets/js/navigation.js           Curriculum routes and hierarchy
+assets/js/layout.js               Sidebar and responsive navigation
+assets/js/lesson.js               Lesson renderer and interactions
+assets/js/theme.js                Theme preference
+assets/js/lessons/                Curriculum content by course unit
+pages/                             Generated public lesson routes
+tools/generate-pages.mjs          Page-shell generator
+tools/check-site.mjs              Route/content integrity checks
+private_files/                    Private curriculum planning sources
 ```
 
-From the homepage, link to a page like this:
+The lesson content lives in JavaScript data modules instead of being copied into
+41 separate HTML files. This keeps every page consistent and makes shared lesson
+features easy to improve. The HTML files in `pages/` are generated route shells.
 
-```html
-<a href="pages/lessons.html">Lessons</a>
+## Editing Curriculum Content
+
+Choose the matching module in `assets/js/lessons/`:
+
+- `raw-lessons.js`
+- `syntax-lessons.js`
+- `operator-lessons.js`
+- `structure-lessons.js`
+- `flow-lessons.js`
+- `practice-lessons.js`
+
+Every lesson has a slug matching its page filename and navigation route. A
+lesson can contain paragraphs, lists, steps, concept cards, comparison tables,
+code windows, callouts, internal lesson links, answer reveals, a challenge, a
+quick check, and reference links.
+
+## Adding Or Renaming A Page
+
+1. Add or update the route in `assets/js/navigation.js`.
+2. Add lesson content with the matching slug in the appropriate lesson module.
+3. Regenerate the page shells.
+4. Run the integrity check.
+
+With Node.js installed:
+
+```powershell
+npm run build:pages
+npm run check
 ```
 
-From a file inside `pages`, link back to the shared CSS like this:
+The checker verifies that navigation, lesson data, generated HTML, and internal
+course links agree.
 
-```html
-<link rel="stylesheet" href="../styles.css">
-```
+## Running Locally
 
-The `../` means "go up one folder."
+No application framework or dependency installation is required. Serve the
+folder through any static HTTP server. ES modules do not work reliably by
+opening `index.html` directly from the filesystem.
 
-## Updating The Left Index
-
-The left index is shared by every page. Edit it in:
-
-```text
-assets/js/navigation.js
-```
-
-Each item looks like this:
-
-```js
-{
-  title: "Syntax rules",
-  href: "pages/syntax-rules.html",
-}
-```
-
-Nested pages go inside `children`:
-
-```js
-{
-  title: "Raw Programming",
-  href: "/pages/raw-programming.html",
-  children: [
-    {
-      title: "What coding is for",
-      href: "pages/what-is-coding.html",
-    },
-  ],
-}
-```
-
-Keep these paths relative to the site root. Do not start them with `/`, because
-GitHub Pages project sites live inside the repo name in the URL.
-
-The current page highlight is automatic. If the browser URL matches the `href`,
-that link gets the current-page style.
-
-## Running It Locally
-
-From this folder, run:
+For example:
 
 ```powershell
 python -m http.server 8000
 ```
 
-Then open:
+Then open `http://localhost:8000/`.
 
-```text
-http://localhost:8000/
-```
+## Publishing
 
-## Publishing Changes
-
-After editing, save the files and run:
-
-```powershell
-git add .
-git commit -m "Update site"
-git push
-```
-
-GitHub Pages will rebuild the site after the push.
+The repository includes `.nojekyll`, so GitHub Pages publishes the static files
+without a Jekyll build. Commit the generated `pages/` files along with any
+content, navigation, style, or script changes.

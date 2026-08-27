@@ -1,0 +1,9 @@
+{
+  "name": "the-starving-coding-academy",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:pages": "node tools/generate-pages.mjs",
+    "check": "node tools/check-site.mjs && node tools/check-editorial.mjs"
+  }
+}
