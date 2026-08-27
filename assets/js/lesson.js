@@ -3,6 +3,9 @@ import { lessons } from "./lessons/lesson-data.js?v=2";
 
 const lessonRoot = document.querySelector("[data-lesson]");
 const STORAGE_KEY = "tsca-completed-lessons";
+const keywordPattern =
+  "ask|show|read|try|catch|except|finally|throw|raise|propagate|convert|exists|add|to|as|play|open|close|load|create|start|enter|record|preserve|release|wait|through|with|using|activate|report|maximum|otherwise|when|if|else|elseif|elif|while|until|repeat|for|each|in|function|method|return|break|continue|class|field|private|property|constructor|new|local|let|const|var|def|true|false|null|nil|none|and|or|not";
+const keywordRegex = new RegExp(`^(?:${keywordPattern})$`, "i");
 
 function escapeHtml(value) {
   return String(value)
@@ -14,7 +17,10 @@ function escapeHtml(value) {
 }
 
 function highlightCode(value) {
-  const tokenPattern = /(\/\/[^\n]*|#[^\n]*|--[^\n]*|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\b\d+(?:\.\d+)?\b|\b(?:ask|show|read|try|convert|exists|add|to|play|open|activate|report|maximum|otherwise|when|if|else|elseif|elif|while|until|repeat|for|each|in|function|method|return|break|continue|class|field|private|property|constructor|new|local|let|const|var|def|true|false|null|nil|none|and|or|not)\b)/gi;
+  const tokenPattern = new RegExp(
+    `(\\/\\/[^\\n]*|#[^\\n]*|--[^\\n]*|"(?:\\\\.|[^"\\\\])*"|'(?:\\\\.|[^'\\\\])*'|\\([A-Za-z_][\\w]*\\)|\\b\\d+(?:\\.\\d+)?\\b|\\b(?:${keywordPattern})\\b)`,
+    "gi"
+  );
 
   return String(value)
     .split(tokenPattern)
@@ -23,8 +29,11 @@ function highlightCode(value) {
       const escaped = escapeHtml(token);
       if (/^(?:\/\/|#|--)/.test(token)) return `<span class="code-comment">${escaped}</span>`;
       if (/^["']/.test(token)) return `<span class="code-string">${escaped}</span>`;
+      if (/^\([A-Za-z_]\w*\)$/.test(token)) {
+        return `(<span class="code-parameter">${escapeHtml(token.slice(1, -1))}</span>)`;
+      }
       if (/^\d/.test(token)) return `<span class="code-number">${escaped}</span>`;
-      if (/^(?:ask|show|read|try|convert|exists|add|to|play|open|activate|report|maximum|otherwise|when|if|else|elseif|elif|while|until|repeat|for|each|in|function|method|return|break|continue|class|field|private|property|constructor|new|local|let|const|var|def|true|false|null|nil|none|and|or|not)$/i.test(token)) {
+      if (keywordRegex.test(token)) {
         return `<span class="code-keyword">${escaped}</span>`;
       }
       return escaped;

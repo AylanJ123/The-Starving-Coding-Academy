@@ -186,8 +186,8 @@ export const rawLessons = {
 
   "errors-debugging": {
     kicker: "Raw Programming · Field Guide",
-    title: "Debugging is controlled doubt",
-    lead: "A debugger does not need magical instincts. They form a specific hypothesis, design a small test, and update their belief when the evidence disagrees.",
+    title: "To debug is to have a controlled doubt",
+    lead: "A code debugger does not need magical instincts. They form a specific hypothesis, design a small test, and update their belief when the evidence disagrees.",
     goals: ["write an expected-versus-actual bug report", "trace values through a program", "choose a debugging tool that fits the symptom"],
     sections: [
       {
@@ -206,7 +206,7 @@ export const rawLessons = {
       {
         title: "Use the smallest fitting tool",
         cards: [
-          { title: "Print / log", body: "Expose a value or prove whether a path ran. Label the output so it remains readable." },
+          { title: "Print / log", body: "Expose a value or prove whether a path ran." },
           { title: "Debugger", body: "Pause execution, step one line at a time, and inspect the current state." },
           { title: "Minimal example", body: "Remove unrelated systems until the problem can be reproduced with the least code." },
           { title: "Automated test", body: "Record an expected behavior so the same bug cannot quietly return later." },
@@ -215,11 +215,11 @@ export const rawLessons = {
       },
       {
         title: "Follow the data",
-        paragraphs: ["When the output is wrong, move backward. Ask which value produced it, where that value came from, and where it first stopped matching your expectation. This is often faster than staring at the final line."],
+        paragraphs: ["When the output is wrong, move backwards. Ask which value produced it, where that value came from, and where it first stopped matching your expectation. This is often faster than staring at the broken line."],
         steps: ["Reproduce the bug consistently.", "Choose one suspicious value.", "Observe it before and after each transformation.", "Find the earliest incorrect state.", "Fix the cause, then test nearby cases."],
       },
     ],
-    challenge: { title: "Repair the damage rule", prompt: "The trace reveals <code>damage = -5</code> and the code subtracts <code>damage</code>. Choose whether the bug belongs in the stored value or the calculation, then make the convention consistent.", solution: "Either store damage as positive <code>5</code> and use <code>health = health - damage</code>, or store a signed change of <code>-5</code> and use <code>health = health + health_change</code>. The important part is one clear convention." },
+    challenge: { title: "Repair the damage rule", prompt: "The trace reveals <code>damage = -5</code> which doesn't make sense. Either damage is positive, or a health change is negative. Choose whether the bug belongs in the stored value or the calculation, then think of a consistent convention.", solution: "Either store damage as positive <code>5</code> and use <code>health = health - damage</code>, or store a signed change of <code>-5</code> and use <code>health = health + health_change</code>. The important part is one clear convention." },
     check: { question: "Which observation narrows the bug most?", options: ["The game feels weird.", "Health changes from 20 to 25 after damage, and the logged damage value is -5.", "Something somewhere is probably negative."], answer: 1, explanation: "It gives a reproducible transition and the relevant state, which supports a testable hypothesis." },
     sources: languageReferences,
   },
@@ -227,14 +227,14 @@ export const rawLessons = {
   "exceptions-recovery": {
     kicker: "Raw Programming · Recovery Guide",
     title: "Exceptions need a recovery plan",
-    lead: "An exception is a structured alarm raised while a program is running. It interrupts the normal route and carries failure information toward code that may know how to respond safely.",
+    lead: "This lesson also helps you read game crash reports. An exception is the program saying something went wrong while it was running, then sending that clue up the stack.",
     goals: ["trace an exception through active function calls", "choose between recovery and propagation", "keep cleanup dependable while preserving useful error context"],
     sections: [
       {
         title: "An exception changes the route",
         paragraphs: [
-          "A function normally returns a result to its caller. When an operation raises or throws an exception, the remaining instructions in that route are skipped. The runtime searches outward through active function calls for a compatible handler.",
-          "Each abandoned call is removed from the call stack during <strong>stack unwinding</strong>. A matching handler receives control. Without one, the exception eventually reaches the environment running the program, which usually stops that task or process and reports the failure.",
+          "When one part of a program asks another part to do work, the new part goes on top of the current one. If that part asks for more help, another part goes on top. That's the infamous <strong>Call Stack</strong>.",
+          "If the top part breaks because the execution can't logically continue, the program starts removing pieces from the stack. Each unfinished piece gets killed until a <code>try-catch</code> absorbs the problem and knows what to do. If nothing catches it, the error reaches the bottom piece, the entry point. Then the entry point stops too, and the program crashes.",
         ],
         code: { label: "pseudocode · a new route", content: "TRY\n    profile = LOAD save_file\n    START game WITH profile\nCATCH missing_save\n    profile = CREATE default_profile\n    START game WITH profile" },
         cards: [
@@ -260,10 +260,10 @@ export const rawLessons = {
       {
         title: "Catch narrowly and preserve context",
         paragraphs: [
-          "Catch the specific failures your current layer understands. A profile loader may know how to replace a missing save. It may have no safe answer for exhausted memory or a broken engine invariant.",
-          "When a layer can add useful context without recovering, record or wrap the exception and let it continue. Keep the original cause available so the eventual report explains where the chain began.",
+          "Catch the specific failures your current layer understands. A profile loader module may know how to replace a missing save. It may have no safe answer for exhausted memory or a broken engine invariant. If that's the case, let the program get killed, that's sometimes the safest option.",
+          "On such situations, a layer can add useful context without recovering. Record or wrap the exception in another exception and let it continue killing the call stack. Keep the original cause available so the eventual report explains where the chain began. That's why in crash reports you often see a <code>Caused by</code> section atop with smaller errors going down.",
         ],
-        code: { label: "pseudocode · specific responses", content: "TRY\n    profile = LOAD profile_for player_id\nCATCH missing_save\n    profile = CREATE default_profile\nCATCH corrupt_save AS problem\n    RECORD problem WITH player_id\n    PROPAGATE problem WITH player_id" },
+        code: { label: "pseudocode · specific responses", content: "TRY\n    profile = LOAD profile_by_ID(player_id)\nCATCH missing_save\n    profile = CREATE default_profile\nCATCH corrupt_save AS problem\n    RECORD problem WITH player_id\n    PROPAGATE problem WITH player_id" },
         steps: [
           "Name the operation that may fail.",
           "List the failures this layer genuinely understands.",
@@ -273,16 +273,16 @@ export const rawLessons = {
       },
       {
         title: "Languages share the route",
-        paragraphs: ["The shared model is a protected operation, a failure signal, a handler and a cleanup strategy. The spelling and guarantees vary by language."],
+        paragraphs: ["The shared model is simple: one keyword sends the error signal, and a protected area gets a chance to catch it."],
         table: {
-          headers: ["Language", "Signal and handler", "Cleanup pattern"],
+          headers: ["Language", "Throw the error", "Catch the error", "Cleanup"],
           rows: [
-            ["Python", "<code>raise</code> with <code>try</code> and <code>except</code>", "<code>finally</code> or a context manager used with <code>with</code>"],
-            ["JavaScript", "<code>throw</code> with <code>try</code> and <code>catch</code>", "<code>finally</code> or a documented resource API"],
-            ["Java", "<code>throw</code> with <code>try</code> and <code>catch</code>", "<code>finally</code> or try with resources"],
-            ["C#", "<code>throw</code> with <code>try</code> and <code>catch</code>", "<code>finally</code> or a <code>using</code> statement"],
-            ["C++", "<code>throw</code> with <code>try</code> and <code>catch</code>", "Destructors and RAII manage resources because C++ has no <code>finally</code>"],
-            ["Lua", "<code>error</code> with protected calls such as <code>pcall</code>", "Cleanup depends on the resource and host environment"],
+            ["Python", "<code>raise</code> sends the error", "<code>try</code> protects, <code>except</code> catches", "<code>finally</code> or <code>with</code>"],
+            ["JavaScript", "<code>throw</code> sends the error", "<code>try</code> protects, <code>catch</code> catches", "<code>finally</code>"],
+            ["Java", "<code>throw</code> sends the error", "<code>try</code> protects, <code>catch</code> catches", "<code>finally</code>"],
+            ["C#", "<code>throw</code> sends the error", "<code>try</code> protects, <code>catch</code> catches", "<code>finally</code> or <code>using</code>"],
+            ["C++", "<code>throw</code> sends the error", "<code>try</code> protects, <code>catch</code> catches", "RAII"],
+            ["Lua", "<code>error</code> sends the error", "<code>pcall</code> catches the result safely", "Manual cleanup"],
           ],
         },
         note: { title: "Java adds checked exceptions", body: "Some Java exception types must be caught or declared by a method. Other languages in this comparison use different rules, so the concept transfers more reliably than the exact type system." },
@@ -290,22 +290,21 @@ export const rawLessons = {
       {
         title: "Cleanup must survive every route",
         paragraphs: [
-          "Files, network connections, locks and temporary state may need cleanup after success or failure. Put that responsibility in the language mechanism designed to run as control leaves the protected region.",
-          "Cleanup code should stay focused and dependable. A second failure during cleanup can hide the original problem or leave the program in a more confusing state.",
+          "Some program actions borrow something from the computer: an open file, a network connection, a lock on saved data or a chunk of temporary state. When the action is done, the program should give it back.",
+          "If cleanup does not happen, those leftovers can pile up. That is one reason a game can get laggier after connecting many times, reloading a menu over and over or retrying a failed request without releasing what the last attempt used.",
         ],
-        code: { label: "pseudocode · release the resource", content: "connection = OPEN score_server\nTRY\n    SEND score THROUGH connection\nFINALLY\n    CLOSE connection" },
-        note: { title: "Cleanup has limits", body: "Language cleanup mechanisms cover ordinary control flow and exception unwinding. Power loss, forced process termination and hardware failure require broader durability strategies." },
+        code: { label: "pseudocode · save now or save later", content: "connection = OPEN score_server\n\n# Try because this connection might fail.\nTRY\n    SEND score THROUGH connection\n\n# Catch keeps the score safe so the game can retry later.\nCATCH connection_failed\n    SAVE score LOCALLY\n    MARK score TO retry_later\n\n# Finally runs whether the try worked or the catch helped.\nFINALLY\n    CLOSE connection" },
+        note: { title: "Cleanup has limits", body: "Cleanup code helps with normal exits and expected failures. It cannot fix everything, like the computer losing power, the program being forced closed or the machine itself failing." },
       },
       {
-        title: "Silent catches create invisible bugs",
+        title: "Bad catches create invisible bugs",
         bullets: [
           "Empty handlers erase the clue while the underlying failure remains.",
-          "Broad handlers can mistake programming defects for expected user problems.",
-          "Unlimited retries can trap the program in a failing loop.",
-          "Half repaired objects can spread invalid state into distant systems.",
+          "A good catch knows when the user can fix the problem, then gives control back with a clear choice or input.",
+          "Unlimited retries can keep failing until the program freezes, which is extra painful if nothing was saved.",
           "Generic messages without logs leave developers unable to reproduce the failure.",
         ],
-        note: { title: "A useful handler earns its place", body: "Every handler should recover to a known state, add meaningful context or perform cleanup. Otherwise the exception should keep travelling." },
+        note: { title: "A useful handler earns its place", body: "You do not need to wrap everything in try-catch. Use it when outside things can damage the program, like files, internet requests, missing data or user input that needs another chance." },
       },
     ],
     challenge: {
@@ -352,12 +351,23 @@ export const rawLessons = {
       },
       {
         title: "Start with one observable win",
-        steps: ["Install or open the runtime you actually need.", "Create the smallest official starter project.", "Find the file or callback that runs first.", "Change one visible output.", "Run it again before adding features."],
+        steps: [
+          "Pick one language and search for an \"Online Playground\" or IDE (Integrated Development Environment) which is just an app made for writing and running code.",
+          "Install or open the runtime you found.",
+          "Create the smallest official starter project.",
+          "Find the file or callback that runs at the start, aka your entry point.",
+          "Make a console print for the specific language. The classic <code>Hello, World!</code> is a good first choice.",
+          "Run it!",
+        ],
         code: { label: "three tiny starts", content: "# Python\nprint(\"Booted!\")\n\n// JavaScript in a browser console or script\nconsole.log(\"Booted!\");\n\n-- Lua\nprint(\"Booted!\")" },
         note: { title: "Templates are scaffolding", body: "Generated files are not a test of intelligence. Learn which pieces matter now. Investigate the rest when the project needs them." },
       },
     ],
-    challenge: { title: "Trace the boot", prompt: "For a game or app you want to build, write four arrows describing who loads what. One example is <code>operating system → engine → scene → player script</code>.", solution: "Any accurate chain is useful. A web example could be <code>browser → HTML document → script element → JavaScript module → event handler</code>." },
+    challenge: {
+      title: "Name the pieces",
+      prompt: "Look at the tiny project you opened above. Write down three things: the file you edited, the button or command that runs it, and the first line where your code starts doing work.",
+      solution: "A good answer connects the tool to the code. Example: <code>I edited main.py, pressed Run, and the first real instruction was print(\"Hello, World!\").</code>",
+    },
     check: { question: "What is an entry point?", options: ["The first character typed in a file.", "The defined place or lifecycle event where an environment begins executing your program.", "The folder where screenshots are stored."], answer: 1, explanation: "Some languages expose a named function. Other environments begin at top level or call lifecycle methods." },
     sources: languageReferences,
   },

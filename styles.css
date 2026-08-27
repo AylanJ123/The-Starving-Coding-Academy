@@ -882,6 +882,11 @@ h1 {
   color: var(--code-number);
 }
 
+.code-parameter {
+  color: var(--code-string);
+  font-weight: 800;
+}
+
 .code-operator {
   color: var(--code-keyword);
   font-weight: 800;
