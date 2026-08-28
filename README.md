@@ -29,7 +29,7 @@ help, suggest a change, or talk about what you are building.
 ## Project Structure
 
 ```text
-index.html                         Homepage
+index.html                        Homepage
 styles.css                        Shared visual system
 script.js                         Shared JavaScript entry point
 assets/js/navigation.js           Curriculum routes and hierarchy
@@ -38,7 +38,7 @@ assets/js/lesson.js               Lesson renderer and interactions
 assets/js/theme.js                Theme preference
 assets/js/lessons/                Curriculum content by course unit
 assets/images/social/             Generated social-preview cards
-pages/                             Generated public lesson routes
+pages/                            Generated public lesson routes
 tools/generate-pages.mjs          Page-shell generator
 tools/generate-social-cards.mjs   Social-card generator
 tools/check-site.mjs              Route/content integrity checks
