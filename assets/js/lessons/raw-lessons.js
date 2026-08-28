@@ -19,7 +19,7 @@ export const rawLessons = {
   "raw-programming": {
     kicker: "Course 01 · Raw Programming",
     title: "Raw programming concepts",
-    lead: "Python, JavaScript, Java, C#, C++, and Lua look different, but programmers use them to wrestle with many of the same ideas: values, decisions, repetition, and structure.",
+    lead: "This course introduces values, decisions, repetition and program structure using examples from Python, JavaScript, Java, C#, C++ and Lua.",
     goals: ["separate a programming concept from one language's spelling", "recognize the common pieces inside a small program", "choose a language because it fits a goal"],
     sections: [
       {
@@ -71,7 +71,7 @@ export const rawLessons = {
   "what-is-coding": {
     kicker: "Raw Programming · Lesson 01",
     title: "What coding is used for",
-    lead: "Coding is the craft of describing a process precisely enough that a computer can carry it out while keeping it clear enough for humans to understand, test and change later.",
+    lead: "Coding means writing precise instructions for a computer. Those instructions also need to remain readable enough for people to understand, test and change.",
     goals: ["explain the difference between a goal, an algorithm, and code", "identify input, processing, and output", "describe why humans are part of the audience for code"],
     sections: [
       {
@@ -105,7 +105,7 @@ export const rawLessons = {
   "syntax-rules": {
     kicker: "Raw Programming · Lesson 02",
     title: "Syntax rules and program meaning",
-    lead: "A programming language has a grammar. Syntax tells the parser which combinations of names, symbols, and structure count as valid instructions.",
+    lead: "Syntax is the grammar of a programming language. It defines how names, symbols and code structures must be arranged to form valid instructions.",
     goals: ["distinguish syntax from program behavior", "read a syntax error as location evidence", "compare the same idea in several languages"],
     sections: [
       {
@@ -147,7 +147,7 @@ export const rawLessons = {
   "when-code-breaks": {
     kicker: "Raw Programming · Lesson 03",
     title: "Types of programming failures",
-    lead: "An error means the machine reached a limit and could not parse an instruction, find something, accept a value, or continue safely. Your job is to follow the clues it leaves behind.",
+    lead: "Programming failures can happen before execution, while the program runs or after it produces a result. Error messages and incorrect results provide information about the cause.",
     goals: ["classify common failure stages", "use an error message without panicking", "reduce a bug to a smaller experiment"],
     sections: [
       {
@@ -187,7 +187,7 @@ export const rawLessons = {
   "errors-debugging": {
     kicker: "Raw Programming · Field Guide",
     title: "Debugging with evidence",
-    lead: "A code debugger does not need magical instincts. They form a specific hypothesis, design a small test, and update their belief when the evidence disagrees.",
+    lead: "Debugging is the process of forming a specific explanation for a problem, testing it with a small experiment and revising that explanation from the result.",
     goals: ["write an expected-versus-actual bug report", "trace values through a program", "choose a debugging tool that fits the symptom"],
     sections: [
       {
@@ -227,7 +227,7 @@ export const rawLessons = {
   "exceptions-recovery": {
     kicker: "Raw Programming · Recovery Guide",
     title: "Exceptions and error recovery",
-    lead: "This lesson also helps you read game crash reports. An exception is the program saying something went wrong while it was running, then sending that clue up the stack.",
+    lead: "An exception reports a problem that occurred while a program was running. It can move through the call stack until code handles it or the program stops.",
     goals: ["trace an exception through active function calls", "choose between recovery and propagation", "keep cleanup dependable while preserving useful error context"],
     sections: [
       {
@@ -324,7 +324,7 @@ export const rawLessons = {
   "starting-project": {
     kicker: "Raw Programming · Lesson 04",
     title: "Starting a program",
-    lead: "Before your code can react to clicks, enemies or files, an environment must load it and begin executing at an explicit entry point or through a framework lifecycle.",
+    lead: "A program begins when an environment loads its code and calls an entry point. Frameworks may begin execution through lifecycle functions that respond to events.",
     goals: ["identify an entry point", "distinguish source code from the runtime that executes it", "start a tiny project without drowning in setup"],
     sections: [
       {

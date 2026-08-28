@@ -11,27 +11,27 @@ export const flowLessons = {
   "control-flow": {
     kicker: "Course 06 · Control Flow",
     title: "Control flow and execution order",
-    lead: "Programs normally move from one statement to the next. Branches, loops, returns, errors, and other transfers interrupt that straight path to create real behavior.",
+    lead: "Control flow determines which statement a program executes next. Branches choose a path, loops repeat a block and transfers such as <code>return</code> leave the current path.",
     goals: ["trace execution through a branch or loop", "choose between selection and repetition", "recognize transfers such as return, break, and continue"],
     sections: [
       {
         title: "Types of control flow",
         paragraphs: ["Without control flow, every statement would run once from top to bottom. These tools let the program choose, repeat, enter another function or leave the normal route."],
         cards: [
-          { title: "Selection", body: "Choose a path with <code>if</code> or switch/match-like constructs." },
-          { title: "Repetition", body: "Run a block again while a condition holds or for each item." },
-          { title: "Function transfer", body: "A call enters another function. Return sends control and possibly a value back." },
-          { title: "Interruption", body: "Break, continue, exceptions/errors, cancellation, or program exit alter normal flow." },
+          { title: "Selection", body: "Choose one path using <code>if</code>, <code>else if</code>, <code>else</code> or <code>switch</code>." },
+          { title: "Repetition", body: "Repeat a block using <code>while</code>, <code>do-while</code>, <code>repeat-until</code>, <code>for</code> or <code>foreach</code>." },
+          { title: "Function transfer", body: "A function call enters another function. <code>return</code> sends control and possibly a value back." },
+          { title: "Interruption", body: "<code>break</code>, <code>continue</code>, errors, cancellation or program exit change the normal route." },
         ],
       },
       {
         title: "Tracing execution",
         code: { label: "Pseudocode", content: "health = 12\n\n# Check each branch in order until one condition is true\nIF health <= 0\n    SHOW \"defeated\"\nELSE IF health < 20\n    SHOW \"critical\"\nELSE\n    SHOW \"stable\"\n\n# Execution continues here after the chosen branch\nSHOW \"turn complete\"" },
-        paragraphs: ["Exactly one branch in this chain runs and produces <code>critical</code>. Execution then continues after the chain and shows <code>turn complete</code>. Pencil tracing is a real engineering tool, not beginner training wheels."],
+        paragraphs: ["With <code>health</code> set to <code>12</code>, the first condition is false and the <code>else if</code> condition is true. The program shows <code>critical</code>, skips the remaining branch and continues after the chain to show <code>turn complete</code>. Pencil tracing helps engineers follow this path one step at a time."],
       },
       {
         title: "Choosing a control structure",
-        paragraphs: ["Choose the structure that matches the question your program needs to answer. The clearest tool usually makes the intended route visible before a reader studies every line."],
+        paragraphs: ["Start with the question your program needs to answer. Use a branch to choose one path, a loop to repeat work and <code>return</code> to leave a function with a result."],
         links: [
           { title: "If Else If And Else", body: "Choose among conditions and priorities.", href: "if-else.html" },
           { title: "Loops", body: "Understand repeated work and termination.", href: "loops.html" },
@@ -41,10 +41,10 @@ export const flowLessons = {
           headers: ["Question", "Likely tool"],
           rows: [
             ["Should this action happen?", "<code>if</code>"],
-            ["Which one of these states is active?", "if-chain or switch/match"],
-            ["Repeat until a condition changes?", "while / do-while-like loop"],
-            ["Visit every item or known range?", "foreach / for loop"],
-            ["Leave the function with a result?", "return"],
+            ["Which one of these states is active?", "<code>if</code> chain or <code>switch</code>"],
+            ["Repeat until a condition changes?", "<code>while</code>, <code>do-while</code> or <code>repeat-until</code>"],
+            ["Visit every item or known range?", "<code>foreach</code> or <code>for</code>"],
+            ["Leave the function with a result?", "<code>return</code>"],
           ],
         },
       },
@@ -56,27 +56,26 @@ export const flowLessons = {
   "if-else": {
     kicker: "Control Flow · Lesson 01",
     title: "If else and else if branches",
-    lead: "An if-chain checks conditions in order and takes the first matching branch. Correct conditions can still produce the wrong behavior when their order makes a specific case unreachable.",
+    lead: "An <code>if</code> chain checks conditions in order and runs the first matching branch. The order matters when several conditions can be true for the same value.",
     goals: ["trace first-match behavior", "order overlapping conditions", "choose independent if statements versus one chain"],
     sections: [
       {
         title: "One branch from an if chain",
         code: { label: "Pseudocode", content: "# Check the highest and most specific threshold first\nIF score >= 100\n    rank = \"S\"\nELSE IF score >= 80\n    rank = \"A\"\nELSE IF score >= 60\n    rank = \"B\"\nELSE\n    rank = \"C\"" },
-        paragraphs: ["A score of 105 matches every threshold, but the first true branch wins. Starting at the highest threshold makes the intended ranking work."],
+        paragraphs: ["An <code>if</code> chain stops at its first true condition. If <code>score >= 60</code> came first, scores of <code>60</code>, <code>80</code> and <code>100</code> would all enter that branch because every one is at least <code>60</code>. Starting with <code>score >= 100</code> removes the highest scores first. The next condition then represents scores from <code>80</code> through <code>99</code>, and the following condition represents scores from <code>60</code> through <code>79</code>. Each check cuts the remaining score bar into a smaller range."],
       },
       {
         title: "Separate if statements",
-        code: { label: "Pseudocode", content: "# Each condition is checked because several effects may happen\nIF player_is_poisoned\n    apply_poison_damage()\n\nIF player_is_in_water\n    extinguish_fire()\n\nIF player_health <= 0\n    defeat_player()" },
-        paragraphs: ["These conditions ask separate questions. A poisoned player might also be in water and reach zero health during the same update. An <code>else if</code> chain would stop after the first true condition and skip the other effects."],
+        code: { label: "Pseudocode", content: "# Each condition is checked because several effects may happen\nIF player_is_in_water\n    extinguish_fire()\n\nIF player_is_poisoned\n    apply_poison_damage()\n\nIF player_health <= 0\n    defeat_player()" },
+        paragraphs: ["These conditions ask separate questions, so every true condition needs to run. A player can be in water and poisoned during the same update. If the poison check were joined to the water check with <code>else if</code>, a bug would occur! Players in water would be inmune to poison. Separate <code>if</code> statements allow both effects to happen before the health check."],
       },
       {
         title: "Guard clauses and early returns",
-        paragraphs: ["A guard clause returns early when the main operation cannot continue. Handling these failed requirements first leaves the successful path straight and easy to find."],
+        paragraphs: ["A guard clause checks one reason the function must stop before its main work begins. When a requirement fails, <code>return</code> immediately ends the function, so none of the later lines run. Once every guard has been passed, the main operation can continue without being wrapped in several layers of <code>else</code>. The <a href=\"return-values.html\">Return Values</a> lesson explains how <code>return</code> sends a value back while ending the current function call."],
         code: { label: "Pseudocode", content: "FUNCTION start_quest(player)\n    # Stop immediately when a requirement fails\n    IF player is missing\n        RETURN failure(\"No player\")\n    IF player.level < 5\n        RETURN failure(\"Level 5 required\")\n    IF quest already active\n        RETURN failure(\"Already started\")\n\n    # This runs only after every guard passes\n    activate quest\n    RETURN success" },
-        note: { title: "Else can be optional", body: "If a branch returns, throws, breaks, or otherwise exits, the remaining code is already the alternative path." },
       },
     ],
-    challenge: { title: "Fix an unreachable rank", prompt: "Why does checking <code>score >= 50</code> before <code>score >= 90</code> prevent the <code>90+</code> rank, and how do you fix it?", solution: "A score of <code>95</code> satisfies <code>>= 50</code>, so the chain stops before reaching <code>>= 90</code>. Check narrower or higher thresholds first, or redesign the ranges to be mutually exclusive." },
+    challenge: { title: "Fix an unreachable rank", prompt: "Why does checking <code>score >= 50</code> before <code>score >= 90</code> prevent the <code>90+</code> rank, and how do you fix it?", solutionCode: { label: "Pseudocode", content: "score = 95\n\n# Broken order\nIF score >= 50\n    rank = \"50+\"  # 95 passes this first check\nELSE IF score >= 90\n    rank = \"90+\"  # The chain already stopped, so this never runs\n\n# Fixed order\nIF score >= 90\n    rank = \"90+\"  # Check the highest range first\nELSE IF score >= 50\n    rank = \"50+\"  # This now handles scores from 50 through 89" } },
     check: { question: "When should two conditions usually be separate <code>if</code> statements?", options: ["When both effects may need to happen", "When only one category may win", "Never"], answer: 0, explanation: "Independent if statements allow multiple true conditions to run." },
     sources,
   },
@@ -84,7 +83,7 @@ export const flowLessons = {
   loops: {
     kicker: "Control Flow · Lesson 02",
     title: "Loop fundamentals",
-    lead: "A loop executes a block multiple times. A safe loop makes its changing state, continuation rule, and stopping condition visible.",
+    lead: "A loop repeats a block while a condition remains true or while items remain to process. Its condition and changing state determine when repetition stops.",
     goals: ["identify initialization, condition, update, and body", "choose a condition-driven or collection-driven loop", "prevent common infinite loops"],
     sections: [
       {
@@ -101,26 +100,26 @@ export const flowLessons = {
         title: "Choosing a loop type",
         links: [
           { title: "While Loops", body: "Repeat while a condition remains true.", href: "while-loops.html" },
-          { title: "Do While / Do Until", body: "Run once before checking.", href: "do-while.html" },
-          { title: "For Loops", body: "Count or follow a controlled progression.", href: "for-loops.html" },
-          { title: "Foreach Loops", body: "Visit values in a collection.", href: "foreach-loops.html" },
+          { title: "Do While / Repeat Until", body: "An inverted <code>while</code> loop that runs first, then checks whether it should repeat.", href: "do-while.html" },
+          { title: "For Loops", body: "Repeat with a counter or move through a range of values.", href: "for-loops.html" },
+          { title: "Foreach Loops", body: "A <code>for</code> loop that runs once for every item in a collection.", href: "foreach-loops.html" },
         ],
       },
       {
         title: "Break and continue",
         paragraphs: ["<code>continue</code> skips the rest of the current iteration and moves to the next one. <code>break</code> exits the entire loop. Both are useful when their purpose is easy to see."],
         code: { label: "Pseudocode", content: "FOR EACH item IN inventory\n    IF item.is_broken\n        CONTINUE  # Ignore this item and inspect the next one\n\n    IF item.name == wanted_name\n        found = item\n        BREAK     # The item was found so searching can stop" },
-        note: { title: "Infinite loops in interactive programs", body: "A busy infinite loop can freeze a browser or game frame. Event loops and engine update callbacks already repeat. Keep unbounded loops out of them." },
+        note: { title: "Why an infinite loop freezes a program", body: "Interactive programs already run inside a main loop. Each pass reads input, updates the program, draws one frame and returns control to the system. This continues until a condition such as <code>quit_pressed</code> becomes true. If one pass starts another loop that never finishes, the program cannot draw the next frame or return control. The window freezes, and the operating system may eventually mark the program as unresponsive or close it." },
       },
     ],
-    check: { question: "What prevents the countdown loop from running forever?", options: ["The condition is written in English.", "<code>count</code> decreases until <code>count > 0</code> becomes false.", "Loops automatically stop after ten iterations."], answer: 1, explanation: "The progress step moves state toward a false condition." },
+    check: { question: "Why does the countdown from earlier in the lesson stopped at 1?", options: ["<code>SHOW count</code> automatically ends the loop.", "<code>count = count - 1</code> eventually makes <code>count > 0</code> false.", "Every loop stops after three repetitions."], answer: 1, explanation: "Each repetition subtracts one from <code>count</code>. After showing <code>1</code>, its value becomes <code>0</code>, so <code>count > 0</code> is false and the loop ends." },
     sources,
   },
 
   "while-loops": {
     kicker: "Loops · Lesson 01",
     title: "While loops",
-    lead: "A while loop is suited to repetition controlled by a condition when you may not know the number of iterations in advance. Because it checks first, it can run zero times.",
+    lead: "A <code>while</code> loop checks its condition before every iteration and repeats while that condition is true. It can run zero times when the first check is false.",
     goals: ["predict zero-iteration behavior", "write a clear termination condition", "add safety bounds to uncertain repetition"],
     sections: [
       {
@@ -130,23 +129,24 @@ export const flowLessons = {
       {
         title: "When to use a while loop",
         bullets: ["Retry while a limited number of attempts remain.", "Advance a simulation until a condition is reached, with a safety cap.", "Read data while more records are available.", "Run a command loop until the user chooses to quit."],
-        paragraphs: ["Real-time games usually use an engine-provided frame/update loop instead of creating a raw <code>while game_running</code> inside a callback."],
+        paragraphs: ["A program can use a top-level <code>while</code> loop as its main loop. Each iteration reads input, updates the program and draws one frame. The condition keeps it running until the user presses the quit button. Every iteration must finish so the next frame can begin. Browsers and game engines usually provide this main loop and call your code once per frame."],
       },
       {
         title: "Ending a while loop",
-        code: { label: "Pseudocode", content: "attempts = 0\n\n# Stop after success or after reaching the safety limit\nWHILE NOT path_found AND attempts < 1000\n    try_next_path()\n    attempts = attempts + 1\n\nIF NOT path_found\n    REPORT failure" },
-        note: { title: "Check how the loop ends", body: "Which variable can make the condition false? Does every path through the body move it toward that state? What external event could fail to arrive?" },
+        paragraphs: ["This loop repeats while <code>health > 0</code>. Poison damage lowers <code>health</code> during every iteration. After four repetitions, <code>health</code> reaches <code>0</code>, the condition becomes false and execution continues after the loop."],
+        code: { label: "Pseudocode", content: "health = 12\npoison_damage = 3\n\nWHILE health > 0\n    SHOW health\n    # Each subtraction moves health from 12 to 9 to 6 to 3 to 0\n    health = health - poison_damage\n\nSHOW \"defeated\"" },
+        note: { title: "The condition must be able to change", body: "If the loop only showed <code>health</code> without subtracting poison damage, <code>health > 0</code> would remain true forever." },
       },
     ],
-    challenge: { title: "Repair the frozen loop", prompt: "The loop <code>WHILE health > 0</code> only shows <code>health</code> and never changes it. Add a meaningful progress rule for poison damage.", solution: "Subtract poison damage inside the loop with <code>health = health - poison_damage</code>. Also ensure <code>poison_damage</code> is positive or add an explicit safety condition." },
+    challenge: { title: "Add health regeneration", prompt: "Let's add a regeneration to the previous code, what would it need?", solution: "Add a <code>health_regeneration</code> value and update health with <code>health = health - poison_damage + health_regeneration</code>. The poison damage must remain greater than the regeneration for this loop to eventually reach <code>0</code>." },
     check: { question: "How many times can a <code>while</code> body run when its condition starts false?", options: ["Exactly once", "Zero times", "Forever"], answer: 1, explanation: "A while loop checks before entering the body." },
     sources,
   },
 
   "do-while": {
     kicker: "Loops · Lesson 02",
-    title: "Do while and do until loops",
-    lead: "A post-test loop runs its body at least once. JavaScript, Java, C# and C++ provide do-while syntax. Lua provides repeat-until. Python has no built-in do-while statement.",
+    title: "Do while and repeat until loops",
+    lead: "A post-test loop checks its condition after running the body, so the body runs at least once. Languages provide forms such as <code>do-while</code> and <code>repeat-until</code>.",
     goals: ["explain guaranteed first execution", "translate between do-while and repeat-until", "simulate a post-test loop when syntax is absent"],
     sections: [
       {
@@ -174,7 +174,7 @@ export const flowLessons = {
   "for-loops": {
     kicker: "Loops · Lesson 03",
     title: "For loops and ranges",
-    lead: "A for loop is useful when repetition follows a range, counter, iterator, or other deliberate progression. Syntax varies sharply because some languages use a three-part header while Python iterates over values.",
+    lead: "A <code>for</code> loop repeats over a range, counter, iterator or sequence of values. Some languages use a three-part loop header, while others iterate directly over values.",
     goals: ["trace start, condition, and update", "avoid off-by-one errors", "choose a range that matches the requirement"],
     sections: [
       {
@@ -209,7 +209,7 @@ export const flowLessons = {
   "foreach-loops": {
     kicker: "Loops · Lesson 04",
     title: "Foreach loops",
-    lead: "Collection-oriented loops avoid manual index bookkeeping when your real goal is to process every element. Different languages spell them as for, foreach, enhanced for, or generic iteration.",
+    lead: "A <code>foreach</code> loop processes each element in a collection without a manually updated index. Languages may spell this construct as <code>for</code>, <code>foreach</code> or enhanced <code>for</code>.",
     goals: ["choose values over indexes when possible", "distinguish JavaScript for...of from for...in", "avoid mutating a collection unsafely during iteration"],
     sections: [
       {
@@ -237,7 +237,7 @@ export const flowLessons = {
   "switch-cases": {
     kicker: "Control Flow · Lesson 03",
     title: "Switch statements and cases",
-    lead: "Switch-like constructs compare one subject against discrete cases. Modern variants may also match types, shapes, ranges, or guards. They shine when the alternatives form one coherent choice.",
+    lead: "A <code>switch</code> compares one value with a set of cases and runs the matching case. Some languages also allow cases to match types, ranges, patterns or guard conditions.",
     goals: ["choose switch versus if", "understand fall-through risks", "use a default case intentionally"],
     sections: [
       {

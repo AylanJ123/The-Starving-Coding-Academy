@@ -11,7 +11,7 @@ export const structureLessons = {
   "code-structure": {
     kicker: "Course 05 · Code Structure",
     title: "Organizing code",
-    lead: "Structure divides a growing program into parts that are easier to name, understand and change. Blocks group steps, functions name operations, objects keep related state and behavior together and modules organize larger features.",
+    lead: "Program structure organizes code into blocks, functions, objects and modules. Each level groups related instructions, behavior or data.",
     goals: ["recognize common levels of code organization", "explain cohesion and coupling in plain language", "choose the next useful boundary"],
     sections: [
       {
@@ -50,7 +50,7 @@ export const structureLessons = {
   "scope-code-blocks": {
     kicker: "Code Structure · Lesson 01",
     title: "Scope and visibility",
-    lead: "Code blocks group instructions. Scopes control where declared names can be used. The two concepts often overlap, but languages define their relationship differently.",
+    lead: "A code block groups instructions, while a scope defines where a declared name can be used. Languages differ in how blocks create or affect scopes.",
     goals: ["trace a name to its declaration", "explain local versus wider scope", "avoid accidental shadowing and leaked state"],
     sections: [
       {
@@ -86,7 +86,7 @@ export const structureLessons = {
   functions: {
     kicker: "Code Structure · Lesson 02",
     title: "Defining and calling functions",
-    lead: "A function gives a block of behavior a name, defines what it needs, and may send a result back. Good functions reduce duplication while making the program read closer to its intention.",
+    lead: "A function gives a block of behavior a name. It can receive inputs, perform an operation and return a result to the caller.",
     goals: ["describe a function's contract", "separate calling from defining", "choose a focused function responsibility"],
     sections: [
       {
@@ -128,7 +128,7 @@ export const structureLessons = {
   "parameters-arguments": {
     kicker: "Functions · Lesson 01",
     title: "Parameters arguments and default values",
-    lead: "Parameters are the named input slots in a function definition. Arguments are the actual values supplied when the function is called. Clear inputs make a function easier to understand and harder to misuse.",
+    lead: "Parameters define the inputs a function accepts. Arguments are the values supplied for those parameters when the function is called, and default values can make some inputs optional.",
     goals: ["use parameter and argument precisely", "recognize when an optional parameter may be omitted", "recognize when several settings may belong in an object"],
     sections: [
       {
@@ -156,7 +156,7 @@ export const structureLessons = {
   "return-values": {
     kicker: "Functions · Lesson 02",
     title: "Returning values from functions",
-    lead: "A return value lets a function calculate or choose something without deciding how every caller will use it. Returning early can also reject invalid situations before the main path becomes deeply nested.",
+    lead: "A return value sends a result from a function back to its caller. A function can also return early when a requirement fails or its work is already complete.",
     goals: ["capture and use returned values", "distinguish return from print", "use guard clauses responsibly"],
     sections: [
       {
@@ -184,7 +184,7 @@ export const structureLessons = {
   lambdas: {
     kicker: "Functions · Lesson 03",
     title: "Anonymous functions and callbacks",
-    lead: "A lambda creates a function without giving it a separate permanent definition. It is useful when a short piece of behavior is needed in one nearby place, such as sorting, filtering or responding to an event.",
+    lead: "A lambda defines an anonymous function inside an expression. Lambdas commonly provide short callbacks for sorting, filtering and event handling.",
     goals: ["recognize anonymous function syntax", "explain a callback", "know when to replace a lambda with a named function"],
     sections: [
       {
@@ -211,7 +211,7 @@ export const structureLessons = {
   objects: {
     kicker: "Code Structure · Lesson 03",
     title: "Classes objects and instances",
-    lead: "An object usually has identity, data, and operations. A class often defines the shape and behavior used to create objects, though object systems vary substantially between languages.",
+    lead: "An object groups data with operations that use or change that data. In class-based languages, a class defines the fields and methods available to its instances.",
     goals: ["distinguish a class from an instance", "group related state and behavior", "recognize object identity and relationships"],
     sections: [
       {
@@ -251,7 +251,7 @@ export const structureLessons = {
   fields: {
     kicker: "Objects · Lesson 01",
     title: "Object fields and state",
-    lead: "Fields store information that belongs to an object or type. Different languages may call them attributes, properties or data members. Access rules help prevent unrelated code from placing the object in an invalid state.",
+    lead: "Fields store information that belongs to an object or type. Languages may call them fields, attributes, properties or data members and provide different access rules for them.",
     goals: ["recognize instance and class/static state", "explain encapsulation", "avoid exposing mutable internals carelessly"],
     sections: [
       {
@@ -279,7 +279,7 @@ export const structureLessons = {
   methods: {
     kicker: "Objects · Lesson 02",
     title: "Object methods",
-    lead: "A method is a function attached to an object or type. An instance method works with one particular object's state. A static or class method belongs to the type itself.",
+    lead: "A method is a function attached to an object or type. Instance methods use a particular object's state, while static or class methods belong to the type itself.",
     goals: ["distinguish method calls from property access", "choose instance or static behavior", "write methods that preserve object rules"],
     sections: [
       {
@@ -311,7 +311,7 @@ export const structureLessons = {
   "dot-notation": {
     kicker: "Code Structure · Lesson 04",
     title: "Dot notation and member access",
-    lead: "Dot notation connects a receiver or namespace to a named member. It may access a field/property, select a method, navigate a module, or begin a longer chain.",
+    lead: "Dot notation selects a named member from an object, type, namespace or module. It can access a field, select a method or continue through a chain of members.",
     goals: ["read a dotted expression left to right", "distinguish selection from invocation", "debug a broken member chain"],
     sections: [
       {
@@ -347,7 +347,7 @@ export const structureLessons = {
   parentheses: {
     kicker: "Code Structure · Lesson 05",
     title: "Uses of parentheses",
-    lead: "The same curved marks perform several jobs. Read what surrounds them, whether it is an operator expression, a function name, a definition keyword, or a control-flow keyword.",
+    lead: "Parentheses group expressions, call functions, define parameters and surround conditions in some languages. Their role depends on the syntax around them.",
     goals: ["identify common parenthesis roles", "use grouping for clarity", "avoid confusing a function value with a function call"],
     sections: [
       {

@@ -79,7 +79,7 @@ export const navigation = [
         href: "pages/loops.html",
         children: [
           { title: "While Loops", href: "pages/while-loops.html" },
-          { title: "Do While / Do Until", href: "pages/do-while.html" },
+          { title: "Do While / Repeat Until", href: "pages/do-while.html" },
           { title: "For Loops", href: "pages/for-loops.html" },
           { title: "Foreach Loops", href: "pages/foreach-loops.html" },
         ],

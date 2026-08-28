@@ -10,7 +10,7 @@ export const practiceLessons = {
   practice: {
     kicker: "Course 07 · Practice",
     title: "Programming practice and feedback",
-    lead: "Reading creates recognition. Programming ability grows when you predict a result, write a small attempt, run it, compare reality with your model, and explain the difference.",
+    lead: "Programming practice includes predicting a result, writing a small solution, running it and comparing the output with the prediction. The difference identifies what needs further study.",
     goals: ["practice without waiting for a giant project", "turn mistakes into specific feedback", "choose a challenge just beyond current comfort"],
     sections: [
       {
@@ -57,7 +57,7 @@ export const practiceLessons = {
   "tiny-examples": {
     kicker: "Practice · Workshop",
     title: "Small complete programs",
-    lead: "Each example is small enough to hold in your head but complete enough to change. Trace it first, run it second, then take one modification challenge.",
+    lead: "These examples are complete programs designed for tracing and modification. Each one includes a prediction step and a small change to implement.",
     goals: ["trace state and control flow", "translate one concept between languages", "extend a working program without rewriting it"],
     sections: [
       {
@@ -105,7 +105,7 @@ export const practiceLessons = {
   "quiz-time": {
     kicker: "Practice · Checkpoint",
     title: "Programming fundamentals quiz",
-    lead: "This checkpoint tests explanations and predictions, not obscure syntax trivia. Answer aloud or on paper before opening each explanation.",
+    lead: "This quiz checks the programming concepts covered throughout the course. Each question focuses on explaining behavior or predicting a result.",
     goals: ["explain core concepts without memorized slogans", "trace unfamiliar-looking examples", "identify the next lesson worth revisiting"],
     sections: [
       {

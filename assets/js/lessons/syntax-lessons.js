@@ -22,7 +22,7 @@ export const syntaxLessons = {
   "syntax-elements": {
     kicker: "Course 02 · Syntax Elements",
     title: "Basic syntax elements",
-    lead: "Names, literals, keywords, operators, punctuation, and comments combine into expressions and statements. Once you can identify the pieces, unfamiliar code becomes less like a wall of symbols.",
+    lead: "Expressions and statements are built from names, literals, keywords, operators, punctuation and comments. Each element has a specific role in the instruction.",
     goals: ["label common syntax elements", "separate an expression from a statement", "read punctuation according to context"],
     sections: [
       {
@@ -73,7 +73,7 @@ export const syntaxLessons = {
   "values-variables": {
     kicker: "Syntax Elements · Lesson 01",
     title: "Variables and assignment",
-    lead: "A variable connects a useful name to a value your program can read and, depending on the declaration, possibly replace later.",
+    lead: "A variable gives a value a name so the program can use it later. Its declaration determines whether another value can replace it.",
     goals: ["distinguish a variable from its current value", "name state according to its purpose", "trace assignment from right to left"],
     sections: [
       {
@@ -113,7 +113,7 @@ export const syntaxLessons = {
   comments: {
     kicker: "Syntax Elements · Side Quest",
     title: "Writing useful comments",
-    lead: "Comments are text intended for humans and ignored as program instructions. The best ones preserve context the code cannot express clearly by itself.",
+    lead: "Comments are notes for people reading the source code. The language ignores them during execution, so they can explain decisions and context that the code does not show clearly.",
     goals: ["write a useful reason-focused comment", "recognize common comment syntax", "avoid using comments to rescue confusing code"],
     sections: [
       {
@@ -146,7 +146,7 @@ export const syntaxLessons = {
   "primitive-values": {
     kicker: "Syntax Elements · Lesson 02",
     title: "Primitive value types",
-    lead: "A score becomes a number, a username becomes text, and a door state becomes true or false. Languages group these basic values into types with defined operations.",
+    lead: "Primitive types represent basic values such as numbers, text, booleans and absence. Each type defines which operations can be performed on its values.",
     goals: ["choose a suitable basic type for a value", "explain why numeric types are not interchangeable", "recognize null-like absence"],
     sections: [
       {
@@ -181,7 +181,7 @@ export const syntaxLessons = {
   "strong-typing": {
     kicker: "Syntax Elements · Lesson 03",
     title: "How type systems interpret values",
-    lead: "Memory holds patterns of bits. A type helps the language read those bits as a number, text, a yes or no value, or a route to an object. Type rules keep those meanings from being mixed by accident.",
+    lead: "A type tells the language how to interpret a value and which operations are allowed. Type rules prevent incompatible values from being combined accidentally.",
     goals: ["picture how a type gives stored data meaning", "explain why stricter type rules can prevent bugs", "predict whether a mixed-type mistake fails early or while running"],
     sections: [
       {
@@ -271,7 +271,7 @@ export const syntaxLessons = {
   "complex-types": {
     kicker: "Syntax Elements · Lesson 04",
     title: "Complex data types",
-    lead: "Real programs need more than isolated numbers and strings. Collections, records, objects, and functions let you represent groups, relationships, and reusable behavior.",
+    lead: "Complex types combine multiple values or behaviors into one structure. Collections, records, objects and functions provide different ways to organize that information.",
     goals: ["choose between a sequence and a key-value structure", "describe value versus reference behavior cautiously", "recognize functions as values where supported"],
     sections: [
       {
@@ -304,7 +304,7 @@ export const syntaxLessons = {
   booleans: {
     kicker: "Syntax Elements · Lesson 05",
     title: "Boolean values and conditions",
-    lead: "A boolean represents one of two logical answers that usually appear as true and false. This tiny pair of values connects data to decisions, loops, validation, filters and permissions.",
+    lead: "A boolean stores one of two logical values, usually <code>true</code> or <code>false</code>. Programs use booleans in decisions, loops, validation, filters and permissions.",
     goals: ["phrase boolean names as questions", "build booleans from comparisons", "predict simple truth-table results"],
     sections: [
       {

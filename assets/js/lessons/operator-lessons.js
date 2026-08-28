@@ -10,7 +10,7 @@ export const operatorLessons = {
   operators: {
     kicker: "Course 03 · Operators",
     title: "Operators and operands",
-    lead: "Operators calculate, compare, combine, assign and transform values. Their symbols look compact because programmers use them constantly. Each language still defines its own behavior.",
+    lead: "Operators calculate, compare, combine, assign or transform values. Each operator works with one or more operands, and its exact behavior depends on the language and operand types.",
     goals: ["identify unary, binary, and assignment operators", "use precedence without relying on memory", "check language-specific operator behavior"],
     sections: [
       {
@@ -46,7 +46,7 @@ export const operatorLessons = {
   "string-concatenation": {
     kicker: "Operators · Lesson 01",
     title: "Joining and formatting strings",
-    lead: "String concatenation joins pieces of text. Interpolation and formatting often communicate mixed text-and-value output more clearly, especially when conversions or layout matter.",
+    lead: "String concatenation joins pieces of text. Interpolation inserts values into a text template, while formatting controls how those values appear.",
     goals: ["distinguish numeric addition from text joining", "use interpolation for readable messages", "avoid accidental coercion"],
     sections: [
       {
@@ -84,7 +84,7 @@ export const operatorLessons = {
   "mathematical-operators": {
     kicker: "Operators · Lesson 02",
     title: "Arithmetic in programming",
-    lead: "Addition is familiar. Integer division, remainders, overflow, floating-point approximation, and language-specific operators are where programming arithmetic stops behaving like a school worksheet.",
+    lead: "Programming arithmetic includes addition, subtraction, multiplication, division, remainders and exponentiation. Operand types, numeric limits and language rules affect the result.",
     goals: ["use remainder for repeating patterns", "predict grouping with precedence", "spot division and precision traps"],
     sections: [
       {
@@ -121,7 +121,7 @@ export const operatorLessons = {
   "logical-operators": {
     kicker: "Operators · Lesson 03",
     title: "Boolean logic",
-    lead: "Logical operators join or invert boolean conditions. The difficult part comes from translating a real requirement into the correct grouping of AND, OR and NOT.",
+    lead: "Logical operators combine or invert boolean conditions. <code>AND</code>, <code>OR</code> and <code>NOT</code> express how several conditions belong together.",
     goals: ["translate a sentence into a boolean expression", "explain short-circuit evaluation", "simplify confusing negative logic"],
     sections: [
       {
@@ -149,7 +149,7 @@ export const operatorLessons = {
   "shorthand-operators": {
     kicker: "Operators · Lesson 04",
     title: "Shorthand assignment and increment operators",
-    lead: "Compound assignment and increment-like operators express common updates compactly. They are helpful when the longer operation is already obvious and evaluation details are understood.",
+    lead: "Shorthand operators update an existing value with less code. Common forms include compound assignment and the increment operators available in some languages.",
     goals: ["expand compound assignment mentally", "recognize language differences around increment", "avoid clever state changes inside larger expressions"],
     sections: [
       {
@@ -191,7 +191,7 @@ export const operatorLessons = {
   "input-output": {
     kicker: "Course 04 · Input And Output",
     title: "Program input and output",
-    lead: "Input brings information into a program and output communicates what happened. Keyboards and screens are only two examples. Files, controllers, databases and networks also move information across a program's boundaries.",
+    lead: "Input is information received by a program, and output is information the program produces. Both can move through keyboards, screens, files, controllers, databases or networks.",
     goals: ["identify input and output beyond the console", "validate untrusted input", "separate core logic from interface code"],
     sections: [
       {
