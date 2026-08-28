@@ -179,7 +179,7 @@ function renderChallenge(challenge) {
       <p>${challenge.prompt}</p>
       ${challenge.code ? codeWindow(challenge.code) : ""}
       <details>
-        <summary>Reveal a possible answer</summary>
+        <summary>${challenge.summary ?? "Reveal a possible answer"}</summary>
         ${challenge.solutionCode ? codeWindow(challenge.solutionCode) : `<p>${challenge.solution}</p>`}
       </details>
     </section>

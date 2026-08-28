@@ -30,14 +30,14 @@ export const practiceLessons = {
         ],
       },
       {
-        title: "Adjusting practice difficulty",
-        paragraphs: ["A useful exercise should require thought without burying the lesson under unrelated tools. Change one dimension when the task feels far too easy or too hard."],
+        title: "Make an exercise fit you",
+        paragraphs: ["Imagine an exercise that asks you to accept a number from 1 through 10. Solving it immediately means you can add one complication. If you cannot decide how to begin, remove one. Keep the original concept and adjust how much work surrounds it."],
         table: {
-          headers: ["Too easy?", "Productive zone", "Too hard?"],
+          headers: ["What happened?", "Change the exercise", "For example"],
           rows: [
-            ["Add an edge case or second language", "You can attempt it but must think and test", "Remove UI/framework code and use plain values"],
-            ["Explain why each line exists", "Errors point to concepts you recently learned", "Start from working code and modify one rule"],
-            ["Write automated examples", "You can describe what success means", "Ask for one hint, not the entire answer"],
+            ["You solved it immediately", "Add one complication", "Handle empty input or solve it in a second language"],
+            ["You had to stop, predict and test", "Keep working at this level", "Explain the expected output and investigate each mismatch"],
+            ["You could not find a starting point", "Remove one complication", "Begin with working code, remove the interface or ask for one hint"],
           ],
         },
       },
@@ -45,7 +45,7 @@ export const practiceLessons = {
         title: "Practice lessons",
         links: [
           { title: "Tiny Examples", body: "Trace and modify complete miniature programs.", href: "tiny-examples.html" },
-          { title: "Quiz Time", body: "Check the mental model, not trivia memory.", href: "quiz-time.html" },
+          { title: "Quiz Time", body: "Test how well you can explain and apply each concept.", href: "quiz-time.html" },
         ],
       },
       {
@@ -66,7 +66,12 @@ export const practiceLessons = {
         },
       },
     ],
-    challenge: { title: "Plan a practice exercise", prompt: "Choose one lesson and invent a ten-minute exercise with an input, expected output and one edge case.", solution: "A boolean exercise could use <code>player_level</code> and <code>has_invite</code> as input. Its output states whether ranked queue is allowed. Testing the exact level threshold supplies an edge case. A precise expected result makes the exercise testable." },
+    challenge: {
+      title: "Create an exercise for someone else",
+      prompt: "Choose one lesson and invent a ten-minute exercise with an input, expected output and one edge case. Ask another person to solve it and see where your instructions confuse them. If you need a volunteer, use the <strong>Join the Discord</strong> button on the landing page and share it with the academy.",
+      summary: "Checklist before sharing",
+      solution: "Keep the exercise small enough to finish in ten minutes. State the starting values, required output and edge case clearly. Do one quick sanity check, keep your solution private and hand the prompt to someone else. Their questions will show you what needs a clearer explanation.",
+    },
     check: { question: "Which activity builds a stronger mental model?", options: ["Copy code without predicting it.", "Predict, run, compare, and explain a mismatch.", "Avoid errors at all costs."], answer: 1, explanation: "The comparison between expectation and evidence reveals exactly where the model needs adjustment." },
     sources,
   },
