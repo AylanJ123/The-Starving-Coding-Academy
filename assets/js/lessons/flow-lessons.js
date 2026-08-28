@@ -150,20 +150,20 @@ export const flowLessons = {
     goals: ["explain guaranteed first execution", "translate between do-while and repeat-until", "simulate a post-test loop when syntax is absent"],
     sections: [
       {
-        title: "Running the body before the condition",
-        code: { label: "JavaScript", content: "let choice;\n\ndo {\n  // Ask first because no choice exists yet\n  choice = prompt(\"Choose 1, 2, or 3\");\n\n  // Repeat only while the choice remains invalid\n} while (![\"1\", \"2\", \"3\"].includes(choice));" },
-        paragraphs: ["A post-test loop checks its condition after the body. The prompt therefore appears at least once, which is necessary before the program can decide whether the choice is valid."],
+        title: "Validate numeric input",
+        code: { label: "Lua", content: "local number\n\nrepeat\n  print(\"Enter a number\")\n  local raw_input = io.read()\n  number = tonumber(raw_input)\n\n  if number == nil then\n    print(\"That is not a number. Try again.\")\n  end\nuntil number ~= nil\n\nprint(\"Accepted number\", number)" },
+        paragraphs: ["The loop asks for input before it can check the result. <code>tonumber</code> converts valid numeric text into a number and returns <code>nil</code> for other text. <code>repeat-until</code> asks again while the conversion fails and stops once <code>number ~= nil</code> becomes true."],
       },
       {
         title: "While and until conditions",
-        code: { label: "Lua", content: "repeat\n  choice = io.read()\n\n-- Stop when any allowed choice is entered\nuntil choice == \"1\" or choice == \"2\" or choice == \"3\"" },
-        paragraphs: ["A do-while repeats <em>while</em> its condition is true. Lua's repeat-until stops <em>when</em> its condition becomes true. Mixing those mental models can reverse the rule."],
+        code: { label: "JavaScript", content: "let choice;\n\ndo {\n  choice = prompt(\"Choose 1, 2, or 3\");\n\n  // Repeat while every comparison says the choice is invalid\n} while (choice !== \"1\" && choice !== \"2\" && choice !== \"3\");" },
+        paragraphs: ["The JavaScript <code>do-while</code> repeats while the choice remains invalid. The Lua <code>repeat-until</code> example above stops when the input becomes valid. Both run their body before checking, and their conditions describe opposite outcomes."],
       },
       {
         title: "Emulating do while in Python",
-        code: { label: "Python", content: "while True:\n    choice = input(\"Choose 1, 2, or 3: \")\n\n    # A valid choice reaches the visible exit\n    if choice in {\"1\", \"2\", \"3\"}:\n        break" },
-        paragraphs: ["This pattern performs the action, validates the result, and breaks when valid. The unconditional loop is safe only because the exit path is clear and reachable."],
-        note: { title: "Handling cancellation", body: "Interactive loops should often support cancel/quit and handle input systems returning no value." },
+        code: { label: "Python", content: "def ask_for_choice():\n    return input(\"Choose 1, 2, or 3: \")\n\n# Ask once before checking\nchoice = ask_for_choice()\n\n# Ask again while the choice remains invalid\nwhile choice not in {\"1\", \"2\", \"3\"}:\n    choice = ask_for_choice()" },
+        paragraphs: ["Python has no native do-while statement. Performing the first action before a regular <code>while</code> check produces the same behavior, although that action is needed in two places.", "When the repeated action contains several instructions or both copies must stay identical, extract it into a function. The <a href=\"functions.html\">Functions</a> lesson explains this process. Here, <code>ask_for_choice()</code> keeps the prompt in one place, so changing it updates both calls.", "Language designers decide which specialized loop forms their language supports. Most languages provide a foreach form because it clearly expresses iteration over a collection, even though another loop could recreate the same behavior."],
+        note: { title: "Allow the user to cancel", body: "An input window may be closed instead of returning a choice. Treat that result as a request to leave the loop so the program does not keep asking or try to validate a missing value." },
       },
     ],
     challenge: { title: "Translate the condition", prompt: "A repeat-until loop stops when <code>password_is_valid</code> becomes <code>true</code>. What condition would a do-while loop use to repeat for the same behavior?", solution: "Use <code>while (NOT password_is_valid)</code> with the chosen language's spelling. It repeats while the password remains invalid." },
@@ -179,13 +179,18 @@ export const flowLessons = {
     sections: [
       {
         title: "C-style for loops",
-        code: { label: "JavaScript", content: "for (let i = 0; i < 5; i += 1) {\n  console.log(i);\n}\n\n// Start at 0\n// Continue while i is below 5\n// Add 1 after every iteration\n// The displayed values are 0, 1, 2, 3 and 4" },
-        paragraphs: ["Java, C#, and C++ have closely related syntax. JavaScript does too. Each iteration checks the condition, runs the body, then performs the update."],
+        code: { label: "JavaScript", content: "for (let i = 1; i <= 5; i += 1) {\n  console.log(i);\n}\n\n// Start at 1\n// Continue while i is 5 or less\n// Add 1 after every iteration\n// The displayed values are 1, 2, 3, 4 and 5" },
+        paragraphs: ["Java, C#, and C++ have closely related syntax. JavaScript does too. Each iteration checks the condition, runs the body, then performs the update. This version counts from <code>1</code> through <code>5</code> and includes both endpoints.", "Arrays store values in order, and an <strong>index</strong> is the numbered position used to access one of those values. Many languages give the first array item index <code>0</code>. A loop over such an array commonly starts at <code>0</code> and continues while the index is less than the array's length."],
       },
       {
-        title: "Python range values",
-        code: { label: "Python", content: "# Start defaults to 0 and stop excludes 5\nfor i in range(5):\n    print(i)  # 0, 1, 2, 3, 4\n\n# Start at 2 and stop before 6\nfor i in range(2, 6):\n    print(i)  # 2, 3, 4, 5\n\n# Count down by 2 and stop before 0\nfor i in range(10, 0, -2):\n    print(i)  # 10, 8, 6, 4, 2" },
-        paragraphs: ["The stop value is excluded. Lua's numeric for has different defaults and commonly includes its limit, another reason not to transfer syntax assumptions blindly."],
+        title: "Python ranges and indexes",
+        code: { label: "Python", content: "# The stop value 5 is excluded\nfor i in range(5):\n    print(i)  # 0, 1, 2, 3, 4\n\nplayers = [\"Mina\", \"Bo\", \"Ira\"]\n\n# len(list) returns the length of the list, so it returns 3 in this example\nfor i in range(len(players)):\n    print(players[i])" },
+        paragraphs: ["Python's <code>range</code> excludes its stop value. <code>range(5)</code> produces <code>0</code> through <code>4</code>, which matches the valid indexes of an array containing five items. The expression <code>players[i]</code> accesses the item stored at index <code>i</code>."],
+      },
+      {
+        title: "Lua ranges and indexes",
+        code: { label: "Lua", content: "-- Lua includes the final value\nfor i = 1, 5 do\n  print(i) -- 1, 2, 3, 4, 5\nend\n\nlocal players = {\"Mina\", \"Bo\", \"Ira\"}\n\n-- Lua arrays conventionally begin at index 1\nfor i = 1, #players do\n  print(players[i])\nend" },
+        paragraphs: ["Lua's numeric <code>for</code> includes its final value. Lua arrays conventionally begin at index <code>1</code>, so a loop can start at <code>1</code> and continue through <code>#players</code>. The expression <code>players[i]</code> accesses the item at that index, just as it does in the Python example, although the first valid index is different."],
       },
       {
         title: "Loop boundaries and off-by-one errors",
@@ -214,22 +219,22 @@ export const flowLessons = {
     sections: [
       {
         title: "Iterating directly over values",
-        code: { label: "Multilanguage", highlighter: "multilanguage", content: "/#/ Python\nfor enemy in enemies:\n    enemy.update()\n\n/#/ JavaScript\nfor (const enemy of enemies) {\n  enemy.update();\n}\n\n/#/ C#\nforeach (Enemy enemy in enemies)\n{\n    enemy.Update();\n}" },
+        code: { label: "Multilanguage", highlighter: "multilanguage", content: "/#/ Python\nfor enemy in enemies:\n    enemy.update()\n\n/#/ JavaScript\nfor (let enemy of enemies) {\n  enemy.update();\n}\n\n/#/ C#\nforeach (Enemy enemy in enemies)\n{\n    enemy.Update();\n}" },
         paragraphs: ["Each loop visits every enemy directly. No manual index is needed because the goal is to use the values rather than their positions. This avoids index mistakes and makes the intention obvious."],
       },
       {
         title: "Iterating over keys values and indexes",
-        code: { label: "JavaScript", content: "const items = [\"torch\", \"key\"];\n\n// for...of reads the stored values\nfor (const value of items) {\n  console.log(value); // torch, key\n}\n\n// for...in reads property keys instead\nfor (const key in items) {\n  console.log(key);   // \"0\", \"1\"\n}" },
-        paragraphs: ["When you need both index and value, use the collection's supported enumeration tools, such as Python's <code>enumerate</code> or JavaScript's <code>entries()</code>."],
+        code: { label: "JavaScript", content: "const items = [\"torch\", \"key\"];\n\n// for...of reads the stored values\nfor (let value of items) {\n  console.log(value); // torch, key\n}\n\n// for...in reads property keys instead\nfor (let key in items) {\n  console.log(key);   // \"0\", \"1\"\n}\n\nconst quantities = { torch: 1, key: 2 };\n\n// Object.entries provides each key together with its value\nfor (let [key, value] of Object.entries(quantities)) {\n  console.log(key, value);\n}" },
+        paragraphs: ["JavaScript can provide a key and its value together. <code>Object.entries(quantities)</code> produces pairs such as <code>[\"torch\", 1]</code>. The loop separates each pair into <code>key</code> and <code>value</code>. Arrays offer a similar <code>entries()</code> function when you need each index together with its value."],
       },
       {
         title: "Modifying collections during iteration",
         paragraphs: ["Adding or removing elements from the same collection while iterating may skip items, revisit them, invalidate an iterator or throw an error. The exact behavior depends on the collection and language."],
-        bullets: ["Build a new filtered collection.", "Record changes and apply them after the loop.", "Iterate over a copy when appropriate.", "Use the collection's documented removal mechanism."],
-        note: { title: "Changing elements versus collections", body: "Updating an object's health may be safe while removing that object from the list may be unsafe. Check the actual API contract." },
+        bullets: ["Build a new collection.", "Add the changes to it.", "Use the separate list to modify the original.", "If it's a filtering operation, you can even fully replace the original."],
+        note: { title: "Keep the explored list stable", body: "Changing values on an object inside a collection is safe. The problem is changing the list the loop is currently exploring. Adding or removing an item can shift its positions, so the loop's internal counter will end messed up." },
       },
     ],
-    challenge: { title: "Remove defeated enemies safely", prompt: "Describe a strategy that avoids removing list elements directly inside a foreach loop.", solution: "Create a survivors list or filter containing enemies whose health is above zero and then replace the original list. Another option collects defeated enemies and removes them afterward with documented APIs." },
+    challenge: { title: "Remove defeated enemies safely", prompt: "Describe a strategy that avoids removing list elements directly inside a foreach loop.", solution: "Create a survivors list or filter containing enemies whose health is above zero and then replace the original list. Another option collects defeated enemies and removes them afterward." },
     check: { question: "When is a foreach-style loop the clearest choice?", options: ["When you need each value and not manual index control", "When no repetition is needed", "Only when the collection has one item"], answer: 0, explanation: "It directly expresses the intention to visit every element." },
     sources,
   },
@@ -242,19 +247,24 @@ export const flowLessons = {
     sections: [
       {
         title: "Matching one value against cases",
-        code: { label: "JavaScript", content: "switch (command) {\n  case \"save\":\n    saveGame();\n    break; // Leave the switch after handling save\n\n  case \"load\":\n    loadGame();\n    break;\n\n  case \"quit\":\n    requestQuit();\n    break;\n\n  default:\n    showUnknownCommand(command);\n}" },
+        code: { label: "JavaScript", content: "switch (command) {\n  case \"save\":\n    saveGame();\n    break; // Leave the switch after handling save\n\n  case \"load\":\n    loadGame();\n    break;\n\n  case \"quit\":\n    requestQuit();\n    break;\n\n  default:\n    throw new Error(\"Unknown command \" + command);\n}" },
         paragraphs: ["A switch compares one value with several known cases. In traditional JavaScript, Java and C++ switches, leaving out <code>break</code> may continue into the next case. This is called <strong>fall-through</strong>. C# prevents many accidental forms of it, and newer language features provide other case styles."],
+        note: { title: "Raise an error for an impossible command", body: "If earlier validation guarantees that <code>command</code> is known, reaching <code>default</code> reveals a broken assumption. Throwing an error preserves that evidence and stops corrupted behavior from continuing. The <a href=\"exceptions-recovery.html\">Exceptions and Recovery</a> lesson explains how raised errors travel and where to handle them." },
+      },
+      {
+        title: "Using fall-through on purpose",
+        paragraphs: ["C++ can mark an intentional fall-through with <code>[[fallthrough]]</code>. The <code>Day</code> enum gives each day a named value that <code>switch</code> can compare. When the day is Monday, the first message runs and execution continues into the shared midweek cases."],
+        code: { label: "C++", content: "enum Day {\n  Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday\n};\n\nDay day = Monday;\n\nswitch (day) {\n  case Monday:\n    std::cout << \"It is the start of the week\\n\";\n    [[fallthrough]]; // Continue into the shared weekday code\n\n  case Tuesday:\n  case Wednesday:\n  case Thursday:\n  case Friday:\n    std::cout << \"It is midweek\\n\";\n    break;\n\n  default:\n    std::cout << \"It is the weekend\\n\";\n}" },
       },
       {
         title: "Choosing between switch and if",
-        paragraphs: ["Use a switch when one subject is compared with several distinct alternatives. Use an if-chain when the branches depend on different questions or ordered ranges."],
+        paragraphs: ["Use a switch when one subject is compared with several distinct alternatives. A long series of equality checks can make an if-chain too convoluted to follow. Use an if-chain when the branches depend on different questions or ordered ranges."],
         table: {
           headers: ["Situation", "Usually clearer"],
           rows: [
-            ["One command/state compared to named alternatives", "switch / match"],
-            ["Different variables and unrelated conditions", "if / else if"],
-            ["Threshold ranges such as score >= 90", "Often an ordered if-chain, unless pattern syntax helps"],
-            ["Simple lookup from key to value", "Possibly a map/dictionary instead of control flow"],
+            ["One command/state compared to named alternatives", "<code>switch</code>"],
+            ["Different variables and unrelated conditions", "<code>if</code> / <code>else if</code>"],
+            ["Threshold ranges such as <code>score >= 90</code>", "<code>if</code>"],
           ],
         },
       },
@@ -265,7 +275,7 @@ export const flowLessons = {
         note: { title: "Default and exhaustive cases", body: "A default branch can report invalid input. For deliberately exhaustive enums, compiler checks or explicit failure may better reveal a newly added case." },
       },
     ],
-    challenge: { title: "Map item rarity to colors", prompt: "Choose a switch-like construct or map to translate <code>common</code>, <code>rare</code>, and <code>legendary</code> into UI colors. Explain your choice.", solution: "A map from rarity to color is compact if this is pure data. A switch or match construct is useful if each rarity triggers different behavior. Include a policy for unknown rarity." },
+    challenge: { title: "Map item rarity to colors", prompt: "Choose a <code>switch</code> or map to translate <code>common</code>, <code>rare</code>, and <code>legendary</code> into UI colors. Explain your choice.", solutionCode: { label: "JavaScript", content: "const rarityColors = {\n  common: \"gray\",\n  rare: \"blue\",\n  legendary: \"gold\"\n};\n\nlet color = rarityColors[rarity];\n\n// Unknown rarities reveal missing data instead of choosing a wrong color\nif (color === undefined) {\n  throw new Error(\"Unknown rarity \" + rarity);\n}" } },
     check: { question: "What is a classic switch fall-through bug?", options: ["A case continues into the next case unintentionally.", "The subject becomes a loop.", "Every case is automatically skipped."], answer: 0, explanation: "In languages/forms that permit fall-through, an omitted exit can execute following case code." },
     sources,
   },

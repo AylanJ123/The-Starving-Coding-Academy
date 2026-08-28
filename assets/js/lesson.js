@@ -4,7 +4,7 @@ import { lessons } from "./lessons/lesson-data.js";
 const lessonRoot = document.querySelector("[data-lesson]");
 const STORAGE_KEY = "tsca-completed-lessons";
 const keywordPattern =
-  "ask|show|read|try|catch|except|finally|throw|raise|propagate|convert|exists|add|to|as|play|open|close|load|create|start|enter|record|preserve|release|wait|through|with|using|activate|report|maximum|otherwise|when|if|else|elseif|elif|while|until|repeat|for|each|in|function|method|return|break|continue|class|field|private|property|constructor|new|local|let|const|var|def|string|true|false|null|nil|none|and|or|not";
+  "ask|show|read|try|catch|except|finally|throw|raise|propagate|convert|exists|add|to|as|play|open|close|load|create|start|enter|record|preserve|release|wait|through|with|using|activate|report|maximum|otherwise|when|if|else|elseif|elif|while|until|repeat|for|each|in|of|switch|case|default|match|enum|function|method|return|break|continue|class|field|private|property|constructor|new|local|let|const|var|def|string|true|false|null|nil|none|and|or|not";
 const keywordRegex = new RegExp(`^(?:${keywordPattern})$`, "i");
 
 function escapeHtml(value) {
@@ -18,7 +18,7 @@ function escapeHtml(value) {
 
 function highlightCode(value) {
   const tokenPattern = new RegExp(
-    `(\\/\\/[^\\n]*|#[^\\n]*|--[^\\n]*|"(?:\\\\.|[^"\\\\])*"|'(?:\\\\.|[^'\\\\])*'|\\([A-Za-z_][\\w]*\\)|\\b\\d+(?:\\.\\d+)?\\b|\\b(?:${keywordPattern})\\b)`,
+    `(\\/\\/[^\\n]*|# [^\\n]*|--[^\\n]*|"(?:\\\\.|[^"\\\\])*"|'(?:\\\\.|[^'\\\\])*'|\\([A-Za-z_][\\w]*\\)|\\b\\d+(?:\\.\\d+)?\\b|\\b(?:${keywordPattern})\\b)`,
     "gi"
   );
 
@@ -27,7 +27,7 @@ function highlightCode(value) {
     .map((token) => {
       if (!token) return "";
       const escaped = escapeHtml(token);
-      if (/^(?:\/\/|#|--)/.test(token)) return `<span class="code-comment">${escaped}</span>`;
+      if (/^(?:\/\/|# |--)/.test(token)) return `<span class="code-comment">${escaped}</span>`;
       if (/^["']/.test(token)) return `<span class="code-string">${escaped}</span>`;
       if (/^\([A-Za-z_]\w*\)$/.test(token)) {
         return `(<span class="code-parameter">${escapeHtml(token.slice(1, -1))}</span>)`;
@@ -85,8 +85,8 @@ function codeLanguageLabel(code) {
   const languages = [
     ["JavaScript", /\bJavaScript\b/i],
     ["Python", /\bPython\b/i],
-    ["C#", /\bC#\b/i],
-    ["C++", /\bC\+\+\b/i],
+    ["C#", /C#/i],
+    ["C++", /C\+\+/i],
     ["Java", /\bJava\b/i],
     ["Lua", /\bLua\b/i],
   ].filter(([, pattern]) => pattern.test(evidence));
@@ -94,7 +94,7 @@ function codeLanguageLabel(code) {
   if (/multilanguage/i.test(supplied) || languages.length > 1) return "Multilanguage";
   if (languages.length === 1) return languages[0][0];
   if (/\b(?:const|let)\b|console\.log|addEventListener|createMatch\s*\(/.test(content)) return "JavaScript";
-  if (/\b(?:def|lambda|print|range)\b/.test(content) || /^\s*#/.test(content)) return "Python";
+  if (/\b(?:def|lambda|print|range)\b/.test(content) || /^\s*# /m.test(content)) return "Python";
   if (/\b(?:local|repeat)\b/.test(content) && /\b(?:until|then|end)\b/.test(content)) return "Lua";
   return "Pseudocode";
 }
