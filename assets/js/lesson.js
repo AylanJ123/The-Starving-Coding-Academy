@@ -1,5 +1,5 @@
-import { flattenNavigation } from "./navigation.js?v=2";
-import { lessons } from "./lessons/lesson-data.js?v=2";
+import { flattenNavigation } from "./navigation.js";
+import { lessons } from "./lessons/lesson-data.js";
 
 const lessonRoot = document.querySelector("[data-lesson]");
 const STORAGE_KEY = "tsca-completed-lessons";
