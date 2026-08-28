@@ -1,12 +1,21 @@
 # The Starving Coding Academy
 
-A beginner-friendly programming curriculum built as a static GitHub Pages site.
-It teaches transferable concepts before language specialization, with examples
-from Python, JavaScript, Java, C#, C++, and Lua.
+A completely free, ad-less programming course for beginners. The academy teaches
+transferable concepts before language specialization, using examples from Python,
+JavaScript, Java, C#, C++, and Lua.
+
+The course is published as a lightweight static site. No account, installation,
+or framework is required to start learning.
+
+## Questions, Suggestions, And Community
+
+Questions are welcome, and student feedback helps improve the lessons. Join the
+[Starving Coding Academy Discord server](https://discord.gg/KzPR9cRBgs) to ask for
+help, suggest a change, or talk about what you are building.
 
 ## What Is Included
 
-- 42 curriculum pages across seven course units
+- 42 lessons across seven connected courses
 - Nested, searchable lesson navigation
 - Previous/next lesson controls
 - Learning goals, comparisons, code examples, and short challenges
@@ -15,6 +24,7 @@ from Python, JavaScript, Java, C#, C++, and Lua.
 - Light and dark themes
 - Responsive desktop and mobile layouts
 - Reference links to official language documentation
+- Shareable social cards for the homepage and every lesson
 
 ## Project Structure
 
@@ -27,8 +37,10 @@ assets/js/layout.js               Sidebar and responsive navigation
 assets/js/lesson.js               Lesson renderer and interactions
 assets/js/theme.js                Theme preference
 assets/js/lessons/                Curriculum content by course unit
+assets/images/social/             Generated social-preview cards
 pages/                             Generated public lesson routes
 tools/generate-pages.mjs          Page-shell generator
+tools/generate-social-cards.mjs   Social-card generator
 tools/check-site.mjs              Route/content integrity checks
 private_files/                    Private curriculum planning sources
 ```
@@ -69,6 +81,20 @@ npm run check
 
 The checker verifies that navigation, lesson data, generated HTML, and internal
 course links agree.
+
+## Updating Social Cards
+
+The social-card generator accepts `home`, a lesson slug, or `--all`. It requires
+the optional `sharp` package.
+
+```powershell
+npm install --no-save sharp
+node tools/generate-social-cards.mjs primitive-values
+node tools/generate-social-cards.mjs home
+node tools/generate-social-cards.mjs --all
+```
+
+Generating one target leaves every other image untouched.
 
 ## Running Locally
 

@@ -183,6 +183,10 @@ h1 {
   font-weight: 750;
 }
 
+.hero-joke strong {
+  font-style: italic;
+}
+
 .button {
   display: inline-flex;
   align-items: center;
@@ -195,6 +199,33 @@ h1 {
   border-color: var(--accent);
   background: var(--accent);
   color: #ffffff;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.community-button {
+  min-height: 58px;
+  gap: 10px;
+  padding: 0 24px;
+  border-color: color-mix(in srgb, #5865f2 58%, var(--line));
+  background: var(--surface);
+  color: var(--text);
+  font-size: 1.05rem;
+}
+
+.community-button:hover {
+  border-color: #5865f2;
+  background: color-mix(in srgb, #5865f2 12%, var(--surface));
+}
+
+.community-button img {
+  width: 24px;
+  height: 24px;
 }
 
 .app-shell {
