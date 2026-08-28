@@ -15,11 +15,13 @@ export const practiceLessons = {
     sections: [
       {
         title: "The five-minute learning loop",
+        paragraphs: ["Small experiments produce useful feedback quickly. Predicting first gives you something concrete to compare with the real result."],
         steps: ["Pick one tiny behavior.", "Predict the result before running.", "Write the smallest code that could prove the idea.", "Run it and capture the actual result or error.", "Explain one difference, then change one thing."],
         note: { title: "Struggle needs a feedback loop", body: "Being stuck for hours is not automatically productive. Shrink the task, inspect evidence, consult documentation, and ask a specific question." },
       },
       {
         title: "Use four kinds of practice",
+        paragraphs: ["Different exercises train different parts of programming. Rotate between reading code, repairing it, changing it and creating a small behavior yourself."],
         cards: [
           { title: "Trace", body: "Predict variables and output line by line without executing." },
           { title: "Repair", body: "Fix one syntax, runtime, or logic problem and explain the cause." },
@@ -29,6 +31,7 @@ export const practiceLessons = {
       },
       {
         title: "Make difficulty adjustable",
+        paragraphs: ["A useful exercise should require thought without burying the lesson under unrelated tools. Change one dimension when the task feels far too easy or too hard."],
         table: {
           headers: ["Too easy?", "Productive zone", "Too hard?"],
           rows: [
@@ -46,7 +49,7 @@ export const practiceLessons = {
         ],
       },
     ],
-    challenge: { title: "Write a practice contract", prompt: "Choose one lesson and invent a 10-minute exercise with an input, expected output, and one edge case.", solution: "A boolean exercise could use player level and <code>hasInvite</code> as input. Its output states whether ranked queue is allowed. Testing the exact level threshold supplies an edge case. A precise expected result makes the exercise testable." },
+    challenge: { title: "Write a practice contract", prompt: "Choose one lesson and invent a ten-minute exercise with an input, expected output and one edge case.", solution: "A boolean exercise could use <code>player_level</code> and <code>has_invite</code> as input. Its output states whether ranked queue is allowed. Testing the exact level threshold supplies an edge case. A precise expected result makes the exercise testable." },
     check: { question: "Which activity builds a stronger mental model?", options: ["Copy code without predicting it.", "Predict, run, compare, and explain a mismatch.", "Avoid errors at all costs."], answer: 1, explanation: "The comparison between expectation and evidence reveals exactly where the model needs adjustment." },
     sources,
   },
@@ -60,37 +63,37 @@ export const practiceLessons = {
       {
         title: "01 Damage calculator",
         paragraphs: ["Predict the three printed values. Then change armor so the minimum-damage rule activates."],
-        code: { label: "Python", content: "def calculate_damage(attack, armor):\n    return max(1, attack - armor)\n\nfor armor in (2, 8, 20):\n    damage = calculate_damage(10, armor)\n    print(f\"Armor {armor}: {damage} damage\")" },
+        code: { label: "Python", content: "def calculate_damage(attack, armor):\n    # Damage can never fall below 1\n    return max(1, attack - armor)\n\n# Run the same rule with three armor values\nfor armor in (2, 8, 20):\n    damage = calculate_damage(10, armor)\n    print(f\"Armor {armor}: {damage} damage\")" },
         reveals: [{ question: "Reveal trace", answer: "The damage values are 8, 2, and 1. The final subtraction is negative, but <code>max(1, ...)</code> enforces minimum damage." }],
       },
       {
         title: "02 Cooldown gate",
         paragraphs: ["Predict which calls print <code>Cast!</code>. Then add a mana requirement."],
-        code: { label: "JavaScript", content: "function tryCast(cooldownReady, isSilenced) {\n  const canCast = cooldownReady && !isSilenced;\n  if (canCast) {\n    console.log(\"Cast!\");\n  } else {\n    console.log(\"Blocked.\");\n  }\n}\n\ntryCast(true, false);\ntryCast(true, true);\ntryCast(false, false);" },
+        code: { label: "JavaScript", content: "function tryCast(cooldownReady, isSilenced) {\n  // Casting requires a ready cooldown and no silence effect\n  const canCast = cooldownReady && !isSilenced;\n\n  if (canCast) {\n    console.log(\"Cast!\");\n  } else {\n    console.log(\"Blocked.\");\n  }\n}\n\n// Test three combinations\ntryCast(true, false);\ntryCast(true, true);\ntryCast(false, false);" },
         reveals: [{ question: "Reveal trace", answer: "Only the first call casts. A mana extension could add <code>hasEnoughMana</code> as a parameter and require it in <code>canCast</code>." }],
       },
       {
         title: "03 Inventory search",
         paragraphs: ["Trace when the loop stops. Then make the search case-insensitive using an appropriate Java string method."],
-        code: { label: "Java", content: "String[] inventory = {\"Torch\", \"Rope\", \"Moon Key\", \"Potion\"};\nString wanted = \"Moon Key\";\nboolean found = false;\n\nfor (String item : inventory) {\n    if (item.equals(wanted)) {\n        found = true;\n        break;\n    }\n}\n\nSystem.out.println(found);" },
+        code: { label: "Java", content: "String[] inventory = {\"Torch\", \"Rope\", \"Moon Key\", \"Potion\"};\nString wanted = \"Moon Key\";\nboolean found = false;\n\nfor (String item : inventory) {\n    if (item.equals(wanted)) {\n        found = true;\n        break; // Stop because the answer is already known\n    }\n}\n\nSystem.out.println(found);" },
         reveals: [{ question: "Reveal trace", answer: "The loop checks Torch, Rope, and Moon Key, sets found to true, then breaks before Potion. <code>item.equalsIgnoreCase(wanted)</code> is one case-insensitive option." }],
       },
       {
         title: "04 Player invariant",
         paragraphs: ["Predict health after both calls. Then decide what negative damage should do."],
-        code: { label: "C#", content: "public class Player\n{\n    public int Health { get; private set; } = 100;\n\n    public void TakeDamage(int amount)\n    {\n        Health = Math.Max(0, Health - amount);\n    }\n}\n\nvar player = new Player();\nplayer.TakeDamage(35);\nplayer.TakeDamage(80);\nConsole.WriteLine(player.Health);" },
+        code: { label: "C#", content: "public class Player\n{\n    // Other code can read Health but only this class can set it\n    public int Health { get; private set; } = 100;\n\n    public void TakeDamage(int amount)\n    {\n        // Clamp the result so health never becomes negative\n        Health = Math.Max(0, Health - amount);\n    }\n}\n\nvar player = new Player();\nplayer.TakeDamage(35);\nplayer.TakeDamage(80);\nConsole.WriteLine(player.Health);" },
         reveals: [{ question: "Reveal trace", answer: "Health becomes 65, then clamps to 0. A robust contract should reject negative damage, clamp it, or model healing separately rather than silently increasing health." }],
       },
       {
         title: "05 Wrapped selection",
         paragraphs: ["Trace six outputs. Then change the code to move backward and wrap from the first item to the last."],
-        code: { label: "Lua", content: "local items = {\"sword\", \"bow\", \"staff\"}\nlocal selected = 1\n\nfor turn = 1, 6 do\n  print(items[selected])\n  selected = (selected % #items) + 1\nend" },
+        code: { label: "Lua", content: "local items = {\"sword\", \"bow\", \"staff\"}\nlocal selected = 1\n\nfor turn = 1, 6 do\n  print(items[selected])\n\n  -- Move forward and wrap back to index 1 after the last item\n  selected = (selected % #items) + 1\nend" },
         reveals: [{ question: "Reveal trace", answer: "It prints sword, bow, staff, sword, bow, staff. Lua sequences conventionally begin at index 1, so the wrapping formula differs from a zero-based array formula." }],
       },
       {
         title: "06 Validate before using",
         paragraphs: ["List the output for <code>12</code>, <code>-3</code>, and <code>many</code>. Then add an upper limit of 99."],
-        code: { label: "Python", content: "raw = input(\"Potion count: \")\ntry:\n    count = int(raw)\n    if count < 0:\n        print(\"Count cannot be negative.\")\n    else:\n        print(f\"Stored {count} potions.\")\nexcept ValueError:\n    print(\"Use a whole number.\")" },
+        code: { label: "Python", content: "raw = input(\"Potion count: \")\n\ntry:\n    # Conversion may fail when the text is not a whole number\n    count = int(raw)\n\n    if count < 0:\n        print(\"Count cannot be negative.\")\n    else:\n        print(f\"Stored {count} potions.\")\nexcept ValueError:\n    # Recover from invalid text without ending the program\n    print(\"Use a whole number.\")" },
         reveals: [{ question: "Reveal trace", answer: "12 is stored, -3 receives the negative warning, and many receives the whole-number warning. Add another range check such as <code>elif count > 99</code>." }],
       },
     ],
@@ -109,7 +112,7 @@ export const practiceLessons = {
         title: "Round 1 · Concepts",
         reveals: [
           { question: "1. What is the difference between syntax and logic?", answer: "Syntax determines whether code follows the language's structural rules. Logic determines whether valid instructions produce the intended behavior." },
-          { question: "2. What is a variable?", answer: "A name associated with a value or state according to the language's binding and storage rules. The box analogy provides one simplified mental model." },
+          { question: "2. What is a variable?", answer: "A name that lets code find a value. Languages differ in how that name connects to storage, so the box analogy is only one simplified mental model." },
           { question: "3. Do dynamically typed languages have types?", answer: "Yes. Values have types that are checked during execution. Dynamic languages still work with types." },
           { question: "4. Why are booleans foundational?", answer: "They turn questions and comparisons into values that branches, loops, filters, and permissions can use." },
           { question: "5. Why can a comment become harmful?", answer: "If behavior changes but the comment does not, it confidently tells readers something false." },
@@ -117,7 +120,7 @@ export const practiceLessons = {
       },
       {
         title: "Round 2 · Trace",
-        code: { label: "pseudocode", content: "coins = 10\nprices = [3, 8, 2]\n\nfor each price in prices:\n    if price <= coins:\n        coins = coins - price\n    else:\n        show \"skip\"\n\nshow coins" },
+        code: { label: "Pseudocode", content: "coins = 10\nprices = [3, 8, 2]\n\n# Visit every price in order\nFOR EACH price IN prices\n    IF price <= coins\n        coins = coins - price\n    ELSE\n        SHOW \"skip\"\n\nSHOW coins" },
         reveals: [
           { question: "6. What is the final coin value?", answer: "5. Buy price 3 and reach 7 coins. Skip price 8. Buy price 2 and reach 5 coins." },
           { question: "7. How many times does the loop body run?", answer: "Three times because the loop visits each price. One purchase branch is skipped." },
@@ -126,9 +129,9 @@ export const practiceLessons = {
       },
       {
         title: "Round 3 · Debug",
-        code: { label: "Python", content: "def can_enter(level, has_pass):\n    if level >= 10 or has_pass:\n        print(\"Welcome\")\n\nallowed = can_enter(3, True)\nif allowed:\n    open_gate()" },
+        code: { label: "Python", content: "def can_enter(level, has_pass):\n    if level >= 10 or has_pass:\n        print(\"Welcome\")\n    # No return statement means Python returns None\n\nallowed = can_enter(3, True)\nif allowed:\n    open_gate()" },
         reveals: [
-          { question: "9. Why does open_gate not run?", answer: "The function prints but does not return a true value. In Python it implicitly returns <code>None</code>, which is false in this condition." },
+          { question: "9. Why does <code>open_gate</code> not run?", answer: "The function prints but does not return a true value. In Python it implicitly returns <code>None</code>, which is false in this condition." },
           { question: "10. What focused fix preserves separation?", answer: "Return the boolean condition from <code>can_enter</code>, then let the caller decide whether to print and open the gate." },
           { question: "11. Is the OR rule necessarily a bug?", answer: "Not enough information. If a pass is an override, OR is correct. If level and pass are both required, use AND. Clarify the requirement before changing code." },
         ],
@@ -136,7 +139,7 @@ export const practiceLessons = {
       {
         title: "Round 4 · Design",
         reveals: [
-          { question: "12. List the contract for calculateDamage.", answer: "Define expected attack/defense types and ranges, the returned damage rule, whether minimum damage exists, and how invalid inputs are handled. Avoid hidden UI or file effects." },
+          { question: "12. List the contract for <code>calculate_damage</code>.", answer: "Define expected attack and defense types and ranges, the returned damage rule, whether minimum damage exists and how invalid inputs are handled. Avoid hidden UI or file effects." },
           { question: "13. When is foreach better than a counter loop?", answer: "When the goal is to visit every value and the index/progression itself is irrelevant." },
           { question: "14. When is a map better than switch?", answer: "When discrete keys simply map to data and no case needs distinct behavior." },
           { question: "15. What makes a debugging question useful?", answer: "It states expected versus actual behavior, reproduction steps, exact evidence, relevant code/location, and what has already been tested." },
@@ -156,7 +159,7 @@ export const practiceLessons = {
         note: { title: "Measure skill through action", body: "Page completion alone cannot measure readiness. You are ready for a beginner project when you can make small predictions, investigate errors and modify working code with growing independence." },
       },
     ],
-    challenge: { title: "Design one final feature", prompt: "Describe a locked chest using state, a boolean rule, one method or function contract, input, output, and one failure case. Then implement it in your chosen language.", solution: "A strong design names state such as <code>isLocked</code> and <code>requiredKeyId</code>. It calculates <code>canOpen</code> from inventory membership. It exposes <code>tryOpen(player)</code> and returns a result. It receives an interaction as input and produces an animation or message as output. It handles a missing or wrong key without corrupting inventory." },
+    challenge: { title: "Design one final feature", prompt: "Describe a locked chest using state, a boolean rule, one method or function contract, input, output and one failure case. Then implement it in your chosen language.", solution: "A strong design names state such as <code>is_locked</code> and <code>required_key_id</code>. It calculates <code>can_open</code> from inventory membership. It exposes <code>try_open(player)</code> and returns a result. It receives an interaction as input and produces an animation or message as output. It handles a missing or wrong key without corrupting inventory." },
     check: { question: "What is the most useful response to a missed question?", options: ["Hide the result.", "Identify the concept, revisit its example, and test a smaller case.", "Memorize the answer without understanding it."], answer: 1, explanation: "A missed question locates the next practice target. That is the quiz doing its job." },
     sources,
   },

@@ -191,11 +191,12 @@ export const operatorLessons = {
   "input-output": {
     kicker: "Course 04 · Input And Output",
     title: "Programs become useful at their boundaries",
-    lead: "Input brings information into a program. Output exposes a result. Every boundary from a keyboard to a save file or network needs validation, clear feedback and failure handling.",
+    lead: "Input brings information into a program and output communicates what happened. Keyboards and screens are only two examples. Files, controllers, databases and networks also move information across a program's boundaries.",
     goals: ["identify input and output beyond the console", "validate untrusted input", "separate core logic from interface code"],
     sections: [
       {
         title: "I/O is larger than print and input",
+        paragraphs: ["Input and output are often shortened to <strong>I/O</strong>. Input is information the program receives. Output is information or action the program produces. Both can involve people, stored data, hardware or another program."],
         cards: [
           { title: "Human input", body: "Keyboard, mouse, touch, controller, microphone, form, or command." },
           { title: "Stored input", body: "Configuration, save data, images, database records, or imported assets." },
@@ -204,23 +205,24 @@ export const operatorLessons = {
         ],
       },
       {
-        title: "Treat outside data as a claim",
+        title: "Validate outside data before using it",
+        paragraphs: ["Outside data can be missing, malformed or deliberately harmful. Validate it before the rest of the program depends on it. A successful check turns uncertain input into a value with rules the program can trust."],
         steps: ["Receive the raw value.", "Check presence, shape, range, length, and allowed choices.", "Convert it into an internal type.", "Use the validated value in core logic.", "Return useful feedback without exposing secrets."],
-        code: { label: "pseudocode · validate a menu choice", content: "raw_choice = READ \"Choose 1 to 3\"\nchoice = TRY CONVERT raw_choice TO integer\n\nIF conversion failed OR choice is outside 1 to 3\n    SHOW \"Enter 1, 2, or 3\"\nELSE\n    SHOW \"Loading option\" and choice" },
+        code: { label: "Pseudocode", content: "REPEAT\n    # Request fresh input on every attempt\n    raw_choice = READ \"Choose 1 to 3\"\n\n    # Convert only if the text represents a whole number\n    choice = TRY CONVERT raw_choice TO INTEGER\n\n    IF conversion failed OR choice is outside 1 to 3\n        SHOW \"That failed. Enter 1, 2, or 3\"\n        LOOP BACK TO START\n\n    # A valid choice can leave the input loop\n    STOP REPEATING\n\nSHOW \"Loading option \" and choice" },
         note: { title: "Security begins here", body: "Validation prevents crashes and protects security boundaries. Untrusted input needs appropriate handling before it becomes a command, query, file path or HTML fragment." },
       },
       {
         title: "Keep logic testable",
-        code: { label: "pseudocode · separate boundary and rule", content: "function calculate_damage(attack, defense):\n    return maximum(1, attack - defense)\n\nraw_attack = read_input()\nattack = validate_integer(raw_attack)\ndamage = calculate_damage(attack, enemy_defense)\nshow_output(damage)" },
-        paragraphs: ["When calculation code does not directly depend on a screen, keyboard, or network, you can test it with simple values. The boundary code converts the messy outside world into a clean internal contract."],
+        code: { label: "Pseudocode", content: "# This function only needs trusted numbers\nFUNCTION calculate_damage(attack, defense)\n    RETURN maximum(1, attack - defense)\n\n# Boundary code reads and validates the outside value\nraw_attack = READ input\nattack = VALIDATE raw_attack AS INTEGER\n\n# Core logic receives a clean value and returns a result\ndamage = calculate_damage(attack, enemy_defense)\nSHOW damage" },
+        paragraphs: ["Keep input handling separate from the rule that uses the value. Then <code>calculate_damage</code> can be tested with ordinary numbers without opening a screen, pressing a key or making a network request. The boundary handles messy outside data while the function handles one clear calculation."],
       },
       {
         title: "Output is part of the conversation",
         bullets: ["Say what succeeded, not merely “Done.”", "On failure, explain what the user can change next.", "Logs should include useful context but exclude passwords, tokens, and sensitive personal data.", "Accessible output needs more than color alone and should work with relevant assistive technology."],
       },
     ],
-    challenge: { title: "Design a safe username boundary", prompt: "List validation rules and feedback for a username field. Avoid inventing restrictions you cannot justify.", solution: "A useful answer trims accidental outer whitespace, requires a documented length range, allows the character set the product supports, rejects control characters, reports the specific failing rule, checks uniqueness on the server, and treats server validation as the security boundary." },
-    check: { question: "Why separate calculate_damage from keyboard input?", options: ["Pure calculation logic becomes easier to test and reuse.", "Functions cannot read keyboards.", "Input is always dangerous and should be deleted."], answer: 0, explanation: "A clean boundary lets the same rule serve a console, game, test, or network request." },
+    challenge: { title: "Design a safe username boundary", prompt: "List reasonable validation rules and useful feedback for a <code>username</code> field. Give a reason for every restriction you add.", solution: "Trim extra whitespace. Check the allowed length and characters. Reject control characters and tell the user which rule failed. Check uniqueness and every security rule again on the server. Browser checks and game-client checks can improve feedback, but they cannot enforce security. Anything running on the player's device can be modified or bypassed." },
+    check: { question: "Why separate <code>calculate_damage</code> from keyboard input?", options: ["The calculation becomes easier to test and reuse.", "Functions cannot read keyboards.", "Input is always dangerous and should be deleted."], answer: 0, explanation: "A clean boundary lets the same rule serve a console, game, test, or network request." },
     sources,
   },
 };
