@@ -59,7 +59,7 @@ export const syntaxLessons = {
         title: "Syntax lessons",
         links: [
           { title: "Values And Variables", body: "Give changing state a useful name.", href: "values-variables.html" },
-          { title: "Primitive Values", body: "Meet numbers, text, and other basic values.", href: "primitive-values.html" },
+          { title: "Basic Values", body: "Meet numbers, text, and other basic values.", href: "primitive-values.html" },
           { title: "Strong Typing", body: "Understand what type rules protect.", href: "strong-typing.html" },
           { title: "Complex Types", body: "Group values into useful structures.", href: "complex-types.html" },
           { title: "Why Booleans Matter", body: "Turn questions into control flow.", href: "booleans.html" },

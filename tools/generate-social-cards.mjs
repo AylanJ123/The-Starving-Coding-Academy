@@ -34,6 +34,17 @@ const navigationTitles = new Map(
     })
     .filter(Boolean),
 );
+const lessonEntries = Object.entries(lessons);
+const availableTargets = new Set(["home", ...lessonEntries.map(([slug]) => slug)]);
+const requestedTargets = process.argv.slice(2);
+const generateEverything = requestedTargets.length === 0 || requestedTargets.includes("--all");
+const targets = new Set(generateEverything ? availableTargets : requestedTargets);
+
+for (const target of targets) {
+  if (!availableTargets.has(target)) {
+    throw new Error(`Unknown social card target "${target}". Use home or a lesson slug.`);
+  }
+}
 
 function escapeXml(value) {
   return String(value)
@@ -105,13 +116,17 @@ async function homeOverlay() {
 }
 
 await mkdir(outputDirectory, { recursive: true });
-await sharp(backgroundPath)
-  .resize(1200, 630, { fit: "fill" })
-  .composite([{ input: await homeOverlay(), top: 0, left: 0 }])
-  .png({ compressionLevel: 9 })
-  .toFile(path.join(outputDirectory, "home.png"));
+if (targets.has("home")) {
+  await sharp(backgroundPath)
+    .resize(1200, 630, { fit: "fill" })
+    .composite([{ input: await homeOverlay(), top: 0, left: 0 }])
+    .png({ compressionLevel: 9 })
+    .toFile(path.join(outputDirectory, "home.png"));
+}
 
-for (const [[slug], index] of Object.entries(lessons).map((entry, index) => [entry, index])) {
+for (const [[slug], index] of lessonEntries.map((entry, index) => [entry, index])) {
+  if (!targets.has(slug)) continue;
+
   const navigationTitle = navigationTitles.get(slug);
   if (!navigationTitle) throw new Error(`No navigation title found for ${slug}.`);
 
@@ -122,4 +137,6 @@ for (const [[slug], index] of Object.entries(lessons).map((entry, index) => [ent
     .toFile(path.join(outputDirectory, `${slug}.png`));
 }
 
-console.log(`Generated ${Object.keys(lessons).length} lesson social cards and one landing card.`);
+const generatedLessonCount = [...targets].filter((target) => target !== "home").length;
+const generatedHomeCount = targets.has("home") ? 1 : 0;
+console.log(`Generated ${generatedLessonCount} lesson social card${generatedLessonCount === 1 ? "" : "s"} and ${generatedHomeCount} landing card${generatedHomeCount === 1 ? "" : "s"}.`);

@@ -26,7 +26,7 @@ export const navigation = [
         href: "pages/values-variables.html",
         children: [{ title: "Comments", href: "pages/comments.html" }],
       },
-      { title: "Primitive Values", href: "pages/primitive-values.html" },
+      { title: "Basic Values", href: "pages/primitive-values.html" },
       { title: "Strong Typing", href: "pages/strong-typing.html" },
       { title: "Complex Types", href: "pages/complex-types.html" },
       { title: "Why Booleans Matter", href: "pages/booleans.html" },
