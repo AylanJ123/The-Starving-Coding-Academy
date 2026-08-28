@@ -3,6 +3,7 @@ import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { lessons } from "../assets/js/lessons/lesson-data.js";
+import { flattenNavigation } from "../assets/js/navigation.js";
 
 const require = createRequire(import.meta.url);
 let sharp;
@@ -16,6 +17,23 @@ try {
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const backgroundPath = path.join(projectRoot, "assets", "images", "social-card-background.png");
 const outputDirectory = path.join(projectRoot, "assets", "images", "social");
+const textAreaLeft = 0;
+const textAreaRight = 760;
+const textAreaPadding = 120;
+const textCenterX = (textAreaLeft + textAreaRight) / 2;
+const textCenterY = 355;
+const textMaximumWidth = textAreaRight - textAreaLeft - textAreaPadding * 2;
+const fontSize = 46;
+const lineHeight = 56;
+const fontFamily = '"Segoe Print", "Segoe Script", "Segoe UI", sans-serif';
+const navigationTitles = new Map(
+  flattenNavigation()
+    .map((item) => {
+      const match = item.href?.match(/^pages\/(.+)\.html$/);
+      return match ? [match[1], item.title] : null;
+    })
+    .filter(Boolean),
+);
 
 function escapeXml(value) {
   return String(value)
@@ -26,14 +44,29 @@ function escapeXml(value) {
     .replaceAll("'", "&apos;");
 }
 
-function wrapTitle(title, maximumCharacters) {
-  const words = title.split(/\s+/);
+const measuredTextWidths = new Map();
+
+async function measureTextWidth(value) {
+  if (measuredTextWidths.has(value)) return measuredTextWidths.get(value);
+
+  const measurement = Buffer.from(`
+    <svg width="1600" height="120" xmlns="http://www.w3.org/2000/svg">
+      <text x="10" y="70" fill="#000000" font-family='${fontFamily}' font-size="${fontSize}" font-weight="400">${escapeXml(value)}</text>
+    </svg>
+  `);
+  const { info } = await sharp(measurement).trim().png().toBuffer({ resolveWithObject: true });
+  measuredTextWidths.set(value, info.width);
+  return info.width;
+}
+
+async function wrapText(value) {
+  const words = value.split(/\s+/);
   const lines = [];
   let line = "";
 
   for (const word of words) {
     const candidate = line ? `${line} ${word}` : word;
-    if (candidate.length <= maximumCharacters || !line) {
+    if (!line || (await measureTextWidth(candidate)) <= textMaximumWidth) {
       line = candidate;
     } else {
       lines.push(line);
@@ -42,50 +75,49 @@ function wrapTitle(title, maximumCharacters) {
   }
 
   if (line) lines.push(line);
-  return lines.slice(0, 3);
+  return lines;
 }
 
-function textOverlay(lesson, lessonNumber) {
-  const label = `Lesson ${String(lessonNumber).padStart(2, "0")}: ${lesson.title}`;
-  const fontSize = label.length > 60 ? 36 : 40;
-  const lines = wrapTitle(label, fontSize === 36 ? 31 : 28);
-  const titleLines = lines
-    .map((line, index) => `<text x="58" y="${355 + index * 50}" class="title">${escapeXml(line)}</text>`)
+async function createTextOverlay(label, className) {
+  const lines = await wrapText(label);
+  const firstLineCenter = textCenterY - ((lines.length - 1) * lineHeight) / 2;
+  const textLines = lines
+    .map((line, index) => `<text x="${textCenterX}" y="${firstLineCenter + index * lineHeight}" text-anchor="middle" dominant-baseline="middle" class="${className}">${escapeXml(line)}</text>`)
     .join("");
 
   return Buffer.from(`
     <svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
       <style>
-        .title { fill: #484848; font: 400 ${fontSize}px "Comic Sans MS", "Segoe Print", cursive; }
+        .${className} { fill: #000000; font: 400 ${fontSize}px ${fontFamily}; }
       </style>
-      ${titleLines}
+      ${textLines}
     </svg>
   `);
 }
 
-function homeOverlay() {
-  return Buffer.from(`
-    <svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
-      <style>
-        .home-copy { fill: #484848; font: 400 42px "Comic Sans MS", "Segoe Print", cursive; }
-      </style>
-      <text x="58" y="355" class="home-copy">42 lessons. 6 languages.</text>
-      <text x="58" y="407" class="home-copy">Completely free.</text>
-    </svg>
-  `);
+async function textOverlay(navigationTitle, lessonNumber) {
+  const label = `Lesson ${String(lessonNumber).padStart(2, "0")}: ${navigationTitle}`;
+  return createTextOverlay(label, "title");
+}
+
+async function homeOverlay() {
+  return createTextOverlay("42 lessons and completely free :D", "home-copy");
 }
 
 await mkdir(outputDirectory, { recursive: true });
 await sharp(backgroundPath)
   .resize(1200, 630, { fit: "fill" })
-  .composite([{ input: homeOverlay(), top: 0, left: 0 }])
+  .composite([{ input: await homeOverlay(), top: 0, left: 0 }])
   .png({ compressionLevel: 9 })
   .toFile(path.join(outputDirectory, "home.png"));
 
-for (const [[slug, lesson], index] of Object.entries(lessons).map((entry, index) => [entry, index])) {
+for (const [[slug], index] of Object.entries(lessons).map((entry, index) => [entry, index])) {
+  const navigationTitle = navigationTitles.get(slug);
+  if (!navigationTitle) throw new Error(`No navigation title found for ${slug}.`);
+
   await sharp(backgroundPath)
     .resize(1200, 630, { fit: "fill" })
-    .composite([{ input: textOverlay(lesson, index + 1), top: 0, left: 0 }])
+    .composite([{ input: await textOverlay(navigationTitle, index + 1), top: 0, left: 0 }])
     .png({ compressionLevel: 9 })
     .toFile(path.join(outputDirectory, `${slug}.png`));
 }

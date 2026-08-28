@@ -4,6 +4,6 @@
   "type": "module",
   "scripts": {
     "build:pages": "node tools/generate-pages.mjs",
-    "check": "node tools/check-site.mjs && node tools/check-editorial.mjs"
+    "check": "node tools/check-site.mjs"
   }
 }

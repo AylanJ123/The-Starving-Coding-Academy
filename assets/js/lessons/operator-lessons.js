@@ -9,7 +9,7 @@ const sources = [
 export const operatorLessons = {
   operators: {
     kicker: "Course 03 · Operators",
-    title: "Operators make values do work",
+    title: "Operators and operands",
     lead: "Operators calculate, compare, combine, assign and transform values. Their symbols look compact because programmers use them constantly. Each language still defines its own behavior.",
     goals: ["identify unary, binary, and assignment operators", "use precedence without relying on memory", "check language-specific operator behavior"],
     sections: [
@@ -19,7 +19,7 @@ export const operatorLessons = {
         paragraphs: ["An operand is a value that an operator uses. In <code>coins + bonus</code>, the values <code>coins</code> and <code>bonus</code> are operands, while <code>+</code> is the operator. Some operators use one operand, such as <code>-damage</code>. Others use two, such as <code>coins + bonus</code>."],
       },
       {
-        title: "Families of work",
+        title: "Operator categories",
         links: [
           { title: "String Concatenation", body: "Combine text without surprising conversions.", href: "string-concatenation.html" },
           { title: "Mathematical Operators", body: "Calculate and understand numeric edge cases.", href: "mathematical-operators.html" },
@@ -28,13 +28,13 @@ export const operatorLessons = {
         ],
       },
       {
-        title: "Precedence decides grouping",
+        title: "Operator precedence and grouping",
         code: { label: "Pseudocode", content: "2 + 3 * 4\n# Multiplication runs first, so the result is 14\n\n(2 + 3) * 4\n# Parentheses make addition run first, so the result is 20\n\nnot (ready and connected)\n# Without parentheses, 'not' only flips 'ready'. Here instead it will flip the whole thing." },
         paragraphs: ["When an expression contains several operators, the language follows a priority order called precedence. Higher-priority operations run first. Parentheses let you choose the grouping yourself and make that choice easy to see."],
-        note: { title: "Make the priority visible", body: "Multiplication usually has higher priority than addition. When different operators appear together, use parentheses to show readers which operation should happen first." },
+        note: { title: "Displaying operation order", body: "Multiplication usually has higher priority than addition. When different operators appear together, use parentheses to show readers which operation should happen first." },
       },
       {
-        title: "Overloading changes behavior",
+        title: "Operator behavior by type",
         paragraphs: ["The meaning of an operator can depend on the operand types and the language. JavaScript uses <code>+</code> to join strings, while Lua uses <code>..</code> for the same job. Check both the values and the language before predicting the result."],
         code: { label: "Multilanguage", content: "// JavaScript\n\"Starving \" + \"Academy\"\n\n-- Lua\n\"Starving \" .. \"Academy\"" },
       },
@@ -45,17 +45,17 @@ export const operatorLessons = {
 
   "string-concatenation": {
     kicker: "Operators · Lesson 01",
-    title: "Build messages from values",
+    title: "Joining and formatting strings",
     lead: "String concatenation joins pieces of text. Interpolation and formatting often communicate mixed text-and-value output more clearly, especially when conversions or layout matter.",
     goals: ["distinguish numeric addition from text joining", "use interpolation for readable messages", "avoid accidental coercion"],
     sections: [
       {
-        title: "Joining follows text rules",
+        title: "Text concatenation rules",
         code: { label: "conceptual results", content: "10 + 5       -> 15\n\"10\" + \"5\"   -> \"105\" in languages where + joins strings\n\"HP: \" + 10  -> language-dependent: conversion or type error" },
         paragraphs: ["When one operand is text and one is numeric, languages disagree. JavaScript often coerces a value to text with <code>+</code>. Python rejects direct string-plus-integer concatenation. Explicit formatting makes intention clearer."],
       },
       {
-        title: "Put values inside text",
+        title: "String interpolation",
         paragraphs: ["Programs often need to place changing values inside a fixed sentence. Interpolation and formatting let you write the sentence once, then mark where values such as <code>name</code> and <code>coins</code> belong. This is usually easier to read than joining many small strings with operators."],
         table: {
           headers: ["Language", "Formatted sentence"],
@@ -70,7 +70,7 @@ export const operatorLessons = {
         },
       },
       {
-        title: "Formatting is part of the requirement",
+        title: "Formatting values",
         paragraphs: ["Dates, decimal places, percentages, padding, plural words, and translated sentences need more than naive joining. Decide whether the value is for a person, a log, or machine-readable data, then use an appropriate formatter."],
         code: { label: "Python", content: "accuracy = 0.8731\ncoins = 7\n\n# .1% converts the decimal to a percentage with one decimal place\nprint(f\"Accuracy: {accuracy:.1%}\")\n\n# 03 keeps three places and fills empty places with zeroes\nprint(f\"Coins: {coins:03}\")\n\n# Accuracy: 87.3%\n# Coins: 007" },
         note: { title: "Translation needs localization", body: "Do not assemble translated interfaces from tiny fixed fragments. Word order, plural rules and grammar differ across languages. Use parameterized localization so each translation owns the complete sentence and decides where its values belong. Proper localization is a whole other world worth learning separately." },
@@ -83,12 +83,12 @@ export const operatorLessons = {
 
   "mathematical-operators": {
     kicker: "Operators · Lesson 02",
-    title: "Arithmetic has programming edge cases",
+    title: "Arithmetic in programming",
     lead: "Addition is familiar. Integer division, remainders, overflow, floating-point approximation, and language-specific operators are where programming arithmetic stops behaving like a school worksheet.",
     goals: ["use remainder for repeating patterns", "predict grouping with precedence", "spot division and precision traps"],
     sections: [
       {
-        title: "The familiar core",
+        title: "Basic arithmetic operators",
         table: {
           headers: ["Operation", "Common symbol", "Example"],
           rows: [
@@ -102,7 +102,7 @@ export const operatorLessons = {
         },
       },
       {
-        title: "Remainders create cycles",
+        title: "Remainders and repeating ranges",
         code: { label: "Pseudocode", content: "# Even turn numbers leave a remainder of 0 when divided by 2\nif turn_number % 2 == 0:\n    current_team = \"blue\"\nelse:\n    # Odd turn numbers leave a remainder of 1\n    current_team = \"red\"\n\n# The remainder keeps the index between 0 and inventory_size - 1\n# Reaching the end wraps the index back to 0\nwrapped_index = next_index % inventory_size" },
         paragraphs: ["Remainders help detect divisibility and wrap values into repeating ranges. Be careful with negative operands because languages can define signed remainder behavior differently."],
       },
@@ -110,7 +110,7 @@ export const operatorLessons = {
         title: "Division follows type rules",
         paragraphs: ["The operand types help determine what division returns. In Java, dividing two integers performs integer division, so <code>7 / 2</code> returns <code>3</code> and discards the fractional part. Using a floating-point operand produces a floating-point result instead. Other languages use different rules, so check the language before assuming what <code>/</code> will return. Division by zero also behaves differently across types and languages."],
         code: { label: "Multilanguage", content: "# Python uses / for floating-point division\n7 / 2    # 3.5\n\n# Python uses // for floor division\n7 // 2   # 3\n\n// Java sees two integer operands and returns an integer\n7 / 2    // 3\n\n// Adding a floating-point operand changes the result type\n7.0 / 2  // 3.5\n\n// JavaScript Number values use floating-point division\n7 / 2    // 3.5" },
-        note: { title: "Precision is a design choice", body: "Binary floating-point is ideal for many measurements but not exact decimal accounting. Choose numeric tools according to the domain." },
+        note: { title: "Floating-point precision", body: "Binary floating-point is ideal for many measurements but not exact decimal accounting. Choose numeric tools according to the domain." },
       },
     ],
     challenge: { title: "Wrap a hotbar", prompt: "A hotbar has 5 slots indexed 0 through 4. Write an expression that turns current slot 4 into next slot 0.", solution: "<code>next_slot = (current_slot + 1) % 5</code>. For current slot 4, the sum 5 has remainder 0 when divided by 5." },
@@ -120,15 +120,15 @@ export const operatorLessons = {
 
   "logical-operators": {
     kicker: "Operators · Lesson 03",
-    title: "Combine rules without tangling them",
+    title: "Boolean logic",
     lead: "Logical operators join or invert boolean conditions. The difficult part comes from translating a real requirement into the correct grouping of AND, OR and NOT.",
     goals: ["translate a sentence into a boolean expression", "explain short-circuit evaluation", "simplify confusing negative logic"],
     sections: [
       {
-        title: "Translate one clause at a time",
+        title: "Translating rules into boolean expressions",
         paragraphs: ["Consider the requirement “A player can enter if they have a pass and the event has started, or if they are an administrator.” Group the ordinary route before adding the override."],
         code: { label: "pseudocode · explicit grouping", content: "ordinary_access = has_pass AND event_started\ncan_enter = ordinary_access OR is_admin" },
-        note: { title: "Words can be ambiguous", body: "Ask whether “or” is inclusive, whether an override bypasses every rule, and which conditions belong together. Code cannot resolve an unclear policy." },
+        note: { title: "Clarifying boolean requirements", body: "Ask whether “or” is inclusive, whether an override bypasses every rule, and which conditions belong together. Code cannot resolve an unclear policy." },
       },
       {
         title: "Short-circuiting prevents unsafe checks",
@@ -136,7 +136,7 @@ export const operatorLessons = {
         paragraphs: ["Short-circuit operators evaluate from left to right and stop once the final result is already known. With <code>AND</code>, a false condition on the left makes the whole expression false, so the right side does not run. This matters when <code>player</code> is null or missing. Asking for <code>player.health</code> at that point would cause an error and could stop the program. Checking that <code>player</code> exists first lets short-circuiting skip the unsafe health check."],
       },
       {
-        title: "Prefer positive named conditions",
+        title: "Naming boolean conditions",
         code: { label: "same rule, easier to inspect", content: "# Harder to parse\nif not (not connected or banned):\n    join_match()\n\n# Clearer\ncan_join = connected and not banned\nif can_join:\n    join_match()" },
         paragraphs: ["Complex conditions become more testable when meaningful pieces receive names. Parentheses and intermediate booleans cost little and prevent logic archaeology."],
       },
@@ -148,12 +148,12 @@ export const operatorLessons = {
 
   "shorthand-operators": {
     kicker: "Operators · Lesson 04",
-    title: "Shorthand should stay clear",
+    title: "Shorthand assignment and increment operators",
     lead: "Compound assignment and increment-like operators express common updates compactly. They are helpful when the longer operation is already obvious and evaluation details are understood.",
     goals: ["expand compound assignment mentally", "recognize language differences around increment", "avoid clever state changes inside larger expressions"],
     sections: [
       {
-        title: "Update the existing value",
+        title: "Compound assignment",
         table: {
           headers: ["Shorthand", "Longer form"],
           rows: [
@@ -166,7 +166,7 @@ export const operatorLessons = {
         paragraphs: ["Shorthand updates a variable using its current value. For example, <code>score += bonus</code> adds <code>bonus</code> to the current <code>score</code>, then stores the result back in <code>score</code>. The longer form helps you read the operation when the shorthand is unfamiliar."],
       },
       {
-        title: "Increment syntax varies",
+        title: "Increment operators across languages",
         paragraphs: ["Increment means increasing a value by one. Some languages provide <code>++</code> for this common update, while others use addition or assignment. The result is the same when the update stands on its own."],
         table: {
           headers: ["Language", "Add one"],
@@ -178,7 +178,7 @@ export const operatorLessons = {
         },
       },
       {
-        title: "Keep mutation visible",
+        title: "Clear state changes",
         code: { label: "Multilanguage", content: "// Harder to reason about because both indexes change inside the assignment\nitems[index++] = rewards[++rewardIndex];\n\n// Easier to follow because each increment has its own line\nrewardIndex++;\nitems[index] = rewards[rewardIndex];\nindex++;" },
         paragraphs: ["Placing <code>++</code> before or after a variable changes when the increment happens inside a larger expression. Move each increment onto its own line when the order is difficult to see."],
       },
@@ -190,12 +190,12 @@ export const operatorLessons = {
 
   "input-output": {
     kicker: "Course 04 · Input And Output",
-    title: "Programs become useful at their boundaries",
+    title: "Program input and output",
     lead: "Input brings information into a program and output communicates what happened. Keyboards and screens are only two examples. Files, controllers, databases and networks also move information across a program's boundaries.",
     goals: ["identify input and output beyond the console", "validate untrusted input", "separate core logic from interface code"],
     sections: [
       {
-        title: "I/O is larger than print and input",
+        title: "Types of input and output",
         paragraphs: ["Input and output are often shortened to <strong>I/O</strong>. Input is information the program receives. Output is information or action the program produces. Both can involve people, stored data, hardware or another program."],
         cards: [
           { title: "Human input", body: "Keyboard, mouse, touch, controller, microphone, form, or command." },
@@ -209,15 +209,15 @@ export const operatorLessons = {
         paragraphs: ["Outside data can be missing, malformed or deliberately harmful. Validate it before the rest of the program depends on it. A successful check turns uncertain input into a value with rules the program can trust."],
         steps: ["Receive the raw value.", "Check presence, shape, range, length, and allowed choices.", "Convert it into an internal type.", "Use the validated value in core logic.", "Return useful feedback without exposing secrets."],
         code: { label: "Pseudocode", content: "REPEAT\n    # Request fresh input on every attempt\n    raw_choice = READ \"Choose 1 to 3\"\n\n    # Convert only if the text represents a whole number\n    choice = TRY CONVERT raw_choice TO INTEGER\n\n    IF conversion failed OR choice is outside 1 to 3\n        SHOW \"That failed. Enter 1, 2, or 3\"\n        LOOP BACK TO START\n\n    # A valid choice can leave the input loop\n    STOP REPEATING\n\nSHOW \"Loading option \" and choice" },
-        note: { title: "Security begins here", body: "Validation prevents crashes and protects security boundaries. Untrusted input needs appropriate handling before it becomes a command, query, file path or HTML fragment." },
+        note: { title: "Input validation and security", body: "Validation prevents crashes and protects security boundaries. Untrusted input needs appropriate handling before it becomes a command, query, file path or HTML fragment." },
       },
       {
-        title: "Keep logic testable",
+        title: "Separating input from logic",
         code: { label: "Pseudocode", content: "# This function only needs trusted numbers\nFUNCTION calculate_damage(attack, defense)\n    RETURN maximum(1, attack - defense)\n\n# Boundary code reads and validates the outside value\nraw_attack = READ input\nattack = VALIDATE raw_attack AS INTEGER\n\n# Core logic receives a clean value and returns a result\ndamage = calculate_damage(attack, enemy_defense)\nSHOW damage" },
         paragraphs: ["Keep input handling separate from the rule that uses the value. Then <code>calculate_damage</code> can be tested with ordinary numbers without opening a screen, pressing a key or making a network request. The boundary handles messy outside data while the function handles one clear calculation."],
       },
       {
-        title: "Output is part of the conversation",
+        title: "Designing useful output",
         bullets: ["Say what succeeded, not merely “Done.”", "On failure, explain what the user can change next.", "Logs should include useful context but exclude passwords, tokens, and sensitive personal data.", "Accessible output needs more than color alone and should work with relevant assistive technology."],
       },
     ],

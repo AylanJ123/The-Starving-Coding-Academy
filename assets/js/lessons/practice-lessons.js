@@ -9,18 +9,18 @@ const sources = [
 export const practiceLessons = {
   practice: {
     kicker: "Course 07 · Practice",
-    title: "Skill grows where prediction meets feedback",
+    title: "Programming practice and feedback",
     lead: "Reading creates recognition. Programming ability grows when you predict a result, write a small attempt, run it, compare reality with your model, and explain the difference.",
     goals: ["practice without waiting for a giant project", "turn mistakes into specific feedback", "choose a challenge just beyond current comfort"],
     sections: [
       {
-        title: "The five-minute learning loop",
+        title: "A short practice cycle",
         paragraphs: ["Small experiments produce useful feedback quickly. Predicting first gives you something concrete to compare with the real result."],
         steps: ["Pick one tiny behavior.", "Predict the result before running.", "Write the smallest code that could prove the idea.", "Run it and capture the actual result or error.", "Explain one difference, then change one thing."],
-        note: { title: "Struggle needs a feedback loop", body: "Being stuck for hours is not automatically productive. Shrink the task, inspect evidence, consult documentation, and ask a specific question." },
+        note: { title: "Feedback during practice", body: "Being stuck for hours is not automatically productive. Shrink the task, inspect evidence, consult documentation, and ask a specific question." },
       },
       {
-        title: "Use four kinds of practice",
+        title: "Types of practice",
         paragraphs: ["Different exercises train different parts of programming. Rotate between reading code, repairing it, changing it and creating a small behavior yourself."],
         cards: [
           { title: "Trace", body: "Predict variables and output line by line without executing." },
@@ -30,7 +30,7 @@ export const practiceLessons = {
         ],
       },
       {
-        title: "Make difficulty adjustable",
+        title: "Adjusting practice difficulty",
         paragraphs: ["A useful exercise should require thought without burying the lesson under unrelated tools. Change one dimension when the task feels far too easy or too hard."],
         table: {
           headers: ["Too easy?", "Productive zone", "Too hard?"],
@@ -42,21 +42,21 @@ export const practiceLessons = {
         },
       },
       {
-        title: "Choose a practice room",
+        title: "Practice lessons",
         links: [
           { title: "Tiny Examples", body: "Trace and modify complete miniature programs.", href: "tiny-examples.html" },
           { title: "Quiz Time", body: "Check the mental model, not trivia memory.", href: "quiz-time.html" },
         ],
       },
     ],
-    challenge: { title: "Write a practice contract", prompt: "Choose one lesson and invent a ten-minute exercise with an input, expected output and one edge case.", solution: "A boolean exercise could use <code>player_level</code> and <code>has_invite</code> as input. Its output states whether ranked queue is allowed. Testing the exact level threshold supplies an edge case. A precise expected result makes the exercise testable." },
+    challenge: { title: "Plan a practice exercise", prompt: "Choose one lesson and invent a ten-minute exercise with an input, expected output and one edge case.", solution: "A boolean exercise could use <code>player_level</code> and <code>has_invite</code> as input. Its output states whether ranked queue is allowed. Testing the exact level threshold supplies an edge case. A precise expected result makes the exercise testable." },
     check: { question: "Which activity builds a stronger mental model?", options: ["Copy code without predicting it.", "Predict, run, compare, and explain a mismatch.", "Avoid errors at all costs."], answer: 1, explanation: "The comparison between expectation and evidence reveals exactly where the model needs adjustment." },
     sources,
   },
 
   "tiny-examples": {
     kicker: "Practice · Workshop",
-    title: "Practice with tiny complete programs",
+    title: "Small complete programs",
     lead: "Each example is small enough to hold in your head but complete enough to change. Trace it first, run it second, then take one modification challenge.",
     goals: ["trace state and control flow", "translate one concept between languages", "extend a working program without rewriting it"],
     sections: [
@@ -79,7 +79,7 @@ export const practiceLessons = {
         reveals: [{ question: "Reveal trace", answer: "The loop checks Torch, Rope, and Moon Key, sets found to true, then breaks before Potion. <code>item.equalsIgnoreCase(wanted)</code> is one case-insensitive option." }],
       },
       {
-        title: "04 Player invariant",
+        title: "04 Player health",
         paragraphs: ["Predict health after both calls. Then decide what negative damage should do."],
         code: { label: "C#", content: "public class Player\n{\n    // Other code can read Health but only this class can set it\n    public int Health { get; private set; } = 100;\n\n    public void TakeDamage(int amount)\n    {\n        // Clamp the result so health never becomes negative\n        Health = Math.Max(0, Health - amount);\n    }\n}\n\nvar player = new Player();\nplayer.TakeDamage(35);\nplayer.TakeDamage(80);\nConsole.WriteLine(player.Health);" },
         reveals: [{ question: "Reveal trace", answer: "Health becomes 65, then clamps to 0. A robust contract should reject negative damage, clamp it, or model healing separately rather than silently increasing health." }],
@@ -104,7 +104,7 @@ export const practiceLessons = {
 
   "quiz-time": {
     kicker: "Practice · Checkpoint",
-    title: "Can you reason with the fundamentals?",
+    title: "Programming fundamentals quiz",
     lead: "This checkpoint tests explanations and predictions, not obscure syntax trivia. Answer aloud or on paper before opening each explanation.",
     goals: ["explain core concepts without memorized slogans", "trace unfamiliar-looking examples", "identify the next lesson worth revisiting"],
     sections: [
@@ -146,7 +146,7 @@ export const practiceLessons = {
         ],
       },
       {
-        title: "Score yourself honestly",
+        title: "Reviewing the results",
         table: {
           headers: ["Result", "Next move"],
           rows: [
@@ -156,10 +156,10 @@ export const practiceLessons = {
             ["0–4 Still blurry", "Return to Raw Programming. Go slowly. Recognizing the gap gives you useful data."],
           ],
         },
-        note: { title: "Measure skill through action", body: "Page completion alone cannot measure readiness. You are ready for a beginner project when you can make small predictions, investigate errors and modify working code with growing independence." },
+        note: { title: "Using mistakes to choose practice", body: "Page completion alone cannot measure readiness. You are ready for a beginner project when you can make small predictions, investigate errors and modify working code with growing independence." },
       },
     ],
-    challenge: { title: "Design one final feature", prompt: "Describe a locked chest using state, a boolean rule, one method or function contract, input, output and one failure case. Then implement it in your chosen language.", solution: "A strong design names state such as <code>is_locked</code> and <code>required_key_id</code>. It calculates <code>can_open</code> from inventory membership. It exposes <code>try_open(player)</code> and returns a result. It receives an interaction as input and produces an animation or message as output. It handles a missing or wrong key without corrupting inventory." },
+    challenge: { title: "Build a final feature", prompt: "Describe a locked chest using state, a boolean rule, one method or function contract, input, output and one failure case. Then implement it in your chosen language.", solution: "A strong design names state such as <code>is_locked</code> and <code>required_key_id</code>. It calculates <code>can_open</code> from inventory membership. It exposes <code>try_open(player)</code> and returns a result. It receives an interaction as input and produces an animation or message as output. It handles a missing or wrong key without corrupting inventory." },
     check: { question: "What is the most useful response to a missed question?", options: ["Hide the result.", "Identify the concept, revisit its example, and test a smaller case.", "Memorize the answer without understanding it."], answer: 1, explanation: "A missed question locates the next practice target. That is the quiz doing its job." },
     sources,
   },
