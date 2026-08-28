@@ -56,7 +56,7 @@ export const structureLessons = {
       {
         title: "Local and outer scope",
         code: { label: "Python", content: "def open_chest():\n    loot = \"moon key\"\n    print(loot)  # Works because loot exists inside this function\n\nopen_chest()\nprint(loot)      # NameError because loot is not visible outside" },
-        paragraphs: ["Local variables reduce accidental interference. If every part of a program could change every name, understanding one feature would require understanding the entire program."],
+        paragraphs: ["Local variables reduce accidental interference. If every part of a program could change every name, understanding one feature would require understanding the entire program. The <a href=\"lambdas.html\">Lambdas</a> lesson shows how an anonymous function can keep access to values from its surrounding scope."],
       },
       {
         title: "Block syntax by language",
@@ -139,7 +139,7 @@ export const structureLessons = {
       {
         title: "Configuration objects group related settings",
         code: { label: "JavaScript", content: "// Several separate arguments must be supplied in the correct order\ncreateMatch(8, true, false);\n\n// One object keeps the match settings together\ncreateMatch({\n  maxPlayers: 8,\n  ranked: true,\n  allowSpectators: false\n});" },
-        paragraphs: ["Documentation can explain a function's arguments, but a long list of settings can still be difficult to use. An object made to hold configuration can group those related settings and give each value a visible label. Objects are covered later in the course, so treat this as a preview of one useful solution."],
+        paragraphs: ["Documentation can explain a function's arguments, but a long list of settings can still be difficult to use. An object made to hold configuration can group those related settings and give each value a visible label. The <a href=\"objects.html\">Objects</a> lesson explains how objects keep related named values and behavior together."],
       },
       {
         title: "Passing values and references",
@@ -171,7 +171,7 @@ export const structureLessons = {
       },
       {
         title: "Returning result objects",
-        paragraphs: ["Return values and objects are closely related. Here, <code>result</code> is an object returned by <code>buy_item</code>. Its <code>succeeded</code>, <code>receipt</code>, and <code>reason</code> fields let the caller check what happened and use the matching information. Objects and their fields are explained in detail later in the course."],
+        paragraphs: ["Return values and objects are closely related. Here, <code>result</code> is an object returned by <code>buy_item</code>. Its <code>succeeded</code>, <code>receipt</code>, and <code>reason</code> fields let the caller check what happened and use the matching information. The <a href=\"objects.html\">Objects</a> lesson explains objects and their fields in detail."],
         code: { label: "Pseudocode", content: "result = buy_item(player, item)\n\n# result is an object with succeeded, receipt, and reason fields\nIF result.succeeded\n    SHOW result.receipt\nELSE\n    SHOW result.reason" },
         note: { title: "Returning no result", body: "If a search finds nothing, decide whether the function returns nothing, an empty collection, a result object, or an error. Document that choice so other people, and you months later, can understand what the code promises." },
       },
@@ -194,8 +194,11 @@ export const structureLessons = {
       },
       {
         title: "Callbacks for sorting and filtering",
-        code: { label: "JavaScript", content: "const players = [\n  { name: \"Bo\", score: 8 },\n  { name: \"Ira\", score: 15 }\n];\n\n// A positive result moves playerB before playerA\n// This function judges who is higher by substracting, respect the order\nconst ranked = players.toSorted((playerA, playerB) => playerB.score - playerA.score);\n\n// Keep only players whose score is at least 10\nconst winners = players.filter((player) => player.score >= 10);" },
-        paragraphs: ["A <strong>callback</strong> is a function given to another operation so it can run that behavior. Here <code>toSorted</code> uses one callback to decide the order, while <code>filter</code> uses another callback to decide which players remain."],
+        code: { label: "JavaScript", content: "const players = [\n  { name: \"Bo\", score: 8 },\n  { name: \"Ira\", score: 15 }\n];\n\n// A positive result moves playerB before playerA\n// Subtract in this order to place higher scores first\nconst ranked = [...players].sort((playerA, playerB) => playerB.score - playerA.score);\n\n// Keep only players whose score is at least 10\nconst winners = players.filter((player) => player.score >= 10);" },
+        paragraphs: [
+          "A <strong>callback</strong> is a function given to another operation so it can run that behavior. Here <code>sort</code> uses one callback to decide the order, while <code>filter</code> uses another callback to decide which players remain. <code>filter</code> still loops through the array internally. It calls the callback once for each player and builds a new array with the players that return <code>true</code>. The <a href=\"foreach-loops.html\">Foreach Loops</a> lesson shows this visit-every-item process as an explicit loop.",
+          "The spread expression <code>[...players]</code> copies the array first so sorting does not reorder the original. The <a href=\"parentheses.html\">Parentheses</a> lesson explains the difference between passing a function value and calling it immediately.",
+        ],
       },
       {
         title: "When to use a lambda",
@@ -303,7 +306,7 @@ export const structureLessons = {
         note: { title: "Preventing partial updates", body: "If an operation changes several related values, validate first or provide a way to recover so failure does not leave the object inconsistent." },
       },
     ],
-    challenge: { title: "Classify method types", prompt: "For <code>Player</code>, classify <code>takeDamage</code>, <code>isAlive</code>, and <code>createGuest</code> as command, query, or factory-like method.", solution: "<code>takeDamage</code> is a command, <code>isAlive</code> is a query, and <code>createGuest</code> is a factory-like type-level operation." },
+    challenge: { title: "Classify method types", prompt: "For <code>Player</code>, classify <code>takeDamage</code>, <code>isAlive</code>, and <code>createGuest</code> as command, query, or factory method.", solution: "<code>takeDamage</code> is a command, <code>isAlive</code> is a query, and <code>createGuest</code> is a factory method on the type." },
     check: { question: "In <code>boss.take_damage(10)</code> what does <code>boss</code> do?", options: ["Acts as the receiving instance", "Acts as a comment", "Changes 10 into a string"], answer: 0, explanation: "The method operates in the context of the object before the dot." },
     sources,
   },

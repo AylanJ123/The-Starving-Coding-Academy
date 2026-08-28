@@ -63,7 +63,7 @@ export const operatorLessons = {
             ["Python", "<code>f\"{name} has {coins} coins.\"</code>"],
             ["JavaScript", "<code>`${name} has ${coins} coins.`</code>"],
             ["C#", "<code>$\"{name} has {coins} coins.\"</code>"],
-            ["Java", "<code>\"%s has %d coins.\".formatted(name, coins)</code>"],
+            ["Java 15+", "<code>\"%s has %d coins.\".formatted(name, coins)</code>"],
             ["C++", "<code>std::format(\"{} has {} coins.\", name, coins)</code> in C++20"],
             ["Lua", "<code>string.format(\"%s has %d coins.\", name, coins)</code>"],
           ],
@@ -206,7 +206,7 @@ export const operatorLessons = {
       },
       {
         title: "Validate outside data before using it",
-        paragraphs: ["Outside data can be missing, malformed or deliberately harmful. Validate it before the rest of the program depends on it. A successful check turns uncertain input into a value with rules the program can trust."],
+        paragraphs: ["Outside data can be missing, malformed or deliberately harmful. Validate it before the rest of the program depends on it. A successful check turns uncertain input into a value with rules the program can trust. The <a href=\"do-while.html\">Do While / Repeat Until</a> lesson shows loops that request fresh input until it is valid."],
         steps: ["Receive the raw value.", "Check presence, shape, range, length, and allowed choices.", "Convert it into an internal type.", "Use the validated value in core logic.", "Return useful feedback without exposing secrets."],
         code: { label: "Pseudocode", content: "REPEAT\n    # Request fresh input on every attempt\n    raw_choice = READ \"Choose 1 to 3\"\n\n    # Convert only if the text represents a whole number\n    choice = TRY CONVERT raw_choice TO INTEGER\n\n    IF conversion failed OR choice is outside 1 to 3\n        SHOW \"That failed. Enter 1, 2, or 3\"\n        LOOP BACK TO START\n\n    # A valid choice can leave the input loop\n    STOP REPEATING\n\nSHOW \"Loading option \" and choice" },
         note: { title: "Input validation and security", body: "Validation prevents crashes and protects security boundaries. Untrusted input needs appropriate handling before it becomes a command, query, file path or HTML fragment." },
@@ -218,7 +218,7 @@ export const operatorLessons = {
       },
       {
         title: "Designing useful output",
-        bullets: ["Say what succeeded, not merely “Done.”", "On failure, explain what the user can change next.", "Logs should include useful context but exclude passwords, tokens, and sensitive personal data.", "Accessible output needs more than color alone and should work with relevant assistive technology."],
+        bullets: ["Name the action that succeeded and the useful result.", "On failure, explain what the user can change next.", "Logs should include useful context but exclude passwords, tokens, and sensitive personal data.", "Accessible output needs more than color alone and should work with relevant assistive technology."],
       },
     ],
     challenge: { title: "Design a safe username boundary", prompt: "List reasonable validation rules and useful feedback for a <code>username</code> field. Give a reason for every restriction you add.", solution: "Trim extra whitespace. Check the allowed length and characters. Reject control characters and tell the user which rule failed. Check uniqueness and every security rule again on the server. Browser checks and game-client checks can improve feedback, but they cannot enforce security. Anything running on the player's device can be modified or bypassed." },

@@ -129,11 +129,11 @@ export const rawLessons = {
       },
       {
         title: "Syntax and semantics",
-        paragraphs: ["<strong>Syntax</strong> asks whether the instruction is formed legally. <strong>Semantics</strong> asks what that legal instruction means. <strong>Logic</strong> asks whether it solves your intended problem."],
+        paragraphs: ["<strong>Syntax</strong> asks whether the instruction is formed legally. <strong>Semantics</strong> asks what that legal instruction means. <strong>Logic</strong> asks whether it solves your intended problem. The <a href=\"parentheses.html\">Parentheses</a> lesson shows how the same symbols can group an expression, call a function, or describe its inputs."],
         code: { label: "Python", content: "coins = 10\nprice = 4\ncoins = coins + price  # Runs, but buying should probably subtract." },
         cards: [
           { title: "Syntax error", body: "The language cannot parse the written structure." },
-          { title: "Runtime error", body: "The program started, then reached an operation it couldn't logically complete." },
+          { title: "Runtime error", body: "The program started, then an operation failed while it was running." },
           { title: "Logic error", body: "The program ran without errors, but your instructions produced the wrong result." },
           { title: "External error", body: "The code may be fine, but something outside the program failed." },
         ],
@@ -162,7 +162,7 @@ export const rawLessons = {
         title: "When errors happen",
         cards: [
           { title: "Before running", body: "A parser or compiler rejects invalid syntax or certain invalid type combinations." },
-          { title: "While running", body: "The program reaches a missing file, invalid index, failed network call, or other impossible operation." },
+          { title: "While running", body: "The program reaches a missing file, invalid index, failed network call, or another operation that fails at runtime." },
           { title: "After running", body: "The result is wrong even though no error stopped the program. This is a logic bug." },
         ],
       },
@@ -233,8 +233,8 @@ export const rawLessons = {
       {
         title: "How exceptions change control flow",
         paragraphs: [
-          "When one part of a program asks another part to do work, the new part goes on top of the current one. If that part asks for more help, another part goes on top. That's the infamous <strong>Call Stack</strong>.",
-          "If the top part breaks because the execution can't logically continue, the program starts removing pieces from the stack. Each unfinished piece gets killed until a <code>try-catch</code> absorbs the problem and knows what to do. If nothing catches it, the error reaches the bottom piece, the entry point. Then the entry point stops too, and the program crashes.",
+          "When one part of a program asks another part to do some work, the new part goes on top of the current one. If that part asks for more help, another part goes on top. That pile is the infamous <strong>call stack</strong>.",
+          "If the piece on top breaks and cannot continue, that level of the tower crumbles. The error falls into the piece below, then the next, until a <code>catch</code> knows how to stop the collapse. If nothing catches it, the damage reaches the foundation. The whole tower falls, the program gets killed, and that is what we call a crash.",
         ],
         code: { label: "pseudocode · a new route", content: "TRY\n    profile = LOAD save_file\n    START game WITH profile\nCATCH missing_save\n    profile = CREATE default_profile\n    START game WITH profile" },
         cards: [
@@ -260,8 +260,9 @@ export const rawLessons = {
       {
         title: "Catching specific exceptions",
         paragraphs: [
-          "Catch the specific failures your current layer understands. A profile loader module may know how to replace a missing save. It may have no safe answer for exhausted memory or a broken engine invariant. If that's the case, let the program get killed, that's sometimes the safest option.",
-          "On such situations, a layer can add useful context without recovering. Record or wrap the exception in another exception and let it continue killing the call stack. Keep the original cause available so the eventual report explains where the chain began. That's why in crash reports you often see a <code>Caused by</code> section atop with smaller errors going down.",
+          "Each code section should catch only the errors it knows how to solve. A profile loader knows that a missing save file can be replaced with a new blank save. It may not know what the game should do when the save folder is read-only or cloud storage disconnects. Those errors should keep moving through the program until they reach a code section that can make that decision.",
+          "A code section can be a function, class, module, layer, or even a larger part of the project.",
+          "A code section can add useful information without fixing the error. It can record the error or wrap it inside a new one, then let it keep moving through the call stack. Keep the original error attached so the crash report still shows where everything began.",
         ],
         code: { label: "pseudocode · specific responses", content: "TRY\n    profile = LOAD profile_by_ID(player_id)\nCATCH missing_save\n    profile = CREATE default_profile\nCATCH corrupt_save AS problem\n    RECORD problem WITH player_id\n    PROPAGATE problem WITH player_id" },
         steps: [
@@ -273,16 +274,16 @@ export const rawLessons = {
       },
       {
         title: "Exception handling across languages",
-        paragraphs: ["The shared model is simple: one keyword sends the error signal, and a protected area gets a chance to catch it."],
+        paragraphs: ["The shared model uses one keyword to send the error signal, while a protected area gets a chance to catch it."],
         table: {
           headers: ["Language", "Throw the error", "Catch the error", "Cleanup"],
           rows: [
             ["Python", "<code>raise</code> sends the error", "<code>try</code> protects, <code>except</code> catches", "<code>finally</code> or <code>with</code>"],
             ["JavaScript", "<code>throw</code> sends the error", "<code>try</code> protects, <code>catch</code> catches", "<code>finally</code>"],
-            ["Java", "<code>throw</code> sends the error", "<code>try</code> protects, <code>catch</code> catches", "<code>finally</code>"],
+            ["Java", "<code>throw</code> sends the error", "<code>try</code> protects, <code>catch</code> catches", "<code>finally</code> or try-with-resources"],
             ["C#", "<code>throw</code> sends the error", "<code>try</code> protects, <code>catch</code> catches", "<code>finally</code> or <code>using</code>"],
             ["C++", "<code>throw</code> sends the error", "<code>try</code> protects, <code>catch</code> catches", "RAII"],
-            ["Lua", "<code>error</code> sends the error", "<code>pcall</code> catches the result safely", "Manual cleanup"],
+            ["Lua", "<code>error</code> sends the error", "<code>pcall</code> runs a protected call and returns a status", "Manual cleanup or to-be-closed variables in Lua 5.4"],
           ],
         },
         note: { title: "Java adds checked exceptions", body: "Some Java exception types must be caught or declared by a method. Other languages in this comparison use different rules, so the concept transfers more reliably than the exact type system." },
@@ -290,7 +291,7 @@ export const rawLessons = {
       {
         title: "Cleanup after success or failure",
         paragraphs: [
-          "Some program actions borrow something from the computer: an open file, a network connection, a lock on saved data or a chunk of temporary state. When the action is done, the program should give it back.",
+          "Some program actions borrow resources from the computer, including an open file, a network connection, a lock on saved data or a chunk of temporary state. When the action is done, the program should give them back.",
           "If cleanup does not happen, those leftovers can pile up. That is one reason a game can get laggier after connecting many times, reloading a menu over and over or retrying a failed request without releasing what the last attempt used.",
         ],
         code: { label: "pseudocode · save now or save later", content: "connection = OPEN score_server\n\n# Try because this connection might fail.\nTRY\n    SEND score THROUGH connection\n\n# Catch keeps the score safe so the game can retry later.\nCATCH connection_failed\n    SAVE score LOCALLY\n    MARK score TO retry_later\n\n# Finally runs whether the try worked or the catch helped.\nFINALLY\n    CLOSE connection" },
@@ -304,7 +305,7 @@ export const rawLessons = {
           "Unlimited retries can keep failing until the program freezes, which is extra painful if nothing was saved.",
           "Generic messages without logs leave developers unable to reproduce the failure.",
         ],
-        note: { title: "When to catch an exception", body: "You do not need to wrap everything in try-catch. Use it when outside things can damage the program, like files, internet requests, missing data or user input that needs another chance." },
+        note: { title: "Catch errors when you can do something useful", body: "You do not need to wrap everything in <code>try-catch</code>. Catch an error when this code section can do something useful about it. A missing file can load defaults, a failed internet request can try again, and invalid user input can ask for another value. If this section cannot help, let the error keep moving." },
       },
     ],
     challenge: {
@@ -352,9 +353,9 @@ export const rawLessons = {
       {
         title: "The first program goal",
         steps: [
-          "Pick one language and search for an \"Online Playground\" or IDE (Integrated Development Environment) which is just an app made for writing and running code.",
-          "Install or open the runtime you found.",
-          "Create the smallest official starter project.",
+          "Pick one language and open its official getting-started guide.",
+          "Choose an online playground or install the documented runtime, compiler and editor for that language.",
+          "Create the smallest starter project shown by the guide.",
           "Find the file or callback that runs at the start, aka your entry point.",
           "Make a console print for the specific language. The classic <code>Hello, World!</code> is a good first choice.",
           "Run it!",
@@ -365,8 +366,8 @@ export const rawLessons = {
     ],
     challenge: {
       title: "Name the pieces",
-      prompt: "Look at the tiny project you opened above. Write down three things: the file you edited, the button or command that runs it, and the first line where your code starts doing work.",
-      solution: "A good answer connects the tool to the code. Example: <code>I edited main.py, pressed Run, and the first real instruction was print(\"Hello, World!\").</code>",
+      prompt: "Look at the tiny project you opened above. Write down the file you edited, the button or command that runs it, and the first line where your code starts doing work.",
+      solution: "A good answer connects the tool to the code. One answer could be <code>I edited main.py, pressed Run, and the first real instruction was print(\"Hello, World!\").</code>",
     },
     check: { question: "What is an entry point?", options: ["The first character typed in a file.", "The defined place or lifecycle event where an environment begins executing your program.", "The folder where screenshots are stored."], answer: 1, explanation: "Some languages expose a named function. Other environments begin at top level or call lifecycle methods." },
     sources: languageReferences,

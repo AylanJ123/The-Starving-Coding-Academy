@@ -4,8 +4,9 @@ import { operatorLessons } from "./operator-lessons.js";
 import { structureLessons } from "./structure-lessons.js";
 import { flowLessons } from "./flow-lessons.js";
 import { practiceLessons } from "./practice-lessons.js";
+import { lessonReferences } from "./lesson-references.js";
 
-export const lessons = {
+const lessonDefinitions = {
   ...rawLessons,
   ...syntaxLessons,
   ...operatorLessons,
@@ -13,3 +14,10 @@ export const lessons = {
   ...flowLessons,
   ...practiceLessons,
 };
+
+export const lessons = Object.fromEntries(
+  Object.entries(lessonDefinitions).map(([slug, lesson]) => [
+    slug,
+    { ...lesson, sources: lessonReferences[slug] ?? lesson.sources },
+  ]),
+);

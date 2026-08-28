@@ -67,7 +67,7 @@ export const flowLessons = {
       {
         title: "Separate if statements",
         code: { label: "Pseudocode", content: "# Each condition is checked because several effects may happen\nIF player_is_in_water\n    extinguish_fire()\n\nIF player_is_poisoned\n    apply_poison_damage()\n\nIF player_health <= 0\n    defeat_player()" },
-        paragraphs: ["These conditions ask separate questions, so every true condition needs to run. A player can be in water and poisoned during the same update. If the poison check were joined to the water check with <code>else if</code>, a bug would occur! Players in water would be inmune to poison. Separate <code>if</code> statements allow both effects to happen before the health check."],
+        paragraphs: ["These conditions ask separate questions, so every true condition needs to run. A player can be in water and poisoned during the same update. If the poison check were joined to the water check with <code>else if</code>, players in water would be immune to poison. Separate <code>if</code> statements allow both effects to happen before the health check."],
       },
       {
         title: "Guard clauses and early returns",
@@ -109,10 +109,10 @@ export const flowLessons = {
         title: "Break and continue",
         paragraphs: ["<code>continue</code> skips the rest of the current iteration and moves to the next one. <code>break</code> exits the entire loop. Both are useful when their purpose is easy to see."],
         code: { label: "Pseudocode", content: "FOR EACH item IN inventory\n    IF item.is_broken\n        CONTINUE  # Ignore this item and inspect the next one\n\n    IF item.name == wanted_name\n        found = item\n        BREAK     # The item was found so searching can stop" },
-        note: { title: "Why an infinite loop freezes a program", body: "Interactive programs already run inside a main loop. Each pass reads input, updates the program, draws one frame and returns control to the system. This continues until a condition such as <code>quit_pressed</code> becomes true. If one pass starts another loop that never finishes, the program cannot draw the next frame or return control. The window freezes, and the operating system may eventually mark the program as unresponsive or close it." },
+        note: { title: "Why an infinite loop freezes a program", body: "Interactive programs already run inside a main loop. Each pass reads input, updates the program, draws one frame and returns control to the system. This continues until a condition such as <code>quit_pressed</code> becomes true. If one pass starts another loop that never finishes, the program cannot draw the next frame or return control. The window freezes, and the operating system may eventually mark the program as unresponsive or close it. The <a href=\"errors-debugging.html\">Errors and Debugging</a> lesson provides a process for investigating a loop that stops responding." },
       },
     ],
-    check: { question: "Why does the countdown from earlier in the lesson stopped at 1?", options: ["<code>SHOW count</code> automatically ends the loop.", "<code>count = count - 1</code> eventually makes <code>count > 0</code> false.", "Every loop stops after three repetitions."], answer: 1, explanation: "Each repetition subtracts one from <code>count</code>. After showing <code>1</code>, its value becomes <code>0</code>, so <code>count > 0</code> is false and the loop ends." },
+    check: { question: "Why does the countdown from earlier in the lesson stop after showing <code>1</code>?", options: ["<code>SHOW count</code> automatically ends the loop.", "<code>count = count - 1</code> eventually makes <code>count > 0</code> false.", "Every loop stops after three repetitions."], answer: 1, explanation: "Each repetition subtracts one from <code>count</code>. After showing <code>1</code>, its value becomes <code>0</code>, so <code>count > 0</code> is false and the loop ends." },
     sources,
   },
 
@@ -156,8 +156,8 @@ export const flowLessons = {
       },
       {
         title: "While and until conditions",
-        code: { label: "JavaScript", content: "let choice;\n\ndo {\n  choice = prompt(\"Choose 1, 2, or 3\");\n\n  // Repeat while every comparison says the choice is invalid\n} while (choice !== \"1\" && choice !== \"2\" && choice !== \"3\");" },
-        paragraphs: ["The JavaScript <code>do-while</code> repeats while the choice remains invalid. The Lua <code>repeat-until</code> example above stops when the input becomes valid. Both run their body before checking, and their conditions describe opposite outcomes."],
+        code: { label: "JavaScript", content: "let choice;\n\ndo {\n  choice = prompt(\"Choose 1, 2, or 3\");\n\n  // Pressing Cancel or closing the prompt returns null, so stop asking\n  if (choice === null) {\n    break;\n  }\n\n  // Repeat while every comparison says the choice is invalid\n} while (choice !== \"1\" && choice !== \"2\" && choice !== \"3\");" },
+        paragraphs: ["The JavaScript <code>do-while</code> repeats while the choice remains invalid. The Lua <code>repeat-until</code> example above stops when the input becomes valid. Both run their body before checking, and their conditions describe opposite outcomes. The explicit <code>null</code> check handles a user closing the prompt."],
       },
       {
         title: "Emulating do while in Python",
@@ -185,12 +185,12 @@ export const flowLessons = {
       {
         title: "Python ranges and indexes",
         code: { label: "Python", content: "# The stop value 5 is excluded\nfor i in range(5):\n    print(i)  # 0, 1, 2, 3, 4\n\nplayers = [\"Mina\", \"Bo\", \"Ira\"]\n\n# len(list) returns the length of the list, so it returns 3 in this example\nfor i in range(len(players)):\n    print(players[i])" },
-        paragraphs: ["Python's <code>range</code> excludes its stop value. <code>range(5)</code> produces <code>0</code> through <code>4</code>, which matches the valid indexes of an array containing five items. The expression <code>players[i]</code> accesses the item stored at index <code>i</code>."],
+        paragraphs: ["Python's <code>range</code> excludes its stop value. <code>range(5)</code> produces <code>0</code> through <code>4</code>, which matches the valid indexes of an array containing five items. The expression <code>players[i]</code> accesses the item stored at index <code>i</code>. When you need each value and not its index, the <a href=\"foreach-loops.html\">Foreach Loops</a> lesson shows a clearer form."],
       },
       {
         title: "Lua ranges and indexes",
-        code: { label: "Lua", content: "-- Lua includes the final value\nfor i = 1, 5 do\n  print(i) -- 1, 2, 3, 4, 5\nend\n\nlocal players = {\"Mina\", \"Bo\", \"Ira\"}\n\n-- Lua arrays conventionally begin at index 1\nfor i = 1, #players do\n  print(players[i])\nend" },
-        paragraphs: ["Lua's numeric <code>for</code> includes its final value. Lua arrays conventionally begin at index <code>1</code>, so a loop can start at <code>1</code> and continue through <code>#players</code>. The expression <code>players[i]</code> accesses the item at that index, just as it does in the Python example, although the first valid index is different."],
+        code: { label: "Lua", content: "-- Lua includes the final value\nfor i = 1, 5 do\n  print(i) -- 1, 2, 3, 4, 5\nend\n\nlocal players = {\"Mina\", \"Bo\", \"Ira\"}\n\n-- Lua table sequences conventionally begin at index 1\nfor i = 1, #players do\n  print(players[i])\nend" },
+        paragraphs: ["Lua uses tables for many collection patterns. A table sequence conventionally begins at index <code>1</code>, and a numeric <code>for</code> includes its final value. The expression <code>players[i]</code> accesses the item at that index. The length operator <code>#players</code> is reliable here because the sequence has no missing positions."],
       },
       {
         title: "Loop boundaries and off-by-one errors",
@@ -231,7 +231,7 @@ export const flowLessons = {
         title: "Modifying collections during iteration",
         paragraphs: ["Adding or removing elements from the same collection while iterating may skip items, revisit them, invalidate an iterator or throw an error. The exact behavior depends on the collection and language."],
         bullets: ["Build a new collection.", "Add the changes to it.", "Use the separate list to modify the original.", "If it's a filtering operation, you can even fully replace the original."],
-        note: { title: "Keep the explored list stable", body: "Changing values on an object inside a collection is safe. The problem is changing the list the loop is currently exploring. Adding or removing an item can shift its positions, so the loop's internal counter will end messed up." },
+        note: { title: "Keep the explored list stable", body: "Changing fields on an object inside a collection is usually safe. Adding or removing items from the collection being explored can shift positions, invalidate an iterator or make the loop skip an item. The exact result depends on the language and collection." },
       },
     ],
     challenge: { title: "Remove defeated enemies safely", prompt: "Describe a strategy that avoids removing list elements directly inside a foreach loop.", solution: "Create a survivors list or filter containing enemies whose health is above zero and then replace the original list. Another option collects defeated enemies and removes them afterward." },
@@ -253,12 +253,12 @@ export const flowLessons = {
       },
       {
         title: "Using fall-through on purpose",
-        paragraphs: ["C++ can mark an intentional fall-through with <code>[[fallthrough]]</code>. The <code>Day</code> enum gives each day a named value that <code>switch</code> can compare. When the day is Monday, the first message runs and execution continues into the shared midweek cases."],
+        paragraphs: ["C++17 can mark an intentional fall-through with <code>[[fallthrough]]</code>. The <code>Day</code> enum gives each day a named value that <code>switch</code> can compare. When the day is Monday, the first message runs and execution continues into the shared midweek cases."],
         code: { label: "C++", content: "enum Day {\n  Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday\n};\n\nDay day = Monday;\n\nswitch (day) {\n  case Monday:\n    std::cout << \"It is the start of the week\\n\";\n    [[fallthrough]]; // Continue into the shared weekday code\n\n  case Tuesday:\n  case Wednesday:\n  case Thursday:\n  case Friday:\n    std::cout << \"It is midweek\\n\";\n    break;\n\n  default:\n    std::cout << \"It is the weekend\\n\";\n}" },
       },
       {
         title: "Choosing between switch and if",
-        paragraphs: ["Use a switch when one subject is compared with several distinct alternatives. A long series of equality checks can make an if-chain too convoluted to follow. Use an if-chain when the branches depend on different questions or ordered ranges."],
+        paragraphs: ["Use a switch when one subject is compared with several distinct alternatives. A long series of equality checks can make an if-chain too convoluted to follow. The <a href=\"if-else.html\">If Else and Else If</a> lesson covers branches based on different questions or ordered ranges."],
         table: {
           headers: ["Situation", "Usually clearer"],
           rows: [

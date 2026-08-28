@@ -45,11 +45,11 @@ export const syntaxLessons = {
         table: {
           headers: ["Mark", "Common jobs with different rules"],
           rows: [
-            ["<code>()</code>", "Declare parameters of a function and evaluate or group an expression"],
+            ["<code>()</code>", "Declare parameters, call a function, or group an expression"],
             ["<code>{}</code>", "Define a code block or the body of an object or class"],
             ["<code>[]</code>", "Access a collection value by index or create one"],
             ["<code>.</code>", "Access a member such as a field or method"],
-            ["<code>:</code>", "Jack of all trades: Begin a suite, separate keys and values, annotate types, and more"],
+            ["<code>:</code>", "Begin a suite, separate keys and values, annotate types, and perform other language-specific jobs"],
             ["<code>;</code>", "Terminate or separate statements in many languages"],
           ],
         },
@@ -145,18 +145,18 @@ export const syntaxLessons = {
 
   "primitive-values": {
     kicker: "Syntax Elements · Lesson 02",
-    title: "Primitive value types",
-    lead: "Primitive types represent basic values such as numbers, text, booleans and absence. Each type defines which operations can be performed on its values.",
-    goals: ["choose a suitable basic type for a value", "explain why numeric types are not interchangeable", "recognize null-like absence"],
+    title: "Basic value types",
+    lead: "Programming languages provide basic value categories for numbers, text, booleans and absence. A category may be primitive in one language and an object or special value in another.",
+    goals: ["choose a suitable basic type for a value", "explain why numeric types are not interchangeable", "recognize values that represent absence"],
     sections: [
       {
-        title: "Common primitive types",
+        title: "Common basic value categories",
         cards: [
           { title: "Integers", body: "Whole numbers such as lives, item counts, and grid coordinates." },
           { title: "Floating-point numbers", body: "Approximations for values with fractional parts, such as time or velocity." },
           { title: "Booleans", body: "Two logical states that usually appear as true and false and support decisions." },
-          { title: "Characters and strings", body: "A character is one textual unit in some type systems. Strings represent sequences of text." },
-          { title: "Null-like values", body: "Markers such as <code>null</code>, <code>None</code>, or <code>nil</code> can represent absence, with different rules." },
+          { title: "Characters and strings", body: "A character is one textual unit in some type systems. Strings represent sequences of text. Some languages treat strings as objects rather than primitive values." },
+          { title: "Null values", body: "Markers such as <code>null</code>, <code>None</code>, or <code>nil</code> can represent absence. Their types and rules differ by language." },
         ],
       },
       {
@@ -168,7 +168,7 @@ export const syntaxLessons = {
         title: "Numbers have limits",
         paragraphs: [
           "Fixed-size integer types have minimum and maximum values. Floating-point values represent a large range but cannot exactly represent every decimal fraction. This is why repeated calculations with values such as 0.1 may show tiny rounding differences.",
-          "Choose types according to the required range and precision. Money, physics, animation, and enormous counters may need different strategies.",
+          "Choose types according to the required range and precision. Money, physics, animation, and enormous counters may need different strategies. The <a href=\"mathematical-operators.html\">Mathematical Operators</a> lesson shows how numeric types affect division, remainders, and precision.",
         ],
         note: { title: "Numeric types vary by language", body: "Python integers can grow beyond fixed machine-word sizes subject to memory, while JavaScript's ordinary <code>Number</code> uses floating-point for most numeric work. Java, C#, C++, and Lua expose their own numeric models. Never assume one rule fits all six." },
       },
@@ -234,7 +234,7 @@ export const syntaxLessons = {
           "Python throws a <code>TypeError</code> when the failing line runs. C# reports a compiler error before a normal run, so that example throws no runtime exception. JavaScript converts the number to text and continues with <code>\"105\"</code>.",
           "Early and late checks both protect meaning when they reject an operation. Automatic conversion can be useful too. Its rules need to match your intention.",
         ],
-        note: { title: "Compiler errors and exceptions", body: "A <code>Compiler Error</code> prevents the code from even running, you can't build the app until it's fixed. An <code>Exception</code> is raised during runtime instead, showing the exact stage so you know where to look." },
+        note: { title: "Compiler errors and exceptions", body: "A compiler error prevents a successful build until the reported problem is fixed. An exception is raised while code runs. It may be handled by the program or reported with a stack trace when it remains unhandled." },
       },
       {
         title: "Explicit type conversion",
@@ -251,7 +251,7 @@ export const syntaxLessons = {
             ["Lua", "<code>tonumber(\"BadInput\")</code>", "Returns <code>nil</code> instead of throwing"],
           ],
         },
-        note: { title: "Identifying conversion failures", body: "Full error messages can vary by version and environment. The exception type or failure value usually gives the steadier clue." },
+        note: { title: "Identifying conversion failures", body: "Full error messages can vary by version and environment. The exception type or failure value usually gives the steadier clue. JavaScript also converts an empty or whitespace-only string to zero, so reject empty input before relying on <code>Number</code>." },
       },
       {
         title: "Comparing type systems",
@@ -309,7 +309,7 @@ export const syntaxLessons = {
     sections: [
       {
         title: "Stored and calculated booleans",
-        code: { label: "pseudocode · access rule", content: "has_key = true\ndoor_is_locked = true\ncan_open_door = has_key AND door_is_locked\n\nif can_open_door:\n    open door" },
+        code: { label: "Pseudocode", content: "has_key = true\ndoor_is_locked = true\ncan_open_door = NOT door_is_locked OR has_key\n\nIF can_open_door\n    open door" },
         paragraphs: ["Names such as <code>has_key</code>, <code>is_alive</code>, and <code>can_save</code> read naturally as yes/no questions. A good name reduces the need to remember what <code>true</code> means."],
       },
       {
@@ -327,7 +327,7 @@ export const syntaxLessons = {
       },
       {
         title: "Combining boolean expressions",
-        paragraphs: ["The operator <strong>NOT</strong> flips a boolean. <strong>AND</strong> requires both sides to be true and <strong>OR</strong> requires at least one. Many languages use short-circuit evaluation and may skip the right side (In this case: <strong>B</strong>) when the left already determines the result. This is useful if the value comes from a function that you don't want to run if the left side already sets the result."],
+        paragraphs: ["The operator <strong>NOT</strong> flips a boolean. <strong>AND</strong> requires both sides to be true and <strong>OR</strong> requires at least one. Many languages use short-circuit evaluation and may skip the right side, which is <strong>B</strong> in this table, when the left already determines the result. This is useful when the right side calls a function that should run only if its result is still needed. The <a href=\"logical-operators.html\">Logical Operators</a> lesson explains these combinations and short-circuiting in more detail."],
         table: {
           headers: ["A", "B", "A AND B", "A OR B"],
           rows: [["<span class=\"boolean-value is-false\">false</span>", "<span class=\"boolean-value is-false\">false</span>", "<span class=\"boolean-value is-false\">false</span>", "<span class=\"boolean-value is-false\">false</span>"], ["<span class=\"boolean-value is-false\">false</span>", "<span class=\"boolean-value is-true\">true</span>", "<span class=\"boolean-value is-false\">false</span>", "<span class=\"boolean-value is-true\">true</span>"], ["<span class=\"boolean-value is-true\">true</span>", "<span class=\"boolean-value is-false\">false</span>", "<span class=\"boolean-value is-false\">false</span>", "<span class=\"boolean-value is-true\">true</span>"], ["<span class=\"boolean-value is-true\">true</span>", "<span class=\"boolean-value is-true\">true</span>", "<span class=\"boolean-value is-true\">true</span>", "<span class=\"boolean-value is-true\">true</span>"]],
