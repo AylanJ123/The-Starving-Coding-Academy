@@ -24,6 +24,7 @@ for (const item of pages) {
     if (!html.includes('alt="The Starving Coding Academy official icon"')) failures.push(`${item.href}: missing academy icon alt text`);
     if (!html.includes(`<link rel="canonical" href="${pageUrl}">`)) failures.push(`${item.href}: wrong or missing canonical URL`);
     if (!html.includes(`<link rel="alternate" hreflang="en" href="${pageUrl}">`)) failures.push(`${item.href}: wrong or missing English hreflang`);
+    if (!html.includes(`<link rel="describedby" href="${new URL("llms.txt", siteUrl).href}" type="text/markdown">`)) failures.push(`${item.href}: missing llms.txt discovery link`);
   } catch {
     failures.push(`${item.href}: file missing`);
   }
@@ -33,10 +34,38 @@ try {
   const home = await readFile(path.join(projectRoot, "index.html"), "utf8");
   if (!home.includes(`<link rel="canonical" href="${siteUrl}">`)) failures.push("index.html: wrong or missing canonical URL");
   if (!home.includes(`<link rel="alternate" hreflang="en" href="${siteUrl}">`)) failures.push("index.html: wrong or missing English hreflang");
+  if (!home.includes(`<link rel="describedby" href="${new URL("llms.txt", siteUrl).href}" type="text/markdown">`)) failures.push("index.html: missing llms.txt discovery link");
   if (!home.includes('alt="The Starving Coding Academy official icon"')) failures.push("index.html: missing academy icon alt text");
   if (!home.includes('alt="Discord\'s official social media icon"')) failures.push("index.html: missing Discord icon alt text");
+
+  const jsonLdMatch = home.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
+  if (!jsonLdMatch) {
+    failures.push("index.html: JSON-LD missing");
+  } else {
+    try {
+      const jsonLd = JSON.parse(jsonLdMatch[1]);
+      const types = (jsonLd["@graph"] || []).map((item) => item["@type"]);
+      if (!types.includes("WebSite")) failures.push("index.html: WebSite JSON-LD missing");
+      if (!types.includes("Course")) failures.push("index.html: Course JSON-LD missing");
+      if (types.includes("FAQPage")) failures.push("index.html: unexpected FAQPage JSON-LD");
+    } catch {
+      failures.push("index.html: invalid JSON-LD");
+    }
+  }
 } catch {
   failures.push("index.html: file missing");
+}
+
+try {
+  const llms = await readFile(path.join(projectRoot, "llms.txt"), "utf8");
+  if (!llms.startsWith("# The Starving Coding Academy")) failures.push("llms.txt: missing academy heading");
+  for (const item of pages) {
+    const slug = item.href.replace("pages/", "").replace(".html", "");
+    const lessonUrl = new URL(item.href, siteUrl).href;
+    if (!llms.includes(`[${lessons[slug].title}](${lessonUrl})`)) failures.push(`llms.txt: missing ${slug}`);
+  }
+} catch {
+  failures.push("llms.txt: file missing");
 }
 
 for (const slug of expectedSlugs) {

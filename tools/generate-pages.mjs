@@ -31,6 +31,64 @@ Sitemap: ${new URL("sitemap.xml", siteUrl).href}
 `;
 }
 
+function plainText(value = "") {
+  return value
+    .replace(/<[^>]+>/g, " ")
+    .replaceAll("&quot;", '"')
+    .replaceAll("&#39;", "'")
+    .replaceAll("&amp;", "&")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function llmsTemplate(items) {
+  const lessonsMarkdown = items
+    .map((item) => {
+      const slug = item.href.replace("pages/", "").replace(".html", "");
+      const lesson = lessons[slug];
+      const lessonUrl = new URL(item.href, siteUrl).href;
+      const goals = (lesson.goals || []).map(plainText).join("; ");
+      const topics = (lesson.sections || []).map((section) => plainText(section.title)).join("; ");
+      const sources = (lesson.sources || [])
+        .map((source) => `[${plainText(source.title)}](${source.href})`)
+        .join("; ");
+      const details = [
+        `  - **Summary** — ${plainText(lesson.description || lesson.lead)}`,
+        goals ? `  - **Learning goals** — ${goals}` : "",
+        topics ? `  - **Key topics** — ${topics}` : "",
+        sources ? `  - **References** — ${sources}` : "",
+      ].filter(Boolean);
+
+      return [`- [${plainText(lesson.title)}](${lessonUrl})`, ...details].join("\n");
+    })
+    .join("\n\n");
+
+  return `# The Starving Coding Academy
+
+> A completely free, ad-free beginner course for learning how programming works before becoming attached to one language's syntax.
+
+The academy teaches transferable programming concepts with examples from Python, JavaScript, Java, C#, C++ and Lua. It is designed for complete beginners and uses short lessons, comparisons, quick checks and small practice exercises.
+
+The public website is ${siteUrl}
+
+The material is licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). People may share and adapt it with attribution for noncommercial use, and adaptations must use the same license.
+
+## Course facts
+
+- The course contains ${items.length} lessons.
+- The curriculum begins with raw programming concepts, then covers syntax, values, operators, program structure, functions, objects, control flow, loops and cumulative practice.
+- The lessons compare six languages without asking learners to memorize all six at once.
+- Progress is stored locally in the learner's browser and can be exported as a human-readable JSON backup.
+- The course is free, contains no advertisements and does not require an account.
+- The site source is public on [GitHub](https://github.com/aylanj123/The-Starving-Coding-Academy).
+- The community link is [The Starving Coding Academy Discord](https://discord.gg/KzPR9cRBgs).
+
+## Lesson catalog
+
+${lessonsMarkdown}
+`;
+}
+
 function stripMarkup(value) {
   return value.replace(/<[^>]+>/g, "").replaceAll('"', "&quot;");
 }
@@ -48,6 +106,7 @@ function pageTemplate(slug, lesson) {
     <meta name="description" content="${description}">
     <link rel="canonical" href="${pageUrl}">
     <link rel="alternate" hreflang="en" href="${pageUrl}">
+    <link rel="describedby" href="${new URL("llms.txt", siteUrl).href}" type="text/markdown">
     <meta property="og:type" content="article">
     <meta property="og:site_name" content="The Starving Coding Academy">
     <meta property="og:title" content="${stripMarkup(lesson.title)}">
@@ -118,6 +177,7 @@ for (const item of pageItems) {
 await Promise.all([
   writeFile(path.join(projectRoot, "sitemap.xml"), sitemapTemplate(pageItems), "utf8"),
   writeFile(path.join(projectRoot, "robots.txt"), robotsTemplate(), "utf8"),
+  writeFile(path.join(projectRoot, "llms.txt"), llmsTemplate(pageItems), "utf8"),
 ]);
 
-console.log(`Generated ${pageItems.length} lesson pages, sitemap.xml, and robots.txt.`);
+console.log(`Generated ${pageItems.length} lesson pages, sitemap.xml, robots.txt, and llms.txt.`);
