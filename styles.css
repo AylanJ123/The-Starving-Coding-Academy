@@ -438,6 +438,12 @@ h1 {
   border-top: 1px solid var(--line);
 }
 
+.lesson-section.joins-previous {
+  margin-top: 20px;
+  padding-top: 0;
+  border-top: 0;
+}
+
 .lesson-section:first-of-type {
   margin-top: 25px;
   padding-top: 50px;

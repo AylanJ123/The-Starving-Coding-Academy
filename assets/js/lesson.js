@@ -128,18 +128,25 @@ function renderSection(section) {
     : "";
   const reveals = section.reveals
     ? `<div class="reveal-list">${section.reveals
-        .map((item) => `<details><summary>${item.question}</summary><p>${item.answer}</p></details>`)
+        .map(
+          (item) =>
+            `<details><summary>${item.question}</summary><p>${item.answer}</p>${item.code ? codeWindow(item.code) : ""}</details>`
+        )
         .join("")}</div>`
     : "";
   const note = section.note
     ? `<aside class="callout ${section.note.tone || ""}"><strong>${section.note.title}</strong><p>${section.note.body}</p></aside>`
     : "";
+  const code = section.code ? codeWindow(section.code) : "";
+  const sectionContent = section.codeFirst
+    ? `${code}${reveals}`
+    : `${reveals}${code}`;
 
   return `
-    <section class="lesson-section">
+    <section class="lesson-section${section.joinPrevious ? " joins-previous" : ""}">
       <h2>${section.title}</h2>
-      ${paragraphs}${bullets}${steps}${cards}${links}${reveals}${section.table ? renderTable(section.table) : ""}
-      ${section.code ? codeWindow(section.code) : ""}${note}
+      ${paragraphs}${bullets}${steps}${cards}${links}${sectionContent}${section.table ? renderTable(section.table) : ""}
+      ${note}
     </section>
   `;
 }
@@ -239,6 +246,9 @@ function renderPage(slug, lesson) {
         .map((source) => `<li><a href="${source.href}" target="_blank" rel="noreferrer">${source.title}</a></li>`)
         .join("")}</ul></details>`
     : "";
+  const introNote = lesson.introNote
+    ? `<aside class="callout lesson-intro-note ${lesson.introNote.tone || ""}"><strong>${lesson.introNote.title}</strong><p>${lesson.introNote.body}</p></aside>`
+    : "";
 
   lessonRoot.innerHTML = `
     <header class="lesson-hero">
@@ -247,6 +257,7 @@ function renderPage(slug, lesson) {
       <p class="lead">${lesson.lead}</p>
       ${goalSummary}
     </header>
+    ${introNote}
     ${lesson.sections.map(renderSection).join("")}
     ${renderChallenge(lesson.challenge)}
     ${renderCheck(lesson.check, slug)}
