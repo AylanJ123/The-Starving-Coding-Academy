@@ -53,9 +53,11 @@ for (const slug of Object.keys(lessons)) {
 try {
   const sitemap = await readFile(path.join(projectRoot, "sitemap.xml"), "utf8");
   const expectedUrls = [siteUrl, ...pages.map((item) => new URL(item.href, siteUrl).href)];
+  const lastModified = "2026-08-29";
 
   for (const url of expectedUrls) {
-    if (!sitemap.includes(`<loc>${url}</loc>`)) failures.push(`sitemap.xml: missing ${url}`);
+    const expectedEntry = `<loc>${url}</loc>\n    <lastmod>${lastModified}</lastmod>`;
+    if (!sitemap.includes(expectedEntry)) failures.push(`sitemap.xml: missing or outdated ${url}`);
   }
 } catch {
   failures.push("sitemap.xml: file missing");

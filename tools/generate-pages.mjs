@@ -8,10 +8,13 @@ const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "
 const pagesDirectory = path.join(projectRoot, "pages");
 const pageItems = flattenNavigation().filter((item) => item.href.startsWith("pages/"));
 const siteUrl = "https://aylanj123.github.io/The-Starving-Coding-Academy/";
+const lastModified = "2026-08-29";
 
 function sitemapTemplate(items) {
   const urls = [siteUrl, ...items.map((item) => new URL(item.href, siteUrl).href)];
-  const entries = urls.map((url) => `  <url>\n    <loc>${url}</loc>\n  </url>`).join("\n");
+  const entries = urls
+    .map((url) => `  <url>\n    <loc>${url}</loc>\n    <lastmod>${lastModified}</lastmod>\n  </url>`)
+    .join("\n");
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
