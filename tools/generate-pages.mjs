@@ -76,7 +76,7 @@ function pageTemplate(slug, lesson) {
   <body>
     <header class="site-header">
       <a class="brand" href="../index.html" aria-label="The Starving Coding Academy home">
-        <img class="brand-mark" src="../assets/images/academy-icon.svg" alt="">
+        <img class="brand-mark" src="../assets/images/academy-icon.svg" alt="The Starving Coding Academy official icon">
         <span>The Starving Coding Academy</span>
       </a>
 

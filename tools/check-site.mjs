@@ -21,6 +21,7 @@ for (const item of pages) {
     if (!html.includes(`data-lesson="${slug}"`)) failures.push(`${item.href}: wrong or missing data-lesson`);
     if (!html.includes('../script.js')) failures.push(`${item.href}: missing shared script`);
     if (!html.includes('../styles.css')) failures.push(`${item.href}: missing shared stylesheet`);
+    if (!html.includes('alt="The Starving Coding Academy official icon"')) failures.push(`${item.href}: missing academy icon alt text`);
     if (!html.includes(`<link rel="canonical" href="${pageUrl}">`)) failures.push(`${item.href}: wrong or missing canonical URL`);
     if (!html.includes(`<link rel="alternate" hreflang="en" href="${pageUrl}">`)) failures.push(`${item.href}: wrong or missing English hreflang`);
   } catch {
@@ -32,6 +33,8 @@ try {
   const home = await readFile(path.join(projectRoot, "index.html"), "utf8");
   if (!home.includes(`<link rel="canonical" href="${siteUrl}">`)) failures.push("index.html: wrong or missing canonical URL");
   if (!home.includes(`<link rel="alternate" hreflang="en" href="${siteUrl}">`)) failures.push("index.html: wrong or missing English hreflang");
+  if (!home.includes('alt="The Starving Coding Academy official icon"')) failures.push("index.html: missing academy icon alt text");
+  if (!home.includes('alt="Discord\'s official social media icon"')) failures.push("index.html: missing Discord icon alt text");
 } catch {
   failures.push("index.html: file missing");
 }
