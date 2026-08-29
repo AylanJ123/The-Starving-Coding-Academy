@@ -37,6 +37,7 @@ function stripMarkup(value) {
 
 function pageTemplate(slug, lesson) {
   const description = stripMarkup(lesson.description || lesson.lead);
+  const pageUrl = new URL(`pages/${slug}.html`, siteUrl).href;
 
   return `<!doctype html>
 <html lang="en" data-theme="dark">
@@ -45,11 +46,13 @@ function pageTemplate(slug, lesson) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="dark light">
     <meta name="description" content="${description}">
+    <link rel="canonical" href="${pageUrl}">
+    <link rel="alternate" hreflang="en" href="${pageUrl}">
     <meta property="og:type" content="article">
     <meta property="og:site_name" content="The Starving Coding Academy">
     <meta property="og:title" content="${stripMarkup(lesson.title)}">
     <meta property="og:description" content="${description}">
-    <meta property="og:url" content="${siteUrl}pages/${slug}.html">
+    <meta property="og:url" content="${pageUrl}">
     <meta property="og:image" content="${siteUrl}assets/images/social/${slug}.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">

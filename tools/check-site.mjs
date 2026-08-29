@@ -17,12 +17,23 @@ for (const item of pages) {
   try {
     await access(absolutePath);
     const html = await readFile(absolutePath, "utf8");
+    const pageUrl = new URL(item.href, siteUrl).href;
     if (!html.includes(`data-lesson="${slug}"`)) failures.push(`${item.href}: wrong or missing data-lesson`);
     if (!html.includes('../script.js')) failures.push(`${item.href}: missing shared script`);
     if (!html.includes('../styles.css')) failures.push(`${item.href}: missing shared stylesheet`);
+    if (!html.includes(`<link rel="canonical" href="${pageUrl}">`)) failures.push(`${item.href}: wrong or missing canonical URL`);
+    if (!html.includes(`<link rel="alternate" hreflang="en" href="${pageUrl}">`)) failures.push(`${item.href}: wrong or missing English hreflang`);
   } catch {
     failures.push(`${item.href}: file missing`);
   }
+}
+
+try {
+  const home = await readFile(path.join(projectRoot, "index.html"), "utf8");
+  if (!home.includes(`<link rel="canonical" href="${siteUrl}">`)) failures.push("index.html: wrong or missing canonical URL");
+  if (!home.includes(`<link rel="alternate" hreflang="en" href="${siteUrl}">`)) failures.push("index.html: wrong or missing English hreflang");
+} catch {
+  failures.push("index.html: file missing");
 }
 
 for (const slug of expectedSlugs) {
