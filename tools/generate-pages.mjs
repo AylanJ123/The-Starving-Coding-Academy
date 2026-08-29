@@ -9,6 +9,25 @@ const pagesDirectory = path.join(projectRoot, "pages");
 const pageItems = flattenNavigation().filter((item) => item.href.startsWith("pages/"));
 const siteUrl = "https://aylanj123.github.io/The-Starving-Coding-Academy/";
 
+function sitemapTemplate(items) {
+  const urls = [siteUrl, ...items.map((item) => new URL(item.href, siteUrl).href)];
+  const entries = urls.map((url) => `  <url>\n    <loc>${url}</loc>\n  </url>`).join("\n");
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${entries}
+</urlset>
+`;
+}
+
+function robotsTemplate() {
+  return `User-agent: *
+Allow: /
+
+Sitemap: ${new URL("sitemap.xml", siteUrl).href}
+`;
+}
+
 function stripMarkup(value) {
   return value.replace(/<[^>]+>/g, "").replaceAll('"', "&quot;");
 }
@@ -90,4 +109,9 @@ for (const item of pageItems) {
   await writeFile(path.join(projectRoot, item.href), pageTemplate(slug, lesson), "utf8");
 }
 
-console.log(`Generated ${pageItems.length} lesson pages.`);
+await Promise.all([
+  writeFile(path.join(projectRoot, "sitemap.xml"), sitemapTemplate(pageItems), "utf8"),
+  writeFile(path.join(projectRoot, "robots.txt"), robotsTemplate(), "utf8"),
+]);
+
+console.log(`Generated ${pageItems.length} lesson pages, sitemap.xml, and robots.txt.`);

@@ -8,6 +8,7 @@ const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "
 const pages = flattenNavigation().filter((item) => item.href.startsWith("pages/"));
 const expectedSlugs = pages.map((item) => item.href.replace("pages/", "").replace(".html", ""));
 const failures = [];
+const siteUrl = "https://aylanj123.github.io/The-Starving-Coding-Academy/";
 
 for (const item of pages) {
   const slug = item.href.replace("pages/", "").replace(".html", "");
@@ -47,6 +48,27 @@ for (const slug of expectedSlugs) {
 
 for (const slug of Object.keys(lessons)) {
   if (!expectedSlugs.includes(slug)) failures.push(`${slug}: content exists without navigation route`);
+}
+
+try {
+  const sitemap = await readFile(path.join(projectRoot, "sitemap.xml"), "utf8");
+  const expectedUrls = [siteUrl, ...pages.map((item) => new URL(item.href, siteUrl).href)];
+
+  for (const url of expectedUrls) {
+    if (!sitemap.includes(`<loc>${url}</loc>`)) failures.push(`sitemap.xml: missing ${url}`);
+  }
+} catch {
+  failures.push("sitemap.xml: file missing");
+}
+
+try {
+  const robots = await readFile(path.join(projectRoot, "robots.txt"), "utf8");
+  const sitemapUrl = new URL("sitemap.xml", siteUrl).href;
+  if (!robots.includes("User-agent: *")) failures.push("robots.txt: missing wildcard user agent");
+  if (!robots.includes("Allow: /")) failures.push("robots.txt: site is not explicitly crawlable");
+  if (!robots.includes(`Sitemap: ${sitemapUrl}`)) failures.push("robots.txt: missing sitemap URL");
+} catch {
+  failures.push("robots.txt: file missing");
 }
 
 if (failures.length) {

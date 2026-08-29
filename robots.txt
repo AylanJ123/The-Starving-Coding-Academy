@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://aylanj123.github.io/The-Starving-Coding-Academy/sitemap.xml

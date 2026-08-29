@@ -1,5 +1,9 @@
 # The Starving Coding Academy
 
+[![The Starving Coding Academy](assets/images/social/home.png)](https://aylanj123.github.io/The-Starving-Coding-Academy/)
+
+**[Start learning on the live site](https://aylanj123.github.io/The-Starving-Coding-Academy/)**
+
 A completely free, ad-less programming course for beginners. The academy teaches
 transferable concepts before language specialization, using examples from Python,
 JavaScript, Java, C#, C++, and Lua.
@@ -42,6 +46,8 @@ pages/                            Generated public lesson routes
 tools/generate-pages.mjs          Page-shell generator
 tools/generate-social-cards.mjs   Social-card generator
 tools/check-site.mjs              Route/content integrity checks
+robots.txt                        Search-crawler instructions (generated)
+sitemap.xml                       Public route index (generated)
 private_files/                    Private curriculum planning sources
 ```
 
@@ -124,4 +130,14 @@ Then open `http://localhost:8000/`.
 
 The repository includes `.nojekyll`, so GitHub Pages publishes the static files
 without a Jekyll build. Commit the generated `pages/` files along with any
-content, navigation, style, or script changes.
+content, navigation, style, script, sitemap, or robots changes.
+
+## License
+
+Copyright © 2026 Aylan Miranda.
+
+The academy is licensed under the
+[Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](LICENSE).
+You may copy, share, and adapt it for noncommercial purposes with appropriate
+credit. Adaptations must use the same license. Commercial use is not permitted
+without prior written permission from Aylan Miranda.
