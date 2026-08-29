@@ -20,11 +20,11 @@ help, suggest a change, or talk about what you are building.
 ## What Is Included
 
 - 42 lessons across seven connected courses
-- Nested, searchable lesson navigation
+- Nested navigation that searches lesson titles and content
 - Previous/next lesson controls
 - Learning goals, comparisons, code examples, and short challenges
 - Interactive quick checks with explanations
-- Local lesson-completion tracking
+- Local lesson-completion tracking with readable JSON export and import
 - Light and dark themes
 - Responsive desktop and mobile layouts
 - Reference links to official language documentation

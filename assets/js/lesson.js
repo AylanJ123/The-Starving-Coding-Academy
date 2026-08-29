@@ -3,6 +3,9 @@ import { lessons } from "./lessons/lesson-data.js";
 
 const lessonRoot = document.querySelector("[data-lesson]");
 const STORAGE_KEY = "tsca-completed-lessons";
+const lessonItems = flattenNavigation().filter((item) => item.href.startsWith("pages/"));
+const lessonSlug = (item) => item.href.replace("pages/", "").replace(".html", "");
+const lessonBySlug = new Map(lessonItems.map((item) => [lessonSlug(item), item]));
 const keywordPattern =
   "ask|show|read|try|catch|except|finally|throw|raise|propagate|convert|exists|add|to|as|play|open|close|load|create|start|enter|record|preserve|release|wait|through|with|using|activate|report|maximum|otherwise|when|if|else|elseif|elif|while|until|repeat|for|each|in|of|switch|case|default|match|enum|function|method|return|break|continue|class|field|private|property|constructor|new|local|let|const|var|def|string|true|false|null|nil|none|and|or|not";
 const keywordRegex = new RegExp(`^(?:${keywordPattern})$`, "i");
@@ -195,19 +198,123 @@ function renderChallenge(challenge) {
 
 function getCompleted() {
   try {
-    return new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"));
+    const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    return new Set(Array.isArray(stored) ? stored.filter((slug) => lessonBySlug.has(slug)) : []);
   } catch {
     return new Set();
   }
 }
 
 function saveCompleted(completed) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify([...completed]));
+  try {
+    const ordered = lessonItems.map(lessonSlug).filter((slug) => completed.has(slug));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(ordered));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function setProgressStatus(message, tone = "") {
+  const status = document.querySelector(".progress-status");
+  if (!status) return;
+  status.textContent = message;
+  status.dataset.tone = tone;
+}
+
+function progressBackup() {
+  const completed = getCompleted();
+  const completedLessons = lessonItems
+    .filter((item) => completed.has(lessonSlug(item)))
+    .map((item) => ({ slug: lessonSlug(item), title: item.title }));
+
+  return {
+    _comment: "Well hello, you curious little rascal. You opened the JSON file! Excellent instinct: plain text is a wonderful way to learn what software is really doing.",
+    _howItWorks: [
+      `This site stores completed lesson IDs in your browser under the key '${STORAGE_KEY}'.`,
+      "Downloading progress turns those IDs into this human-readable JSON backup.",
+      "Importing reads completedLessons, ignores unknown lesson IDs, and adds valid lessons without removing progress already in the browser.",
+    ],
+    _honesty: "Progress is self-reported. Editing this file or browser storage can change it, and that is okay: this is a learning aid, not a certificate. If a teacher asks, be truthful about what you actually studied. The lessons are free anyway, so why skip them?",
+    format: "tsca-progress",
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    completedLessons,
+  };
+}
+
+function downloadProgress() {
+  const backup = progressBackup();
+  const blob = new Blob([`${JSON.stringify(backup, null, 2)}\n`], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `tsca-progress-${new Date().toISOString().slice(0, 10)}.json`;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 0);
+  setProgressStatus("Progress backup downloaded.", "success");
+}
+
+async function importProgress(file, activeSlug) {
+  if (!file) return;
+  if (file.size > 1_000_000) throw new Error("That file is too large to be a progress backup.");
+
+  let backup;
+  try {
+    backup = JSON.parse(await file.text());
+  } catch {
+    throw new Error("That file is not valid JSON.");
+  }
+  if (backup?.format !== "tsca-progress" || backup?.version !== 1 || !Array.isArray(backup.completedLessons)) {
+    throw new Error("That is not a recognized Starving Coding Academy progress file.");
+  }
+
+  const imported = new Set(
+    backup.completedLessons
+      .map((entry) => (typeof entry === "string" ? entry : entry?.slug))
+      .filter((slug) => lessonBySlug.has(slug))
+  );
+  if (backup.completedLessons.length && !imported.size) {
+    throw new Error("That backup does not contain any lesson IDs recognized by this version of the academy.");
+  }
+  const completed = getCompleted();
+  const previousCount = completed.size;
+  imported.forEach((slug) => completed.add(slug));
+
+  if (!saveCompleted(completed)) throw new Error("This browser would not allow progress to be saved.");
+
+  updateProgress(activeSlug);
+  const addedCount = completed.size - previousCount;
+  setProgressStatus(
+    addedCount
+      ? `Imported ${addedCount} new completed ${addedCount === 1 ? "lesson" : "lessons"}.`
+      : "Import complete. Your progress was already up to date.",
+    "success"
+  );
+}
+
+function initializeProgressTools(activeSlug) {
+  const exportButton = document.querySelector("[data-progress-export]");
+  const importButton = document.querySelector("[data-progress-import]");
+  const fileInput = document.querySelector("[data-progress-file]");
+
+  exportButton?.addEventListener("click", downloadProgress);
+  importButton?.addEventListener("click", () => fileInput?.click());
+  fileInput?.addEventListener("change", async () => {
+    try {
+      await importProgress(fileInput.files?.[0], activeSlug);
+    } catch (error) {
+      setProgressStatus(error instanceof Error ? error.message : "That progress file could not be imported.", "error");
+    } finally {
+      fileInput.value = "";
+    }
+  });
 }
 
 function updateProgress(slug) {
   const completed = getCompleted();
-  const lessonLinks = flattenNavigation().filter((item) => item.href.startsWith("pages/"));
 
   document.querySelectorAll(".sidebar-index a").forEach((link) => {
     const match = link.getAttribute("href")?.match(/\/([^/]+)\.html$/);
@@ -216,8 +323,8 @@ function updateProgress(slug) {
 
   const progress = document.querySelector(".course-progress");
   if (progress) {
-    const count = lessonLinks.filter((item) => completed.has(item.href.replace("pages/", "").replace(".html", ""))).length;
-    progress.innerHTML = `<span>${count} of ${lessonLinks.length} complete</span><progress value="${count}" max="${lessonLinks.length}"></progress>`;
+    const count = lessonItems.filter((item) => completed.has(lessonSlug(item))).length;
+    progress.innerHTML = `<span>${count} of ${lessonItems.length} complete</span><progress value="${count}" max="${lessonItems.length}"></progress>`;
   }
 
   const completeButton = document.querySelector(".complete-button");
@@ -275,8 +382,7 @@ function renderPage(slug, lesson) {
   document.querySelector('meta[name="description"]')?.setAttribute("content", lesson.description || lesson.lead.replace(/<[^>]+>/g, ""));
 }
 
-document.querySelector(".sidebar-top")?.insertAdjacentHTML("afterend", '<div class="course-progress"></div>');
-
+let activeSlug = null;
 if (lessonRoot) {
   const slug = lessonRoot.dataset.lesson;
   const lesson = lessons[slug];
@@ -285,14 +391,17 @@ if (lessonRoot) {
     lessonRoot.innerHTML = `<h1>Lesson not found</h1><p>This page exists, but its lesson data is missing.</p>`;
     console.error(`No lesson data found for: ${slug}`);
   } else {
+    activeSlug = slug;
     renderPage(slug, lesson);
-    updateProgress(slug);
 
     document.querySelector(".complete-button")?.addEventListener("click", () => {
       const completed = getCompleted();
       completed.has(slug) ? completed.delete(slug) : completed.add(slug);
-      saveCompleted(completed);
-      updateProgress(slug);
+      if (saveCompleted(completed)) {
+        updateProgress(slug);
+      } else {
+        setProgressStatus("This browser would not allow progress to be saved.", "error");
+      }
     });
 
     document.querySelector(".quick-check form")?.addEventListener("submit", (event) => {
@@ -313,6 +422,7 @@ if (lessonRoot) {
       feedback.innerHTML = `<strong>${correct ? "Correct." : "Not quite."}</strong> ${explanation}`;
     });
   }
-} else {
-  updateProgress("");
 }
+
+initializeProgressTools(activeSlug);
+updateProgress(activeSlug);
