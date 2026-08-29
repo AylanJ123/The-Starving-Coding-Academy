@@ -226,18 +226,21 @@ function progressBackup() {
   const completed = getCompleted();
   const completedLessons = lessonItems
     .filter((item) => completed.has(lessonSlug(item)))
-    .map((item) => ({ slug: lessonSlug(item), title: item.title }));
+    .map((item) => ({ id: lessonSlug(item) }));
 
   return {
-    _comment: "Well hello, you curious little rascal. You opened the JSON file! Excellent instinct: plain text is a wonderful way to learn what software is really doing.",
+    _comment: "Well hello, you curious little rascal. You opened the 'JSON' file! Excellent instinct. Plain text is a wonderful way to learn what software is really doing.",
     _howItWorks: [
-      `This site stores completed lesson IDs in your browser under the key '${STORAGE_KEY}'.`,
-      "Downloading progress turns those IDs into this human-readable JSON backup.",
-      "Importing reads completedLessons, ignores unknown lesson IDs, and adds valid lessons without removing progress already in the browser.",
+      `This site stores completed lesson 'id' values in your browser's 'localStorage' under the key '${STORAGE_KEY}'.`,
+      "Downloading progress turns those 'id' values into this human-readable 'JSON' backup.",
+      "Importing reads each 'id' inside 'completedLessons', ignores unknown values, and adds valid lessons without removing progress already stored in the browser.",
     ],
-    _honesty: "Progress is self-reported. Editing this file or browser storage can change it, and that is okay: this is a learning aid, not a certificate. If a teacher asks, be truthful about what you actually studied. The lessons are free anyway, so why skip them?",
-    format: "tsca-progress",
-    version: 1,
+    _honesty: [
+      "Progress is self-reported. Editing this file or the browser's 'localStorage' can change it, and that is okay.",
+      "This is a learning aid, not a certificate.",
+      "If a teacher asks, be truthful about what you actually studied. The lessons are free anyway, so why skip them?",
+    ],
+    format: "tsca-progress_v1.0.0",
     exportedAt: new Date().toISOString(),
     completedLessons,
   };
@@ -265,19 +268,19 @@ async function importProgress(file, activeSlug) {
   try {
     backup = JSON.parse(await file.text());
   } catch {
-    throw new Error("That file is not valid JSON.");
+    throw new Error("That file is not valid 'JSON'.");
   }
-  if (backup?.format !== "tsca-progress" || backup?.version !== 1 || !Array.isArray(backup.completedLessons)) {
+  if (backup?.format !== "tsca-progress_v1.0.0" || !Array.isArray(backup.completedLessons)) {
     throw new Error("That is not a recognized Starving Coding Academy progress file.");
   }
 
   const imported = new Set(
     backup.completedLessons
-      .map((entry) => (typeof entry === "string" ? entry : entry?.slug))
+      .map((entry) => entry?.id)
       .filter((slug) => lessonBySlug.has(slug))
   );
   if (backup.completedLessons.length && !imported.size) {
-    throw new Error("That backup does not contain any lesson IDs recognized by this version of the academy.");
+    throw new Error("That backup does not contain any lesson 'id' values recognized by this version of the academy.");
   }
   const completed = getCompleted();
   const previousCount = completed.size;

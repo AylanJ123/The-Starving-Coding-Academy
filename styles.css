@@ -267,10 +267,6 @@ h1 {
   margin-bottom: 16px;
 }
 
-.progress-tools + .lesson-search {
-  margin-bottom: 0;
-}
-
 .lesson-search-status:not(:empty) {
   margin-bottom: 12px;
 }
