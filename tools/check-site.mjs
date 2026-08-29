@@ -8,6 +8,7 @@ const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "
 const pages = flattenNavigation().filter((item) => item.href.startsWith("pages/"));
 const expectedSlugs = pages.map((item) => item.href.replace("pages/", "").replace(".html", ""));
 const failures = [];
+const rootSiteUrl = "https://aylanj123.github.io/";
 const siteUrl = "https://aylanj123.github.io/The-Starving-Coding-Academy/";
 
 for (const item of pages) {
@@ -24,7 +25,7 @@ for (const item of pages) {
     if (!html.includes('alt="The Starving Coding Academy official icon"')) failures.push(`${item.href}: missing academy icon alt text`);
     if (!html.includes(`<link rel="canonical" href="${pageUrl}">`)) failures.push(`${item.href}: wrong or missing canonical URL`);
     if (!html.includes(`<link rel="alternate" hreflang="en" href="${pageUrl}">`)) failures.push(`${item.href}: wrong or missing English hreflang`);
-    if (!html.includes(`<link rel="describedby" href="${new URL("llms.txt", siteUrl).href}" type="text/markdown">`)) failures.push(`${item.href}: missing llms.txt discovery link`);
+    if (!html.includes(`<link rel="describedby" href="${new URL("llms.txt", rootSiteUrl).href}" type="text/markdown">`)) failures.push(`${item.href}: missing root llms.txt discovery link`);
   } catch {
     failures.push(`${item.href}: file missing`);
   }
@@ -34,7 +35,7 @@ try {
   const home = await readFile(path.join(projectRoot, "index.html"), "utf8");
   if (!home.includes(`<link rel="canonical" href="${siteUrl}">`)) failures.push("index.html: wrong or missing canonical URL");
   if (!home.includes(`<link rel="alternate" hreflang="en" href="${siteUrl}">`)) failures.push("index.html: wrong or missing English hreflang");
-  if (!home.includes(`<link rel="describedby" href="${new URL("llms.txt", siteUrl).href}" type="text/markdown">`)) failures.push("index.html: missing llms.txt discovery link");
+  if (!home.includes(`<link rel="describedby" href="${new URL("llms.txt", rootSiteUrl).href}" type="text/markdown">`)) failures.push("index.html: missing root llms.txt discovery link");
   if (!home.includes('alt="The Starving Coding Academy official icon"')) failures.push("index.html: missing academy icon alt text");
   if (!home.includes('alt="Discord\'s official social media icon"')) failures.push("index.html: missing Discord icon alt text");
 
@@ -54,18 +55,6 @@ try {
   }
 } catch {
   failures.push("index.html: file missing");
-}
-
-try {
-  const llms = await readFile(path.join(projectRoot, "llms.txt"), "utf8");
-  if (!llms.startsWith("# The Starving Coding Academy")) failures.push("llms.txt: missing academy heading");
-  for (const item of pages) {
-    const slug = item.href.replace("pages/", "").replace(".html", "");
-    const lessonUrl = new URL(item.href, siteUrl).href;
-    if (!llms.includes(`[${lessons[slug].title}](${lessonUrl})`)) failures.push(`llms.txt: missing ${slug}`);
-  }
-} catch {
-  failures.push("llms.txt: file missing");
 }
 
 for (const slug of expectedSlugs) {
@@ -104,16 +93,6 @@ try {
   }
 } catch {
   failures.push("sitemap.xml: file missing");
-}
-
-try {
-  const robots = await readFile(path.join(projectRoot, "robots.txt"), "utf8");
-  const sitemapUrl = new URL("sitemap.xml", siteUrl).href;
-  if (!robots.includes("User-agent: *")) failures.push("robots.txt: missing wildcard user agent");
-  if (!robots.includes("Allow: /")) failures.push("robots.txt: site is not explicitly crawlable");
-  if (!robots.includes(`Sitemap: ${sitemapUrl}`)) failures.push("robots.txt: missing sitemap URL");
-} catch {
-  failures.push("robots.txt: file missing");
 }
 
 if (failures.length) {
