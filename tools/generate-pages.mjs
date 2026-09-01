@@ -2,7 +2,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { flattenNavigation } from "../assets/js/navigation.js";
-import { lessons } from "../assets/js/lessons/lesson-data.js";
+import { lessons } from "../assets/js/lessons/en/lesson-data.js";
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const pagesDirectory = path.join(projectRoot, "pages");
@@ -74,10 +74,19 @@ function pageTemplate(slug, lesson) {
         <span>The Starving Coding Academy</span>
       </a>
 
-      <button class="theme-toggle" type="button" aria-label="Switch color theme">
-        <span class="theme-icon" aria-hidden="true">☀</span>
-        <span class="theme-label">Light</span>
-      </button>
+      <div class="header-actions">
+        <label class="language-control">
+          <span class="visually-hidden">Language</span>
+          <select data-language-select aria-label="Language">
+            <option value="en">English</option>
+          </select>
+        </label>
+
+        <button class="theme-toggle" type="button" aria-label="Switch color theme">
+          <span class="theme-icon" aria-hidden="true">☀</span>
+          <span class="theme-label">Light</span>
+        </button>
+      </div>
     </header>
 
     <div class="app-shell">

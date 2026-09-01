@@ -112,6 +112,7 @@ a {
 }
 
 .theme-toggle,
+.language-control select,
 .button {
   min-height: 42px;
   border: 1px solid var(--line);
@@ -173,6 +174,40 @@ h1 {
   margin-bottom: 30px;
   color: var(--muted);
   font-size: 1.2rem;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.language-control {
+  position: relative;
+  display: inline-flex;
+}
+
+.language-control::after {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  color: var(--text);
+  content: "";
+  pointer-events: none;
+  transform: translateY(-65%) rotate(45deg);
+}
+
+.language-control select {
+  padding: 0 42px 0 14px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
 }
 
 .hero-joke {
@@ -1231,6 +1266,21 @@ h2 {
   .button {
     width: 100%;
     justify-content: center;
+  }
+
+  .header-actions,
+  .language-control,
+  .language-control select {
+    width: 100%;
+  }
+
+  .header-actions {
+    align-items: stretch;
+  }
+
+  .language-control,
+  .theme-toggle {
+    flex: 1 1 0;
   }
 
   .site-header {

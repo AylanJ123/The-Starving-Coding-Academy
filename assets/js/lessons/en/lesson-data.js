@@ -1,6 +1,7 @@
 import { rawLessons } from "./raw-lessons.js";
 import { syntaxLessons } from "./syntax-lessons.js";
 import { operatorLessons } from "./operator-lessons.js";
+import { inputOutputLesson } from "./input-output-lesson.js";
 import { structureLessons } from "./structure-lessons.js";
 import { flowLessons } from "./flow-lessons.js";
 import { practiceLessons } from "./practice-lessons.js";
@@ -10,6 +11,7 @@ const lessonDefinitions = {
   ...rawLessons,
   ...syntaxLessons,
   ...operatorLessons,
+  ...inputOutputLesson,
   ...structureLessons,
   ...flowLessons,
   ...practiceLessons,

@@ -2,7 +2,7 @@ import { mkdir } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
-import { lessons } from "../assets/js/lessons/lesson-data.js";
+import { lessons } from "../assets/js/lessons/en/lesson-data.js";
 import { flattenNavigation } from "../assets/js/navigation.js";
 
 const require = createRequire(import.meta.url);

@@ -1,3 +1,5 @@
+import { ui } from "./i18n.js";
+
 const themeToggle = document.querySelector(".theme-toggle");
 const themeIcon = document.querySelector(".theme-icon");
 const themeLabel = document.querySelector(".theme-label");
@@ -10,7 +12,7 @@ function setTheme(theme) {
 
   // Keep the button text honest so people know what mode they are in.
   themeIcon.textContent = theme === "dark" ? "☾" : "☀";
-  themeLabel.textContent = theme === "dark" ? "Dark" : "Light";
+  themeLabel.textContent = theme === "dark" ? ui.themeDark : ui.themeLight;
 
   // Save the choice so the page does not forget after a refresh.
   try {
@@ -19,6 +21,7 @@ function setTheme(theme) {
 }
 
 setTheme(initialTheme);
+themeToggle.setAttribute("aria-label", ui.themeToggleLabel);
 
 themeToggle.addEventListener("click", () => {
   const currentTheme = document.documentElement.dataset.theme;

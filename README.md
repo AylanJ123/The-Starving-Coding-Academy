@@ -25,6 +25,7 @@ help, suggest a change, or talk about what you are building.
 - Learning goals, comparisons, code examples, and short challenges
 - Interactive quick checks with explanations
 - Local lesson-completion tracking with readable JSON export and import
+- Multiple interface and lesson languages selected with a browser-local preference
 - Light and dark themes
 - Responsive desktop and mobile layouts
 - Reference links to official language documentation
@@ -37,18 +38,19 @@ index.html                        Homepage
 styles.css                        Shared visual system
 script.js                         Shared JavaScript entry point
 assets/js/navigation.js           Curriculum routes and hierarchy
+assets/js/i18n.js                 Language preference and locale loader
+assets/js/locale-registry.js      Available language registry
 assets/js/layout.js               Sidebar and responsive navigation
 assets/js/lesson.js               Lesson renderer and interactions
 assets/js/theme.js                Theme preference
-assets/js/lessons/                Curriculum content by course unit
+assets/js/lessons/<language>/     Curriculum content grouped by language and course
+assets/js/locales/<language>/     Localized navigation, homepage, and interface text
 assets/images/social/             Generated social-preview cards
 pages/                            Generated public lesson routes
 tools/generate-pages.mjs          Page-shell generator
 tools/generate-social-cards.mjs   Social-card generator
-tools/check-site.mjs              Route/content integrity checks
 robots.txt                        Search-crawler instructions (generated)
 sitemap.xml                       Public route index (generated)
-private_files/                    Private curriculum planning sources
 ```
 
 The lesson content lives in JavaScript data modules instead of being copied into
@@ -57,7 +59,7 @@ features easy to improve. The HTML files in `pages/` are generated route shells.
 
 ## Editing Curriculum Content
 
-Choose the matching module in `assets/js/lessons/`:
+Choose the matching module in `assets/js/lessons/langcode/`:
 
 - `raw-lessons.js`
 - `syntax-lessons.js`
@@ -71,22 +73,25 @@ lesson can contain paragraphs, lists, steps, concept cards, comparison tables,
 code windows, callouts, internal lesson links, answer reveals, a challenge, a
 quick check, and reference links.
 
+Each translation has matching folders under `assets/js/lessons/` and
+`assets/js/locales/`. Languages are registered in
+`assets/js/locale-registry.js`. Every translation must keep the same lesson
+slugs and object structure so routes, progress, and interactive checks continue
+to line up. The saved language key is `tsca-language`; when it is absent or
+invalid, the site uses English.
+
 ## Adding Or Renaming A Page
 
 1. Add or update the route in `assets/js/navigation.js`.
 2. Add lesson content with the matching slug in the appropriate lesson module.
-3. Regenerate the page shells.
-4. Run the integrity check.
+3. Add matching content and navigation titles for every available language.
+4. Regenerate the page shells.
 
 With Node.js installed:
 
 ```powershell
 npm run build:pages
-npm run check
 ```
-
-The checker verifies that navigation, lesson data, generated HTML, and internal
-course links agree.
 
 ## Updating Social Cards
 

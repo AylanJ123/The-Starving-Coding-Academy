@@ -1,9 +1,9 @@
+import { lessons, navigation, ui, updateMetaContent } from "./i18n.js";
 import { flattenNavigation } from "./navigation.js";
-import { lessons } from "./lessons/lesson-data.js";
 
 const lessonRoot = document.querySelector("[data-lesson]");
 const STORAGE_KEY = "tsca-completed-lessons";
-const lessonItems = flattenNavigation().filter((item) => item.href.startsWith("pages/"));
+const lessonItems = flattenNavigation(navigation).filter((item) => item.href.startsWith("pages/"));
 const lessonSlug = (item) => item.href.replace("pages/", "").replace(".html", "");
 const lessonBySlug = new Map(lessonItems.map((item) => [lessonSlug(item), item]));
 const keywordPattern =
@@ -94,12 +94,12 @@ function codeLanguageLabel(code) {
     ["Lua", /\bLua\b/i],
   ].filter(([, pattern]) => pattern.test(evidence));
 
-  if (/multilanguage/i.test(supplied) || languages.length > 1) return "Multilanguage";
+  if (/multilanguage|varios lenguajes/i.test(supplied) || languages.length > 1) return ui.multilanguage;
   if (languages.length === 1) return languages[0][0];
   if (/\b(?:const|let)\b|console\.log|addEventListener|createMatch\s*\(/.test(content)) return "JavaScript";
   if (/\b(?:def|lambda|print|range)\b/.test(content) || /^\s*# /m.test(content)) return "Python";
   if (/\b(?:local|repeat)\b/.test(content) && /\b(?:until|then|end)\b/.test(content)) return "Lua";
-  return "Pseudocode";
+  return ui.pseudocode;
 }
 
 function renderTable(table) {
@@ -168,11 +168,11 @@ function renderCheck(check, slug) {
 
   return `
     <section class="quick-check" aria-labelledby="quick-check-title">
-      <p class="eyebrow">Quick check</p>
+      <p class="eyebrow">${ui.quickCheck}</p>
       <h2 id="quick-check-title">${check.question}</h2>
       <form data-answer="${check.answer}">
-        <fieldset><legend class="visually-hidden">Choose one answer</legend>${options}</fieldset>
-        <button class="button check-answer" type="submit">Check answer</button>
+        <fieldset><legend class="visually-hidden">${ui.chooseOneAnswer}</legend>${options}</fieldset>
+        <button class="button check-answer" type="submit">${ui.checkAnswer}</button>
         <p class="quiz-feedback" aria-live="polite"></p>
       </form>
       <template>${check.explanation}</template>
@@ -184,12 +184,12 @@ function renderChallenge(challenge) {
   if (!challenge) return "";
   return `
     <section class="challenge-card">
-      <p class="eyebrow">Try it</p>
+      <p class="eyebrow">${ui.tryIt}</p>
       <h2>${challenge.title}</h2>
       <p>${challenge.prompt}</p>
       ${challenge.code ? codeWindow(challenge.code) : ""}
       <details>
-        <summary>${challenge.summary ?? "Reveal a possible answer"}</summary>
+        <summary>${challenge.summary ?? ui.revealPossibleAnswer}</summary>
         ${challenge.solutionCode ? codeWindow(challenge.solutionCode) : `<p>${challenge.solution}</p>`}
       </details>
     </section>
@@ -229,17 +229,9 @@ function progressBackup() {
     .map((item) => ({ id: lessonSlug(item) }));
 
   return {
-    _comment: "Well hello, you curious little rascal. You opened the 'JSON' file! Excellent instinct. Plain text is a wonderful way to learn what software is really doing.",
-    _howItWorks: [
-      `This site stores completed lesson 'id' values in your browser's 'localStorage' under the key '${STORAGE_KEY}'.`,
-      "Downloading progress turns those 'id' values into this human-readable 'JSON' backup.",
-      "Importing reads each 'id' inside 'completedLessons', ignores unknown values, and adds valid lessons without removing progress already stored in the browser.",
-    ],
-    _honesty: [
-      "Progress is self-reported. Editing this file or the browser's 'localStorage' can change it, and that is okay.",
-      "This is a learning aid, not a certificate.",
-      "If a teacher asks, be truthful about what you actually studied. The lessons are free anyway, so why skip them?",
-    ],
+    _comment: ui.progressBackupComment,
+    _howItWorks: ui.progressBackupHowItWorks(STORAGE_KEY),
+    _honesty: ui.progressBackupHonesty,
     format: "tsca-progress_v1.0.0",
     exportedAt: new Date().toISOString(),
     completedLessons,
@@ -257,21 +249,21 @@ function downloadProgress() {
   link.click();
   link.remove();
   setTimeout(() => URL.revokeObjectURL(url), 0);
-  setProgressStatus("Progress backup downloaded.", "success");
+  setProgressStatus(ui.progressDownloaded, "success");
 }
 
 async function importProgress(file, activeSlug) {
   if (!file) return;
-  if (file.size > 1_000_000) throw new Error("That file is too large to be a progress backup.");
+  if (file.size > 1_000_000) throw new Error(ui.fileTooLarge);
 
   let backup;
   try {
     backup = JSON.parse(await file.text());
   } catch {
-    throw new Error("That file is not valid 'JSON'.");
+    throw new Error(ui.invalidJson);
   }
   if (backup?.format !== "tsca-progress_v1.0.0" || !Array.isArray(backup.completedLessons)) {
-    throw new Error("That is not a recognized Starving Coding Academy progress file.");
+    throw new Error(ui.unrecognizedBackup);
   }
 
   const imported = new Set(
@@ -280,20 +272,20 @@ async function importProgress(file, activeSlug) {
       .filter((slug) => lessonBySlug.has(slug))
   );
   if (backup.completedLessons.length && !imported.size) {
-    throw new Error("That backup does not contain any lesson 'id' values recognized by this version of the academy.");
+    throw new Error(ui.noRecognizedLessons);
   }
   const completed = getCompleted();
   const previousCount = completed.size;
   imported.forEach((slug) => completed.add(slug));
 
-  if (!saveCompleted(completed)) throw new Error("This browser would not allow progress to be saved.");
+  if (!saveCompleted(completed)) throw new Error(ui.storageSaveError);
 
   updateProgress(activeSlug);
   const addedCount = completed.size - previousCount;
   setProgressStatus(
     addedCount
-      ? `Imported ${addedCount} new completed ${addedCount === 1 ? "lesson" : "lessons"}.`
-      : "Import complete. Your progress was already up to date.",
+      ? ui.importedLessons(addedCount)
+      : ui.importComplete,
     "success"
   );
 }
@@ -309,7 +301,7 @@ function initializeProgressTools(activeSlug) {
     try {
       await importProgress(fileInput.files?.[0], activeSlug);
     } catch (error) {
-      setProgressStatus(error instanceof Error ? error.message : "That progress file could not be imported.", "error");
+      setProgressStatus(error instanceof Error ? error.message : ui.importFailure, "error");
     } finally {
       fileInput.value = "";
     }
@@ -327,20 +319,20 @@ function updateProgress(slug) {
   const progress = document.querySelector(".course-progress");
   if (progress) {
     const count = lessonItems.filter((item) => completed.has(lessonSlug(item))).length;
-    progress.innerHTML = `<span>${count} of ${lessonItems.length} complete</span><progress value="${count}" max="${lessonItems.length}"></progress>`;
+    progress.innerHTML = `<span>${ui.progress(count, lessonItems.length)}</span><progress value="${count}" max="${lessonItems.length}"></progress>`;
   }
 
   const completeButton = document.querySelector(".complete-button");
   if (completeButton) {
     const isComplete = completed.has(slug);
     completeButton.classList.toggle("is-complete", isComplete);
-    completeButton.textContent = isComplete ? "✓ Lesson complete" : "Mark lesson complete";
+    completeButton.textContent = isComplete ? ui.lessonComplete : ui.markLessonComplete;
     completeButton.setAttribute("aria-pressed", String(isComplete));
   }
 }
 
 function navigationFor(slug) {
-  const pages = flattenNavigation().filter((item) => item.href.startsWith("pages/"));
+  const pages = flattenNavigation(navigation).filter((item) => item.href.startsWith("pages/"));
   const index = pages.findIndex((item) => item.href.endsWith(`/${slug}.html`));
   return { previous: pages[index - 1], next: pages[index + 1] };
 }
@@ -348,11 +340,9 @@ function navigationFor(slug) {
 function renderPage(slug, lesson) {
   const { previous, next } = navigationFor(slug);
   const goals = lesson.goals || [];
-  const goalSummary = goals.length
-    ? `<p class="lesson-summary">In this lesson you will learn to ${goals.length === 1 ? goals[0] : `${goals.slice(0, -1).join(", ")} and ${goals.at(-1)}`}.</p>`
-    : "";
+  const goalSummary = goals.length ? `<p class="lesson-summary">${ui.goalSummary(goals)}</p>` : "";
   const sources = lesson.sources
-    ? `<details class="source-notes"><summary>Reference notes</summary><ul>${lesson.sources
+    ? `<details class="source-notes"><summary>${ui.referenceNotes}</summary><ul>${lesson.sources
         .map((source) => `<li><a href="${source.href}" target="_blank" rel="noreferrer">${source.title}</a></li>`)
         .join("")}</ul></details>`
     : "";
@@ -373,16 +363,22 @@ function renderPage(slug, lesson) {
     ${renderCheck(lesson.check, slug)}
     ${sources}
     <section class="lesson-finish">
-      <button class="button complete-button" type="button" aria-pressed="false">Mark lesson complete</button>
-      <nav class="lesson-pager" aria-label="Lesson pagination">
-        ${previous ? `<a class="previous" href="${previous.href.replace("pages/", "")}"><small>Previous</small>${previous.title}</a>` : "<span></span>"}
-        ${next ? `<a class="next" href="${next.href.replace("pages/", "")}"><small>Next</small>${next.title}</a>` : ""}
+      <button class="button complete-button" type="button" aria-pressed="false">${ui.markLessonComplete}</button>
+      <nav class="lesson-pager" aria-label="${ui.lessonPagination}">
+        ${previous ? `<a class="previous" href="${previous.href.replace("pages/", "")}"><small>${ui.previous}</small>${previous.title}</a>` : "<span></span>"}
+        ${next ? `<a class="next" href="${next.href.replace("pages/", "")}"><small>${ui.next}</small>${next.title}</a>` : ""}
       </nav>
     </section>
   `;
 
   document.title = `${lesson.title} | The Starving Coding Academy`;
-  document.querySelector('meta[name="description"]')?.setAttribute("content", lesson.description || lesson.lead.replace(/<[^>]+>/g, ""));
+  const description = lesson.description || lesson.lead.replace(/<[^>]+>/g, "");
+  updateMetaContent('meta[name="description"]', description);
+  updateMetaContent('meta[property="og:title"]', lesson.title);
+  updateMetaContent('meta[property="og:description"]', description);
+  updateMetaContent('meta[property="og:image:alt"]', ui.lessonCardAlt(lesson.title));
+  updateMetaContent('meta[name="twitter:title"]', lesson.title);
+  updateMetaContent('meta[name="twitter:description"]', description);
 }
 
 let activeSlug = null;
@@ -391,7 +387,7 @@ if (lessonRoot) {
   const lesson = lessons[slug];
 
   if (!lesson) {
-    lessonRoot.innerHTML = `<h1>Lesson not found</h1><p>This page exists, but its lesson data is missing.</p>`;
+    lessonRoot.innerHTML = `<h1>${ui.lessonNotFoundTitle}</h1><p>${ui.lessonNotFoundBody}</p>`;
     console.error(`No lesson data found for: ${slug}`);
   } else {
     activeSlug = slug;
@@ -403,7 +399,7 @@ if (lessonRoot) {
       if (saveCompleted(completed)) {
         updateProgress(slug);
       } else {
-        setProgressStatus("This browser would not allow progress to be saved.", "error");
+        setProgressStatus(ui.storageSaveError, "error");
       }
     });
 
@@ -416,13 +412,13 @@ if (lessonRoot) {
 
       if (!selected) {
         feedback.className = "quiz-feedback is-visible";
-        feedback.textContent = "Pick an answer first. Guessing is allowed here.";
+        feedback.textContent = ui.pickAnswer;
         return;
       }
 
       const correct = Number(selected.value) === Number(form.dataset.answer);
       feedback.className = `quiz-feedback is-visible ${correct ? "is-correct" : "is-wrong"}`;
-      feedback.innerHTML = `<strong>${correct ? "Correct." : "Not quite."}</strong> ${explanation}`;
+      feedback.innerHTML = `<strong>${correct ? ui.correct : ui.notQuite}</strong> ${explanation}`;
     });
   }
 }

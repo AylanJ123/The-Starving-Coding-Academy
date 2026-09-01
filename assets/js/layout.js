@@ -1,5 +1,5 @@
-import { flattenNavigation, navigation } from "./navigation.js";
-import { lessons } from "./lessons/lesson-data.js";
+import { initializeLanguageSelects, lessons, navigation, ui } from "./i18n.js";
+import { flattenNavigation } from "./navigation.js";
 import "./theme.js";
 
 const appShell = document.querySelector(".app-shell");
@@ -39,7 +39,7 @@ function collectSearchText(value, key = "") {
 }
 
 const lessonSearchIndex = new Map(
-  flattenNavigation().map((item) => {
+  flattenNavigation(navigation).map((item) => {
     const slug = item.href.replace("pages/", "").replace(".html", "");
     const lesson = lessons[slug];
     return [item.href, normalizeSearchText([item.title, ...collectSearchText(lesson)].join(" "))];
@@ -83,28 +83,28 @@ function renderNavItem(item) {
 if (sidebar) {
   sidebar.innerHTML = `
     <div class="sidebar-top">
-      <p class="sidebar-label">Explore</p>
-      <button class="sidebar-close" type="button">Close</button>
+      <p class="sidebar-label">${ui.explore}</p>
+      <button class="sidebar-close" type="button">${ui.close}</button>
     </div>
     <div class="course-progress"></div>
     <details class="progress-tools">
-      <summary>Back up progress</summary>
+      <summary>${ui.backupProgress}</summary>
       <div class="progress-tools-body">
-        <p>Move completed lessons between browsers with a small, readable JSON file.</p>
+        <p>${ui.backupProgressDescription}</p>
         <div class="progress-actions">
-          <button class="progress-action" type="button" data-progress-export>Download</button>
-          <button class="progress-action" type="button" data-progress-import>Import</button>
+          <button class="progress-action" type="button" data-progress-export>${ui.download}</button>
+          <button class="progress-action" type="button" data-progress-import>${ui.import}</button>
           <input class="visually-hidden" type="file" accept=".json,application/json" data-progress-file>
         </div>
         <p class="progress-status" aria-live="polite"></p>
       </div>
     </details>
     <label class="lesson-search">
-      <span class="visually-hidden">Filter lessons</span>
-      <input type="search" placeholder="Search lesson content…" autocomplete="off">
+      <span class="visually-hidden">${ui.filterLessons}</span>
+      <input type="search" placeholder="${ui.searchPlaceholder}" autocomplete="off">
     </label>
     <p class="lesson-search-status" aria-live="polite"></p>
-    <nav aria-label="Lesson index">
+    <nav aria-label="${ui.lessonIndex}">
       <ul>${navigation.map(renderNavItem).join("")}</ul>
     </nav>
   `;
@@ -113,7 +113,7 @@ if (sidebar) {
 if (appShell) {
   appShell.insertAdjacentHTML(
     "afterbegin",
-    '<button class="sidebar-toggle" type="button" aria-expanded="false">Lesson index</button>'
+    `<button class="sidebar-toggle" type="button" aria-expanded="false">${ui.lessonIndex}</button>`
   );
   appShell.classList.add("is-ready");
 }
@@ -188,10 +188,14 @@ lessonSearch?.addEventListener("input", () => {
     lessonSearchStatus.textContent = !query
       ? ""
       : matchCount
-        ? `${matchCount} ${matchCount === 1 ? "lesson" : "lessons"} found`
-        : "No lessons found";
+        ? ui.lessonsFound(matchCount)
+        : ui.noLessonsFound;
   }
 });
 mobileNavQuery.addEventListener("change", syncSidebarMode);
 syncSidebarMode();
 requestAnimationFrame(revealCurrentLesson);
+
+document.querySelector(".brand")?.setAttribute("aria-label", ui.brandHomeLabel);
+document.querySelector(".brand-mark")?.setAttribute("alt", ui.brandIconAlt);
+initializeLanguageSelects();

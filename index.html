@@ -88,10 +88,19 @@
         <span>The Starving Coding Academy</span>
       </a>
 
-      <button class="theme-toggle" type="button" aria-label="Switch color theme">
-        <span class="theme-icon" aria-hidden="true">☀</span>
-        <span class="theme-label">Light</span>
-      </button>
+      <div class="header-actions">
+        <label class="language-control">
+          <span class="visually-hidden">Language</span>
+          <select data-language-select aria-label="Language">
+            <option value="en">English</option>
+          </select>
+        </label>
+
+        <button class="theme-toggle" type="button" aria-label="Switch color theme">
+          <span class="theme-icon" aria-hidden="true">☀</span>
+          <span class="theme-label">Light</span>
+        </button>
+      </div>
     </header>
 
     <div class="app-shell">
@@ -192,9 +201,9 @@
     <footer class="site-footer">
       <div>
         <strong>The Starving Coding Academy</strong>
-        <p>Beginner lessons for people who want coding to finally make sense.</p>
+        <p data-footer-description>Beginner lessons for people who want coding to finally make sense.</p>
       </div>
-      <div class="footer-notes" aria-label="Footer notes">
+      <div class="footer-notes" aria-label="Footer notes" data-footer-notes>
         <span>Short lessons</span>
         <span>Plain language</span>
         <span>Built for beginners</span>
